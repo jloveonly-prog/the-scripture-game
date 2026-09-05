@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris Battle</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <header>
+            <h1>TETRIS BATTLE</h1>
+        </header>
+        <div id="game-boards">
+            <div id="player-1-area">
+                <canvas id="canvas1"></canvas>
+                <div id="overlay1"></div>
+            </div>
+            <div id="player-2-area">
+                <canvas id="canvas2"></canvas>
+                <div id="overlay2"></div>
+            </div>
+        </div>
+        <div id="ui">
+            <div id="status">Waiting for players...</div>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
