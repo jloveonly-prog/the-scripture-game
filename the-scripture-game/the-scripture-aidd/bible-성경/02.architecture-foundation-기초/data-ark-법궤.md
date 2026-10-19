@@ -456,6 +456,7 @@ erDiagram
 | `board.preview` | 3 | 개 | 기본 다음 블록 미리보기 |
 | `board.previewSolomon` / `board.previewGabriel` | 5 / 7 | 개 | FR-015 패시브, FR-035 가브리엘 |
 | `net.stateHz` | 12 | 회/초 | FR-006 "초당 10~15회" 안 |
+| `net.joinTimeoutMs` / `net.readyTimeoutMs` | 5000 / 10000 | ms | **[추가 2026-10-19 — RTM §5 DCL-005]** 로비 소켓 연결 후 `join` 기한(API-005)·방 소켓 연결 후 `ready` 기한(API-006) — 넘으면 `error AUTH_TIMEOUT` + Close 4001 (api-gate §4.3). api-gate에만 있던 값을 단일 원천으로 올림, 값 불변 |
 | `engine.lockDelayMs` | 500 | ms | 착지 후 고정까지 (FR-003) |
 | `engine.dasMs` / `engine.arrMs` | 150 / 40 | ms | 좌우 키 누름 지속 반복 (FR-011) |
 | `engine.softDropMultiplier` | 20 | 배 | 소프트 드롭 (FR-003) |

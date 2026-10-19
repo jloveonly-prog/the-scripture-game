@@ -31,7 +31,8 @@ const REQUIRED_VERSES = [
 // TBL-018 표의 모든 키 경로
 const RULE_KEYS = [
   "board.width", "board.height", "board.dangerRows", "board.preview", "board.previewSolomon", "board.previewGabriel",
-  "net.stateHz", "engine.lockDelayMs", "engine.dasMs", "engine.arrMs", "engine.softDropMultiplier",
+  "net.stateHz", "net.joinTimeoutMs", "net.readyTimeoutMs",
+  "engine.lockDelayMs", "engine.dasMs", "engine.arrMs", "engine.softDropMultiplier",
   "gravity.startMs", "gravity.at120sMs", "gravity.accelAfterMs", "gravity.accelEveryMs", "gravity.accelFactor", "gravity.minMs",
   "scoring.lines", "scoring.tspin", "scoring.b2bMultiplier", "scoring.comboPer", "scoring.softDropPerCell", "scoring.hardDropPerCell",
   "attack.lines", "attack.tspinBonus", "attack.comboBonus", "attack.b2bBonus", "attack.jerichoBonus",

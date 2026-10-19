@@ -130,11 +130,11 @@
 
 | TASK-ID | 성벽 구간 | 지역 | 설명 | 연결 REQ | 연결 API/TBL/SCR | 생성 파일 | 파일 책임 | 예상 줄수 | 선행 | 규모 | 상태 | Doer | Witness | 짝 검증 결과 |
 |:---|:---|:---|:---|:---|:---|:---|:---|:---:|:---|:---:|:---:|:---:|:---:|:---:|
-| TASK-030 | WS 프로토콜 검증·속도 제한 | 02.사마리아 | 메시지 상수 표·`type`별 수기 스키마 검증·4KB 상한·소켓별 토큰 버킷 + 검증 단위 테스트 | REQ-001, REQ-007, FR-008, FR-032, NFR-003, C-006 | ARCH-015, API-005~API-031, api-gate §2·§4, TBL-018 `rateLimit`, D-16, D-20 | `worker/src/protocol/messages.ts`<br>`worker/src/protocol/validate.ts`<br>`worker/src/protocol/rate-limit.ts`<br>`worker/test/validate.test.ts` | 프로토콜만 | 130 · 270 · 100 · 120 | TASK-009, TASK-001-4, TASK-001-5 | M | ⬜ | D-02 | W-02 | ⬜ |
-| TASK-031 | REST 핸들러 | 02.사마리아 | API-001~API-004 — 파라미터 파싱·Bearer·본문 1,024B·상태코드·Matchmaker RPC 호출, 핸들러마다 try/catch | REQ-002, REQ-014, REQ-015, FR-012, FR-069, FR-071, NFR-003 | ARCH-009, API-001~API-004, api-gate §4.1·§5 | `worker/src/routes/respond.ts`<br>`worker/src/routes/guests.ts`<br>`worker/src/routes/matches.ts`<br>`worker/src/routes/leaderboard.ts` | HTTP 처리만 | 80 · 110 · 80 · 60 | TASK-020-3, TASK-001-4 | M | ⬜ | D-02 | W-02 | ⬜ |
-| TASK-032 | Matchmaker DO | 02.사마리아 | 전역 1개: 원장 마이그레이션·로비 소켓(Hibernation)·join/cancel·RPC 파사드(원장 서비스 위임)·Elo 근접 짝짓기·초대 코드·티켓 | REQ-002, REQ-004~REQ-006, REQ-014, REQ-015, FR-008, FR-018~FR-021, FR-023, FR-068 | ARCH-010, API-005, API-007~API-010, API-031, data-ark §8.1, D-04, D-19 | `worker/src/matchmaker.ts`<br>`worker/src/lobby/pairing.ts` | WS 처리 + 매칭만 | 240 · 200 | TASK-030, TASK-020-3, TASK-004 | M | ⬜ | D-02 | W-02 | ⬜ |
-| TASK-033 | GameRoom DO | 02.사마리아 | 방 1개: setup RPC·config 저장·방 소켓 수락(티켓)·메시지 → room/* 위임·타이머·기록 RPC·소켓 종료=이탈 | REQ-001, REQ-005, REQ-007~REQ-009, REQ-011, REQ-013, FR-005, FR-006, FR-008, FR-009, FR-032, FR-064, NFR-002, NFR-003 | ARCH-011, API-006, API-011~API-031, data-ark §8.2, D-07, D-08 | `worker/src/game-room.ts`<br>`worker/src/room/handlers.ts`<br>`worker/src/room/outbox.ts` | WS 처리만 | 210 · 260 · 70 | TASK-030, TASK-018, TASK-019 | M | ⬜ | D-02 | W-02 | ⬜ |
-| TASK-034 | Worker 진입 라우터 | 02.사마리아 | fetch 라우팅·Origin 허용 목록·WS Upgrade 전달·404·전역 오류·`export default` + DO 클래스 export | REQ-016, FR-008, FR-073, NFR-003, C-006 | ARCH-009, API-001~API-006, D-03 | `worker/src/index.ts` | HTTP 처리만 | 130 | TASK-031, TASK-032, TASK-033 | S | ⬜ | D-02 | W-02 | ⬜ |
+| TASK-030 | WS 프로토콜 검증·속도 제한 | 02.사마리아 | 메시지 상수 표·`type`별 수기 스키마 검증·4KB 상한·소켓별 토큰 버킷 + 검증 단위 테스트 | REQ-001, REQ-007, FR-008, FR-032, NFR-003, C-006 | ARCH-015, API-005~API-031, api-gate §2·§4, TBL-018 `rateLimit`, D-16, D-20 | `worker/src/protocol/messages.ts`<br>`worker/src/protocol/validate.ts`<br>`worker/src/protocol/rate-limit.ts`<br>`worker/test/validate.test.ts` | 프로토콜만 | 130 · 270 · 100 · 120 | TASK-009, TASK-001-4, TASK-001-5 | M | 🔄 | D-02 | W-02 | ⬜ |
+| TASK-031 | REST 핸들러 | 02.사마리아 | API-001~API-004 — 파라미터 파싱·Bearer·본문 1,024B·상태코드·Matchmaker RPC 호출, 핸들러마다 try/catch | REQ-002, REQ-014, REQ-015, FR-012, FR-069, FR-071, NFR-003 | ARCH-009, API-001~API-004, api-gate §4.1·§5 | `worker/src/routes/respond.ts`<br>`worker/src/routes/guests.ts`<br>`worker/src/routes/matches.ts`<br>`worker/src/routes/leaderboard.ts` | HTTP 처리만 | 80 · 110 · 80 · 60 | TASK-020-3, TASK-001-4 | M | 🔄 | D-02 | W-02 | ⬜ |
+| TASK-032 | Matchmaker DO | 02.사마리아 | 전역 1개: 원장 마이그레이션·로비 소켓(Hibernation)·join/cancel·RPC 파사드(원장 서비스 위임)·Elo 근접 짝짓기·초대 코드·티켓 | REQ-002, REQ-004~REQ-006, REQ-014, REQ-015, FR-008, FR-018~FR-021, FR-023, FR-068 | ARCH-010, API-005, API-007~API-010, API-031, data-ark §8.1, D-04, D-19 | `worker/src/matchmaker.ts`<br>`worker/src/lobby/pairing.ts`<br>`worker/src/lobby/lobby-flow.ts` **[D-02 분할]** | WS 처리 + 매칭만 | 240 · 200 · 280 (matchmaker 실측 165) | TASK-030, TASK-020-3, TASK-004 | M | 🔄 | D-02 | W-02 | ⬜ |
+| TASK-033 | GameRoom DO | 02.사마리아 | 방 1개: setup RPC·config 저장·방 소켓 수락(티켓)·메시지 → room/* 위임·타이머·기록 RPC·소켓 종료=이탈 | REQ-001, REQ-005, REQ-007~REQ-009, REQ-011, REQ-013, FR-005, FR-006, FR-008, FR-009, FR-032, FR-064, NFR-002, NFR-003 | ARCH-011, API-006, API-011~API-031, data-ark §8.2, D-07, D-08 | `worker/src/game-room.ts`<br>`worker/src/room/handlers.ts`<br>`worker/src/room/outbox.ts` | WS 처리만 | 210 · 260 · 70 | TASK-030, TASK-018, TASK-019 | M | 🔄 | D-02 | W-02 | ⬜ |
+| TASK-034 | Worker 진입 라우터 | 02.사마리아 | fetch 라우팅·Origin 허용 목록·WS Upgrade 전달·404·전역 오류·`export default` + DO 클래스 export | REQ-016, FR-008, FR-073, NFR-003, C-006 | ARCH-009, API-001~API-006, D-03 | `worker/src/index.ts` | HTTP 처리만 | 130 | TASK-031, TASK-032, TASK-033 | S | 🔄 | D-02 | W-02 | ⬜ |
 
 ### 2.4 03.uttermost-땅끝 — 외벽·봉인·파수꾼 (그룹 03-A → 03-B → 03-C → 03-D)
 
@@ -258,7 +258,7 @@
 | 34 | `worker/src/services/progress-service.ts` | TASK-020-3 | 진행 기록 갱신·성장 수치·업적 판정·해금 단계·은혜 여부 계산만 | 180 |
 | 35 | `client/js/engine/placement.js` | TASK-019 | 착지 후보 열거·보드 평가(rules.placement.weights)·최적 착지 선택만 — 솔로몬·가브리엘 힌트와 서버 봇 공용 순수 엔진 (RTM §5 DCL-004) | 80 |
 
-### 3.3 02.samaria-사마리아 (14개)
+### 3.3 02.samaria-사마리아 (15개 — #10-1은 D-02 300줄 분할로 추가)
 
 | # | 생성 파일 (`fruit-열매/` 기준) | TASK-ID | 단일 책임 (한 줄) | 예상 줄수 |
 |:--|:---|:---|:---|:---:|
@@ -272,6 +272,7 @@
 | 8 | `worker/src/routes/leaderboard.ts` | TASK-031 | GET /api/leaderboard HTTP 처리만 | 60 |
 | 9 | `worker/src/matchmaker.ts` | TASK-032 | Matchmaker DO 셸만 — 생성자 마이그레이션·로비 소켓 수명주기·메시지 분기·RPC 메서드(서비스 위임), 핸들러마다 try/catch | 240 |
 | 10 | `worker/src/lobby/pairing.ts` | TASK-032 | 대기열 Elo 근접 짝짓기·초대 코드 발급/조회/만료·입장 티켓·방 설정(config) 조립만 | 200 |
+| 10-1 | `worker/src/lobby/lobby-flow.ts` | TASK-032 | 로비 소켓 1개 수명주기(join 기한·join·cancel·종료 정리)와 방 배정 순서(setup RPC → matched → Close)만 — **[D-02 2026-10-19 분할]** matchmaker.ts 구현 실측 401줄(로비 흐름 + 원장 RPC 파사드 두 책임) → §4.2 "300줄 넘으면 분할" 규칙. matchmaker.ts는 DO 셸·RPC 파사드만(165줄). 새 기능·메시지·수치 0 (책임 분할 — devguide §2.2 L-15) | 280 |
 | 11 | `worker/src/game-room.ts` | TASK-033 | GameRoom DO 셸만 — setup/config·소켓 수명주기·타이머 등록·Matchmaker 기록 RPC | 210 |
 | 12 | `worker/src/room/handlers.ts` | TASK-033 | 수신 메시지 8종(ready·state·clear·skill·armor·answer·reaction·topout) → room/* 호출, 핸들러마다 try/catch → reject/error | 260 |
 | 13 | `worker/src/room/outbox.ts` | TASK-033 | 슬롯별·양측 전송과 봉투 직렬화만 | 70 |
@@ -370,7 +371,8 @@
 | `client/js/engine/index.js` | TASK-010-4 | 240 → **실측 354 [D-01 2026-10-19 기재]** | Engine 퍼사드 단일 책임(입력 명령·시간 → 상태 전이 → 이벤트 배열). 300줄 초과분은 서버 판정 결과를 내 보드에 적용하는 얇은 위임 메서드 12개(applyGarbage·addLeadRows·removeLeadRows·punchHoles·removeTopBlocks·removeGarbageRows·nudge·setGravityMultiplier·setPreviewCount·getGhost·getNext·snapshot — 각 3~8줄, 계산은 board.js) — 퍼사드에서 빼면 클라이언트(apply-*.js)와 서버 봇(bot-player.ts)이 board.js를 직접 다뤄 D-12 "엔진 진입점 하나"가 깨진다. 500줄 미만, 책임 혼재 없음 → SKILL-04 "단일 책임이면 근거 기재 후 통과" 경로. W-01 판정 대상 (분할 요구 시 `engine/effects-api.js` 같은 서브 태스크로 task-wall §3 갱신 후 분리) **[W-01 판정 2026-10-19 — 통과, 분리 안 함]** 실측 356줄(placement re-export 2줄 포함). 메서드 전부가 Engine 한 상태(board·active·hold·leadLinesLeft·crisis·topOut)의 전이이고 계산은 board.js·scoring.js·specials.js·gravity.js·placement.js에 위임됨 — 책임 혼재 없음. 위임 메서드를 떼면 활성 블록 밀어올림(liftActive)·위기 갱신·Top-out 판정이 두 파일에 걸쳐 같은 상태를 고치게 되어 오히려 응집이 깨진다. 500줄 미만 |
 | `worker/src/room/match-flow.ts` | TASK-018 | 250 | 라운드·경기 상태 전이(시작·승패·다음 라운드·이탈·무효·연습)만 |
 | `worker/src/protocol/validate.ts` | TASK-030 | 270 | 수신 메시지 10종 필드 타입·범위·열거 검증만 (추가 필드 무시) |
-| `worker/src/room/handlers.ts` | TASK-033 | 260 | 수신 메시지 8종(ready·state·clear·skill·armor·answer·reaction·topout) → room/* 호출, 핸들러마다 try/catch → reject/error |
+| `worker/src/room/handlers.ts` | TASK-033 | 260 → **실측 306 [D-02 2026-10-19]** | 수신 메시지 8종(ready·state·clear·skill·armor·answer·reaction·topout) → room/* 호출, 핸들러마다 try/catch → reject/error. 300줄 초과분 = 사람·봇 공용 `applyClear`(W-01 인계 합성 순서 ①~⑨ — 봇 줄 삭제도 사람과 같은 경로, architecture §9.4)와 봇 틱 `botTick`(봇 = 수신 메시지 9번째 원천). 판정 계산 0(room/*·attack.ts 위임), 500줄 미만 → 근거 기재 통과 경로. W-02 판정 대상 |
+| `worker/src/game-room.ts` | TASK-033 | 210 → **실측 357 [D-02 2026-10-19]** | GameRoom DO 셸 단일 책임: setup RPC·소켓 수락·수신 파이프라인(봉투→인증→속도 제한→핸들러)·종료=이탈·RoomContext(송신·봇 전달·타이머 try/catch)·match-flow 훅(봇 엔진·라운드·기록 RPC)·방 수준 ready 기한(UC-003 E2)·경기 종료 정리. 판정 계산 0. 각 부분이 DO 인스턴스 필드(소켓·타이머·config)를 공유해 떼면 상태가 두 파일에 걸린다. 500줄 미만 → 근거 기재 통과 경로. W-02 판정 대상 (분할 요구 시 `room/bot-driver.ts`로 봇 루프·toBot 분리) |
 | `client/js/render/board-view.js` | TASK-041 | 260 | 보드 1개 그리기(고정 칸·활성·고스트·힌트·위험선)만 — 내/상대 공용 |
 | `client/js/art/shapes-spirits.js` | TASK-044-3 | 280 | 악한 영 14 실루엣 그리기 명령 데이터만 (고어·선정 없음) |
 | `client/js/render/spirit-fx.js` | TASK-045 | 260 | 악한 영 시각 효과 생성·갱신·제거만 (가림 수치는 spirits.json 그대로 — D3-09) |
@@ -691,16 +693,16 @@ graph LR
 |:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---|
 | 00.예루살렘 | 14 | 13 | 32 | 0 | 0 | 0 | 14 | 0 | D-00 / W-00 |
 | 01.유대 | 20 | 17 | 35 | 0 | 0 | 0 | 20 | 0 | D-01 / W-01 |
-| 02.사마리아 | 5 | 5 | 14 | 5 | 0 | 0 | 0 | 0 | D-02 / W-02 |
+| 02.사마리아 | 5 | 5 | 15 | 0 | 5 | 0 | 0 | 0 | D-02 / W-02 |
 | 03.땅끝 — 03-A 렌더 코어 | 9 | 8 | 16 | 9 | 0 | 0 | 0 | 0 | D-03A / W-03A |
 | 03.땅끝 — 03-B 오디오·타격감 | 8 | 6 | 15 | 8 | 0 | 0 | 0 | 0 | D-03B / W-03B |
 | 03.땅끝 — 03-C 화면·HUD·네트워크 | 16 | 12 | 29 | 16 | 0 | 0 | 0 | 0 | D-03C / W-03C |
 | 03.땅끝 — 03-D 봉인·실행 | 3 | 3 | 3 | 3 | 0 | 0 | 0 | 0 | D-03D / W-03D |
-| **합계** | **75** | **64** | **144** | **41** | 0 | 0 | 34 | 0 | — |
+| **합계** | **75** | **64** | **145** | **36** | 5 | 0 | 34 | 0 | — |
 
 | 항목 | 값 |
 |:---|:---|
-| 현재 지역 | 00.jerusalem-예루살렘 **완료** — D-00 구현 · W-00 짝 검증 2026-10-19: 14행 ✅ / 짝 검증 ✅ (즉시 정화 루프 기록: `fruit-열매/history/2026-10-19.md`). RTM §5 DCL-001 승인 · DCL-002(TBL-018 rateLimit 수치 3개) 추가, 서신 4통 재생성(생성 기준 = DCL-002). 다음: 01.judaea-유대 D-01·W-01 — 인계물 = 언약책 + SKILL-04 + 01 서신 **[D-01 갱신 2026-10-19]** 01.judaea-유대 Doer 구현 완료 — 20행 ⬜→🔄 (W-01 짝 검증 대기, ✅는 Witness 판정 후). RTM §5 DCL-003(TBL-018 gravity.accelAfterMs·ledger 수치 6개) 🔄 W-01 확정 대기 → 서신 01·02·03 재생성 필요 **[W-01 갱신 2026-10-19]** 01.judaea-유대 **완료** — W-01 짝 검증: 20행 ✅ / 짝 검증 ✅ (즉시 정화 루프 기록: `fruit-열매/history/2026-10-19.md`). RTM §5 DCL-003 승인 · DCL-004(착지 평가 = 엔진 `placement.js` + TBL-018 `placement.weights`) 추가, 서신 01·02·03 재생성(생성 기준 = DCL-004). 다음: 02.samaria-사마리아 D-02·W-02 — 인계물 = 언약책 + SKILL-04 + 02 서신 |
+| 현재 지역 | 00.jerusalem-예루살렘 **완료** — D-00 구현 · W-00 짝 검증 2026-10-19: 14행 ✅ / 짝 검증 ✅ (즉시 정화 루프 기록: `fruit-열매/history/2026-10-19.md`). RTM §5 DCL-001 승인 · DCL-002(TBL-018 rateLimit 수치 3개) 추가, 서신 4통 재생성(생성 기준 = DCL-002). 다음: 01.judaea-유대 D-01·W-01 — 인계물 = 언약책 + SKILL-04 + 01 서신 **[D-01 갱신 2026-10-19]** 01.judaea-유대 Doer 구현 완료 — 20행 ⬜→🔄 (W-01 짝 검증 대기, ✅는 Witness 판정 후). RTM §5 DCL-003(TBL-018 gravity.accelAfterMs·ledger 수치 6개) 🔄 W-01 확정 대기 → 서신 01·02·03 재생성 필요 **[W-01 갱신 2026-10-19]** 01.judaea-유대 **완료** — W-01 짝 검증: 20행 ✅ / 짝 검증 ✅ (즉시 정화 루프 기록: `fruit-열매/history/2026-10-19.md`). RTM §5 DCL-003 승인 · DCL-004(착지 평가 = 엔진 `placement.js` + TBL-018 `placement.weights`) 추가, 서신 01·02·03 재생성(생성 기준 = DCL-004). 다음: 02.samaria-사마리아 D-02·W-02 — 인계물 = 언약책 + SKILL-04 + 02 서신 **[D-02 갱신 2026-10-19]** 02.samaria-사마리아 Doer 구현 완료 — 5행 ⬜→🔄 (W-02 짝 검증 대기, ✅는 Witness 판정 후). RTM §5 DCL-005(TBL-018 `net.joinTimeoutMs`·`net.readyTimeoutMs`) 🔄 W-02 확정 대기 → 서신 02·03 재생성 필요. 파일 1개 분할 추가(`lobby/lobby-flow.ts`, §3.3 #10-1) |
 | 즉시 정화 루프 기록 위치 | `fruit-열매/history/YYYY-MM-DD.md` (Witness 발견 → Doer 수정, 지역 안 2회 초과 시 SKILL-05 회개 루프) |
 | RTM 태스크 연결 | `rtm-covenant-언약추적.md` §8 (116 ID → TASK-ID) — 코드 모듈 열은 TASK-072에서 채움 |
 

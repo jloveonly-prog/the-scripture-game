@@ -8,7 +8,9 @@
     "previewGabriel": 7
   },
   "net": {
-    "stateHz": 12
+    "stateHz": 12,
+    "joinTimeoutMs": 5000,
+    "readyTimeoutMs": 10000
   },
   "engine": {
     "lockDelayMs": 500,
