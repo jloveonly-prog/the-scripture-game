@@ -140,7 +140,10 @@
     "answer": { "tokens": 4, "perMs": 1000 },
     "reaction": { "tokens": 1, "perMs": 2000 },
     "total": { "tokens": 40, "perMs": 1000 },
-    "maxMessageBytes": 4096
+    "maxMessageBytes": 4096,
+    "totalViolationMs": 3000,
+    "guestCreate": { "tokens": 5, "perMs": 60000 },
+    "maxRestBodyBytes": 1024
   },
   "progressCheck": {
     "maxPiecesPerSecond": 10

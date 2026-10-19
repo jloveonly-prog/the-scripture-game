@@ -47,7 +47,11 @@ const RULE_KEYS = [
   "match.roundsToWin", "match.countdownMs", "match.nextRoundDelayMs",
   "grace.lossStreakRounds", "grace.garbageReduce", "grace.gaugeMultiplier", "jesus.perMatch", "jesus.garbageRemoveRatio",
   "elo.base", "elo.k", "invite.length", "invite.alphabet", "invite.ttlMs", "nickname.min", "nickname.max", "nickname.pattern",
-  "bot.easy", "bot.normal", "bot.hard", "rateLimit", "progressCheck.maxPiecesPerSecond", "reactions",
+  "bot.easy", "bot.normal", "bot.hard",
+  // rateLimit 하위 키 전부 (data-ark TBL-018 재각 2026-10-19 — RTM §5 DCL-002)
+  "rateLimit.state", "rateLimit.clear", "rateLimit.skill", "rateLimit.armor", "rateLimit.answer", "rateLimit.reaction",
+  "rateLimit.total", "rateLimit.maxMessageBytes", "rateLimit.totalViolationMs", "rateLimit.guestCreate", "rateLimit.maxRestBodyBytes",
+  "progressCheck.maxPiecesPerSecond", "reactions",
   "achievements.goliath_hunter", "verseCard", "victoryVerse",
 ];
 // C-010: KJV 본문에 근거 없는 존재 (req.md §3.4 주석)

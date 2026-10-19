@@ -2,7 +2,7 @@
 
 > ⚠️ **파생 문서(Derived).** 이 서신은 원본이 아니다. 직접 수정 금지 — 원본을 고친 뒤 이 서신을 재생성하라.
 > 원본: `bible-성경/01.requirement-hearing-들음/spec-tablet-명세서.md`, `bible-성경/03.design-order-질서/screen-vision-화면설계.md`, `bible-성경/02.architecture-foundation-기초/api-gate-성문.md` (§1 목록·§2 공통 규약·§4 에러 코드), `bible-성경/02.architecture-foundation-기초/architecture-temple-성전설계.md` (§10 보안), `statute-율법/04.development-repentance-회개/security-seal-봉인.md` (봉인 계명)
-> 생성일: 2026-10-19 / 생성 기준: RTM 설계 변경 이력 최종 행 = 없음 (rtm-covenant-언약추적.md §5 — 정경화 이후 상류 변경 0건)
+> 생성일: 2026-10-19 / 생성 기준: RTM 설계 변경 이력 최종 행 = 2026-10-19 DCL-002 (rtm-covenant-언약추적.md §5 — DCL-001 data-ark §6.1 부록·§7, DCL-002 data-ark TBL-018 `rateLimit`) · **재생성 2026-10-19 W-00** (최초 생성본은 DCL-001 추가로 무효 — acts-행전 README "서신은 무효가 된다")
 >
 > **규격:** `statute-율법/04.development-repentance-회개/epistle-서신-template.md`
 > **이 지역의 개발 계층:** 프론트엔드/UI(03-A 렌더 코어 → 03-B 오디오·타격감 → 03-C 화면·HUD·네트워크) + 인증·보안 봉인 + 로컬 실행 인프라(03-D) (task-wall 4~6단계)
