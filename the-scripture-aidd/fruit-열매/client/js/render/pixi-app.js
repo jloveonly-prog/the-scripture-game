@@ -2,6 +2,7 @@
 // CSP(`script-src 'self'`) 때문에 Pixi v8 공식 unsafe-eval 대체 모듈을 1회 import 한다 (devguide §3.3-7).
 import 'pixi.js/unsafe-eval';
 import { Application, Container, Sprite, Texture } from 'pixi.js';
+import { gsap } from 'gsap';
 import { BoardView } from './board-view.js';
 import { HudView } from './hud-view.js';
 import { createSkinCache } from './piece-skin.js';
@@ -254,6 +255,7 @@ export async function createBattleScene({ stageHost, overlayHost, mode, mySlot, 
       views.opponent?.destroy();
       hud.destroy();
       ownBg?.destroy();
+      killTweensInTree(app.stage); // 광야 BUG-007: 연출(투사체·영·천사·엠블럼)이 남긴 트윈이 파괴된 객체를 매 프레임 건드리지 않게
       app.destroy(true, { children: true });
       skin.clear();
       dot.destroy(true);
@@ -262,4 +264,17 @@ export async function createBattleScene({ stageHost, overlayHost, mode, mySlot, 
   };
   Object.defineProperty(scene, '_rt', { value: rt, enumerable: false });
   return scene;
+}
+
+/** 표시 객체 트리 전체(자신·scale·filters·자식)의 GSAP 트윈을 대상별로 끝낸다 (배열 kill은 시작 전 트윈을 남긴다 — BUG-007) */
+export function killTweensInTree(node, kill = (t) => gsap.killTweensOf(t)) {
+  if (!node) return;
+  try {
+    kill(node);
+    if (node.scale) kill(node.scale);
+    for (const f of node.filters ?? []) kill(f);
+    for (const child of node.children ?? []) killTweensInTree(child, kill);
+  } catch (err) {
+    console.error('[render] 트윈 정리 오류', err);
+  }
 }

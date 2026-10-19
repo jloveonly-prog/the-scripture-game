@@ -213,7 +213,7 @@ worker/src/store/select-store.ts
 | 항목 | 값 | 설명 |
 |:---|:---|:---|
 | 진입 명령 | `fruit-열매/`에서 `npm install && npm run dev` | 루트 `dev` 스크립트 = `node scripts/dev.mjs` |
-| `scripts/dev.mjs` | Node `child_process.spawn`으로 `npm run dev -w worker`와 `npm run dev -w client`를 함께 띄우고, 출력에 `[worker]`/`[client]` 접두어, 한쪽이 종료되면 다른 쪽도 종료. `WRANGLER_SEND_METRICS=false`로 첫 실행 질의 차단 — **재각 R1(§15): 루트 스크립트 `npm run dev:worker`·`npm run dev:client`를 띄운다** | 추가 의존성 없음 (§3.1) |
+| `scripts/dev.mjs` | Node `child_process.spawn`으로 `npm run dev -w worker`와 `npm run dev -w client`를 함께 띄우고, 출력에 `[worker]`/`[client]` 접두어, 한쪽이 종료되면 다른 쪽도 종료. `WRANGLER_SEND_METRICS=false`로 첫 실행 질의 차단, `X_LOCAL_OBSERVABILITY=false`로 wrangler 로컬 관측(메시지마다 추적 기록 — 게임 미사용 개발 도구) 끄기(사용자가 지정한 값은 존중 — 광야 BUG-004, NFR-002) — **재각 R1(§15): 루트 스크립트 `npm run dev:worker`·`npm run dev:client`를 띄운다** | 추가 의존성 없음 (§3.1) |
 | worker dev | `wrangler dev --port 8787 --ip 127.0.0.1` — **재각 R1: 루트에서 `--config worker/wrangler.toml` 추가** | 로그인 불필요 로컬 런타임 |
 | client dev | `vite --port 5173 --strictPort` — **재각 R1: 루트에서 `--config client/vite.config.js` 추가** | 포트 충돌 시 즉시 실패 + 안내 (UC-021 E1) |
 | Vite 프록시 | `/api` → `http://127.0.0.1:8787`, `/ws` → `ws://127.0.0.1:8787` (`ws: true`) | 브라우저는 5173 한 출처만 사용 |
@@ -315,7 +315,7 @@ fruit-열매/
 | `worker/src/matchmaking/queue.ts` | Elo 근접 대기열 | 140 |
 | `worker/src/matchmaking/invite-codes.ts` | 초대 코드 발급·검증·만료 | 120 |
 | `worker/src/matchmaking/room-factory.ts` | GameRoom 생성·명단 예약 RPC | 80 |
-| `worker/src/game-room.ts` | GameRoom DO 셸 (Hibernation 핸들러·alarm) | 200 |
+| `worker/src/game-room.ts` | GameRoom DO 셸 (Hibernation 핸들러·방 타이머 깨우기 — 메모리 타이머 1개, 경기 중 저장소 쓰기 없음: 광야 BUG-005·NFR-002) | 200 |
 | `worker/src/room/room-state.ts` | 방·플레이어 상태 타입과 초기화 | 150 |
 | `worker/src/room/message-router.ts` | 수신 메시지 → 서비스 분배 | 220 |
 | `worker/src/room/round-flow.ts` | `start`/`roundEnd`/`matchEnd`, 이탈 처리 | 250 |

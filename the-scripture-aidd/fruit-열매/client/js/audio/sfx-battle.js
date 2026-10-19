@@ -2,7 +2,7 @@
 // 정본: design-vision §2.9 효과음 표 SFX-10~17 · 사건 → 사운드 큐 맵. 오디오 파일 0개 (C-007, NFR-005).
 // opts.durationMs: 지속형(SFX-12 영 지속·SFX-13 예수님 4000ms)은 유지 길이, 순차형(SFX-14~17)은 앞에서부터 그 길이까지만 재생
 //   (예: 말씀 대결 시작 = SFX-15 { durationMs: 100 } 첫 틱, 라운드 승리 = SFX-16 { durationMs: 1200 }, 여리고 = SFX-16 { durationMs: 500 } 첫 2음).
-import { getTone, getBus, onUnlocked, reportAudioError } from './audio-engine.js';
+import { getTone, getBus, onUnlocked, reportAudioError, strictStartTime } from './audio-engine.js';
 import { transposeNote, scaleDb, noteToMidi } from './sfx-play.js';
 
 const MS_PER_S = 1000;
@@ -236,9 +236,11 @@ export function playBattleSfx(id, opts = {}) {
     const voice = getVoice(T, id);
     if (!voice) return false;
     setVoiceDb(voice, cue.db);
-    if (id === 'SFX-10') playAttackFire(voice, cue, t);
-    else if (id === 'SFX-11') playReceived(voice, cue, t);
-    else playEvents(voice, cue, t);
+    // 광야 BUG-003 같은 음색의 시작 시각을 엄격히 증가 (순차 큐는 마지막 예약 음까지)
+    const start = strictStartTime(voice, t, Math.max(0, ...cue.events.map((e) => e.at)) / MS_PER_S);
+    if (id === 'SFX-10') playAttackFire(voice, cue, start);
+    else if (id === 'SFX-11') playReceived(voice, cue, start);
+    else playEvents(voice, cue, start);
     return true;
   } catch (err) {
     reportAudioError(id, err);

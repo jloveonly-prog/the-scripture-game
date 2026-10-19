@@ -112,7 +112,7 @@ export function createParallax({ width, height, reducedMotion = prefersReducedMo
       gsap.to(light, { boost: target, duration: combo > 0 ? 0.1 : BG.comboRevertMs / 1000, overwrite: true, onUpdate: applyLight });
     },
     destroy() {
-      gsap.killTweensOf([tint, light]);
+      for (const target of [tint, light]) gsap.killTweensOf(target); // 광야 BUG-007 — 배열 kill은 지연 트윈을 남긴다
       container.destroy({ children: true });
       skyTex?.destroy(true);
     },

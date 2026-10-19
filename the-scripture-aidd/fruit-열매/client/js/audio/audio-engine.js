@@ -152,6 +152,34 @@ export function getTone() {
   return tone;
 }
 
+const MONO_EPS_S = 0.001;
+const LATE_MARGIN_S = 0.005;
+const lastStarts = new WeakMap();
+
+/** 오디오 컨텍스트 현재 시각(초) — 해제 전이면 NaN */
+function audioNow() {
+  try {
+    return tone ? tone.getContext().currentTime : Number.NaN;
+  } catch {
+    return Number.NaN;
+  }
+}
+
+/**
+ * 광야 BUG-003 — 같은 음색(단음 신스)의 시작 시각을 엄격히 증가시킨다. CPU가 밀려 Tone 시계·T.now()가 같은 시각을 두 번 주면
+ * `Start time must be strictly greater than previous start time`이 나므로 직전 시각 +1ms 이상으로 민다.
+ * lastOffsetS: 이번 호출이 반환 시각 뒤에 예약하는 마지막 시작까지의 오프셋(초, 순차 큐) — 생략하면 0.
+ */
+export function strictStartTime(voice, time, lastOffsetS = 0, currentTime = audioNow()) {
+  const last = lastStarts.get(voice) ?? Number.NEGATIVE_INFINITY;
+  // Tone은 지난 시각을 현재 시각으로 당겨(clamp) 쓴다 — 밀린 콜백 둘이 같은 currentTime으로 겹치지 않게, 늦은 시각은
+  // 현재 시각보다 조금 뒤(LATE_MARGIN_S)로 옮긴다 (currentTime은 오디오 스레드가 갱신하므로 같은 값을 다시 읽는다는 보장이 없다)
+  const clamped = Number.isFinite(currentTime) ? Math.max(time, currentTime + LATE_MARGIN_S) : time;
+  const t = clamped > last ? clamped : last + MONO_EPS_S;
+  lastStarts.set(voice, t + Math.max(0, Number(lastOffsetS) || 0));
+  return t;
+}
+
 /** 'sfx' | 'music' | 'master' 버스 노드, 해제 전이면 null */
 export function getBus(name) {
   return buses && buses[name] ? buses[name] : null;

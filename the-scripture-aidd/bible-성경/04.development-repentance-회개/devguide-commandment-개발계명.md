@@ -55,7 +55,7 @@
 | `npm run typecheck` | `tsc --noEmit -p worker/tsconfig.json` | architecture §3.1 |
 | `npm run types:worker` | `wrangler types --include-env=false` → `worker/worker-configuration.d.ts` (런타임 타입) | §8 D4-10 |
 | `npm test` | Vitest 단위 테스트 전체 (`tests/unit/**/*.test.{js,ts}`) — Phase 5 1겹 | SKILL-04 test 명령 등록 |
-| `npm run test:e2e` | Playwright (webServer = `npm run dev`, baseURL `http://localhost:5173`) | FR-077 |
+| `npm run test:e2e` | Playwright (webServer = `npm run dev`, baseURL `http://localhost:5173`, Chromium은 실제 GPU(ANGLE) 인자로 실행 — 소프트웨어 GL에서는 2~3fps라 시험 불가: 광야 BUG-001. 시험 파일 `battle-two-browsers.spec.js`·`flows.spec.js`, 공용 `helpers/room-tap.js`) | FR-077 |
 | `npm run check:content` | 콘텐츠 검사 (FR-076) — 실패 시 종료 코드 1 | FR-076 |
 
 > `npm install` 시 npm 11의 allow-scripts 정책 때문에 "esbuild·workerd install script not yet covered by allowScripts" 경고가 나온다. 두 패키지는 플랫폼별 optional 패키지(`@esbuild/win32-x64`, `@cloudflare/workerd-windows-64`)로 동작하므로 스크립트 승인 없이 정상이다 — 2026-10-20 확인: `vite --version` 7.3.6, `wrangler --version` 4.147.0, esbuild TS 변환 성공, `wrangler types` 생성 성공. 이 PC의 `D:`는 원격 데스크톱 리디렉션 드라이브라 첫 설치가 오래 걸린다(관측 21분).

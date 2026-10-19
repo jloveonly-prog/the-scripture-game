@@ -16,7 +16,10 @@ const WARD_TO_ARMOR = { shield: 'shield_of_faith', reflect: 'sword_of_the_spirit
 const METER_CELLS = 20; // HUD-05 20칸 눈금
 const METER_PULSE_ROWS = 6; // 6줄 이상이면 맥동
 const BANNER_MS = 1500; // EVT-48·51 배너
-const SHAKE_MS = 200; // EVT-41~44 키캡 흔들림
+const SHAKE_MS = 200; // EVT-41·44 키캡 흔들림
+const SWEEP_MS = 400; // EVT-42 원형 스윕 강조
+const SEAL_FLASH_MS = 400; // EVT-43 봉인 칩 섬광 1회
+const SEAL_CHIP_PREFIX = '⛓ 봉인 ';
 const MAX_CHIPS = 2; // FR-031 동시 2개
 const DROPPED_TEXT = '연결이 끊어졌습니다';
 
@@ -150,10 +153,11 @@ export function mountBattleScreen(host, ctx) {
       const warded = new Set(Object.entries(me.wards ?? {}).filter(([, v]) => v === true || v > 0).map(([k]) => WARD_TO_ARMOR[k]).filter(Boolean));
       for (const id of ARMOR_IDS) keycaps.get(id)?.button.classList.toggle('is-warded', warded.has(id));
       const chips = (me.activeSpirits ?? []).slice(0, MAX_CHIPS).map((s) => `${s.spiritId === 'deaf_dumb_spirit' ? '🔇 ' : '◐ '}${spiritChipText(s)}`);
-      if (me.sealedMs > 0) chips.push(`⛓ 봉인 ${Math.ceil(me.sealedMs / 1000)}s`);
+      if (me.sealedMs > 0) chips.push(`${SEAL_CHIP_PREFIX}${Math.ceil(me.sealedMs / 1000)}s`);
       if (n.chips.dataset.text !== chips.join('|')) {
         n.chips.dataset.text = chips.join('|');
-        clear(n.chips).append(...chips.map((t) => el('li', { class: 'chip', text: t })));
+        clear(n.chips).append(...chips.map((t) => el('li', { class: t.startsWith(SEAL_CHIP_PREFIX) ? 'chip chip--seal' : 'chip', text: t })));
+        paintSealFlash();
       }
       setText(n.score, (me.score ?? 0).toLocaleString('en-US'));
       setText(n.combo, me.combo > 0 ? `COMBO ×${me.combo}` : '');
@@ -170,11 +174,16 @@ export function mountBattleScreen(host, ctx) {
     },
     showToast: (message, opts = {}) => ctx.toast(message, opts),
     announce: (text) => ctx.announce(text),
-    keycapRejected(keyId) {
+    // EVT-41·44 흔들림 / EVT-42 원형 스윕 강조 / EVT-43 봉인 칩 섬광 1회 (design-vision §4.10 — 광야 BUG-006: 봉인·쿨다운도 흔들리던 결함)
+    keycapRejected(keyId, code) {
+      if (code === 'ANGEL_SEALED') { flashSealChip(); return; }
       const cap = keycaps.get(keyId);
       if (!cap) return;
-      cap.button.classList.add('is-shake');
-      timers.push(setTimeout(() => cap.button.classList.remove('is-shake'), SHAKE_MS));
+      const cls = code === 'COOLDOWN' ? 'is-sweep' : 'is-shake';
+      cap.button.classList.remove(cls);
+      void cap.button.offsetWidth; // 연속 거부 시 애니메이션 재시작
+      cap.button.classList.add(cls);
+      timers.push(setTimeout(() => cap.button.classList.remove(cls), cls === 'is-sweep' ? SWEEP_MS : SHAKE_MS));
     },
     // D3-14·D3-20 일시 메뉴 — 대전·봇은 경기 계속, 연습만 엔진 정지
     openPauseMenu() {
@@ -198,6 +207,21 @@ export function mountBattleScreen(host, ctx) {
     quizChoose: (index) => quiz?.choose(index),
     onReactionKey: (reactionId) => reactions?.trySend(reactionId),
   };
+
+  // EVT-43 봉인 칩 섬광 1회 — 칩은 남은 초가 바뀔 때마다 다시 그려지므로 시작 시각을 기억해 이어 그린다 (섬광 세기 FR-057 반영)
+  let sealFlashAt = Number.NEGATIVE_INFINITY;
+  function flashSealChip() {
+    sealFlashAt = Date.now();
+    ctx.load('intensity').then((m) => { n.chips.style.setProperty('--flash-alpha', String(m?.scaleFlashAlpha(1) ?? 1)); }).catch(() => {});
+    paintSealFlash();
+  }
+  function paintSealFlash() {
+    const chip = n.chips.querySelector('.chip--seal');
+    const elapsed = Date.now() - sealFlashAt;
+    if (!chip || elapsed >= SEAL_FLASH_MS) return;
+    chip.style.animationDelay = `-${elapsed}ms`;
+    chip.classList.add('is-flash');
+  }
 
   /* ── 방 연결·메시지 (devguide §7.8 표의 므낫세 몫) ── */
   try {

@@ -159,6 +159,17 @@
 .keycap.is-shake, .quiz__choice.is-shake { animation: shake 200ms linear; }
 .keycap.is-dim { opacity: 0.4; }
 @keyframes shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+/* EVT-42 쿨다운 거부 — 원형 스윕(남은 초) 강조 */
+.keycap.is-sweep { box-shadow: 0 0 0 2px var(--warning); }
+.keycap.is-sweep .keycap__timer { animation: sweep-emphasis 400ms var(--ease-out); }
+@keyframes sweep-emphasis { 0% { transform: scale(1.6); } 100% { transform: scale(1); } }
+/* EVT-43 천사 봉인 거부 — HUD-10 봉인 칩 섬광 1회 (섬광 세기 FR-057: --flash-alpha) */
+.chip--seal { color: var(--seal); border: 1px solid var(--seal); }
+.chip--seal.is-flash { animation: seal-flash 400ms var(--ease-out) 1 both; }
+@keyframes seal-flash {
+  0% { background: rgba(180, 155, 255, calc(0.75 * var(--flash-alpha, 1))); box-shadow: 0 0 14px 4px rgba(180, 155, 255, calc(0.9 * var(--flash-alpha, 1))); }
+  100% { background: var(--bg-panel-raised); box-shadow: 0 0 0 0 rgba(180, 155, 255, 0); }
+}
 
 /* 변형 — 연습: HUD-05·08·09·10·11·12·13 숨김 (UC-006, OQ #4) */
 .battle--practice .garbage-meter, .battle--practice .keycap--angel, .battle--practice .armor-slots, .battle--practice .spirit-chips,

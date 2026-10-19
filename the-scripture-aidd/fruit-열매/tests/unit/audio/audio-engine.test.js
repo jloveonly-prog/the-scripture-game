@@ -32,6 +32,31 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
+describe('strictStartTime (광야 BUG-003 — 단음 신스 같은 시각 재시작 방지)', () => {
+  it('미래 시각은 그대로, 같거나 이른 시각은 직전 +1ms 이상으로 민다', async () => {
+    const { engine } = await load();
+    const voice = {};
+    expect(engine.strictStartTime(voice, 10, 0, 5)).toBe(10);
+    expect(engine.strictStartTime(voice, 10, 0, 5)).toBeCloseTo(10.001, 6);
+    expect(engine.strictStartTime(voice, 9, 0, 5)).toBeCloseTo(10.002, 6);
+    expect(engine.strictStartTime({}, 10, 0, 5)).toBe(10); // 음색마다 따로 센다
+  });
+  it('밀린(지난) 시각은 현재 시각 + 5ms로 옮겨 Tone의 currentTime 당김과 겹치지 않는다', async () => {
+    const { engine } = await load();
+    const voice = {};
+    const a = engine.strictStartTime(voice, 1, 0, 3);
+    const b = engine.strictStartTime(voice, 1.02, 0, 3);
+    expect(a).toBeCloseTo(3.005, 6);
+    expect(b).toBeGreaterThan(a);
+  });
+  it('순차 큐는 마지막 예약 음 뒤에서만 다시 시작한다', async () => {
+    const { engine } = await load();
+    const voice = {};
+    expect(engine.strictStartTime(voice, 0, 3, 0)).toBe(0.005);
+    expect(engine.strictStartTime(voice, 1, 0, 0)).toBeCloseTo(3.006, 6);
+  });
+});
+
 describe('volumeToDb (FR-060)', () => {
   it('0은 무음, 100은 0dB, 그 외 20·log10(v/100)', async () => {
     const { engine } = await load();

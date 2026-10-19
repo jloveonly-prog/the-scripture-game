@@ -43,12 +43,17 @@ export class GameRoom extends DurableObject<Env> implements GameRoomRpc {
   private readonly rand = mulberry32(randomU32());
   private persisted = { started: false, closed: false };
   private closedNotified = false;
+  private wake: ReturnType<typeof setTimeout> | null = null;
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
+    // 광야 BUG-005 · NFR-002: 방 타이머는 메모리 타이머 1개로 묶는다. 예전처럼 예약이 바뀔 때마다 ctx.storage.setAlarm을 쓰면
+    // 봇 틱(50ms)·영 종료마다 SQLite 쓰기가 일어나 느린 저장소에서 workerd 스레드가 수백 ms 멈췄다 (clear→attack 지연 초과).
+    // 진행 중 방은 깨어나면 무효(restore — N-02)이고 시작 전 입장 마감은 restore가 다시 예약하므로 영속 alarm이 지켜 주던 것이 없다.
+    // 대기 중인 setTimeout이 있는 동안 DO는 하이버네이션하지 않는다 (경기 시간만큼만 메모리 유지).
     this.timers = createRoomTimers((at) => {
-      const op = at === null ? this.ctx.storage.deleteAlarm() : this.ctx.storage.setAlarm(at);
-      op.catch((err: unknown) => log('room-alarm-error', { error: errName(err) }));
+      if (this.wake !== null) clearTimeout(this.wake);
+      this.wake = at === null ? null : setTimeout(() => { this.wake = null; void this.alarm(); }, Math.max(0, at - Date.now()));
     });
     void this.ctx.blockConcurrencyWhile(() => this.restore());
   }

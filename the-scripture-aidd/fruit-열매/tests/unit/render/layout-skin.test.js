@@ -1,6 +1,6 @@
 // TASK-040-1 · FR-048 · FR-075 · NFR-001 — 대전 화면 셀 크기 공식(design-vision §5.2)·배치·블록 색 토큰(§2.3)·명도 조정 검사.
 import { describe, it, expect } from 'vitest';
-import { deviceClass, computeCellSizes, computeBattleLayout } from '../../../client/js/render/pixi-app.js';
+import { deviceClass, computeCellSizes, computeBattleLayout, killTweensInTree } from '../../../client/js/render/pixi-app.js';
 import { COLORS, CELL_COLORS, PALETTE_COLORS, cellColor, shadeColor, skinMetrics, toCss, createSkinCache } from '../../../client/js/render/piece-skin.js';
 
 const inside = (r, w, h) => r.x >= 0 && r.y >= 0 && r.x + r.width <= w && r.y + r.height <= h;
@@ -115,5 +115,20 @@ describe('블록 색 토큰 (design-vision §2.3 성막 재료)', () => {
     } finally {
       delete globalThis.document;
     }
+  });
+});
+
+describe('killTweensInTree (광야 BUG-007 — 파괴 전 트윈 정리)', () => {
+  it('자신·scale·filters·자식까지 대상마다 따로 kill 한다 (배열 kill 금지)', () => {
+    const leaf = { scale: { id: 'leafScale' }, filters: [{ id: 'f1' }], children: [] };
+    const root = { scale: { id: 'rootScale' }, filters: null, children: [leaf, { children: [] }] };
+    const killed = [];
+    killTweensInTree(root, (t) => { expect(Array.isArray(t)).toBe(false); killed.push(t); });
+    expect(killed).toEqual([root, root.scale, leaf, leaf.scale, leaf.filters[0], root.children[1]]);
+  });
+  it('null 트리는 아무것도 하지 않는다', () => {
+    let n = 0;
+    killTweensInTree(null, () => { n += 1; });
+    expect(n).toBe(0);
   });
 });

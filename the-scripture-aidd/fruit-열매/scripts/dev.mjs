@@ -16,9 +16,14 @@ const TARGETS = [
 const children = new Map();
 let shuttingDown = false;
 
-/** 자식 환경 — wrangler 첫 실행 원격 측정 질의를 끈다 (architecture §4.6). */
-function childEnv() {
-  return { ...process.env, WRANGLER_SEND_METRICS: 'false' };
+/**
+ * 자식 환경 — wrangler 첫 실행 원격 측정 질의를 끈다 (architecture §4.6).
+ * 광야 BUG-004 · NFR-002: wrangler 4.x 로컬 관측(X_LOCAL_OBSERVABILITY, 기본 켜짐)은 모든 WebSocket 메시지의 추적(span)을
+ * 로컬 SQLite에 쓰며, 그 쓰기가 workerd 스레드를 최대 수백 ms 멈춰 GameRoom 메시지 전달(clear→attack)이 100ms를 넘었다.
+ * 게임 실행에 쓰지 않는 개발 도구 기능이므로 끈다 (사용자가 명시적으로 켜 둔 값은 존중).
+ */
+function childEnv(base = process.env) {
+  return { ...base, WRANGLER_SEND_METRICS: 'false', X_LOCAL_OBSERVABILITY: base.X_LOCAL_OBSERVABILITY ?? 'false' };
 }
 
 /** 한 줄씩 `[label] ` 접두어를 붙여 출력한다. */

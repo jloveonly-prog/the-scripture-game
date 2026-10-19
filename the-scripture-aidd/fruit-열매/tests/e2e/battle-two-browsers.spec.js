@@ -1,126 +1,50 @@
-// TASK-064 · REQ-017 · FR-077 · NFR-002 · API-001 · API-005 · API-006 · API-204 · API-254 · SCR-001~006 — 브라우저 컨텍스트 2개 대전 E2E
-// A가 테트리스(4줄)를 지우면 B에 쓰레기 4줄·악한 영이 오는지, B가 믿음의 방패·베드로·미가엘로 막는지, 공격 반영 지연(clear→attack ≤ 100ms)을 잰다.
-// 줄 삭제는 키 조작으로 재현할 수 없으므로(블록 순서는 서버 시드) GameRoom 소켓을 page.routeWebSocket으로 중계하며 `clear` 프레임을 주입한다.
-// 주입분만큼 이후 클라이언트 seq를 밀어(R-02 엄격 증가 유지), 갑주 칸은 devguide §7.3 C-SPECIAL을 같은 시드로 재계산해 실제 출현 칸만 주장한다(R-09).
-import { readFileSync } from 'node:fs';
+// TASK-064 · REQ-017 · FR-077 · NFR-002 · API-001 · API-005 · API-006 · API-204 · API-254 · SCR-001~008 — 브라우저 컨텍스트 2개 대전 E2E
+// req.md A §7.1: A가 테트리스(4줄)를 지우면 B에 쓰레기 4줄·악한 영이 "즉시" 오는지, B가 믿음의 방패·미가엘·(위인 스킬)로 막는지,
+// 공격 반영 지연(clear→attack ≤ 100ms, NFR-002 — 모든 표본), 경기 결과(전적)·랭킹(Elo) 저장·조회, 경기 중 콘솔 오류 0건을 확인한다.
+// ※ req.md §7.1의 "다니엘"은 1차 출시 위인 4명(다윗·솔로몬·베드로·바울)에 없으므로 spec FR-077이 "베드로 스킬 등 방어 수단"으로 정했다 —
+//   B는 베드로 "이 반석 위에"(쓰레기 무효)로 막는다 (testplan §2 범위 결정 D5-01).
 import { test, expect } from '@playwright/test';
-import { deriveSeed, mulberry32 } from '../../client/js/engine/rng.js';
-import { ARMOR_IDS } from '../../client/js/net/protocol.js';
+import {
+  PIECE_GAP, collectConsoleErrors, enter, findSpecialPiece, injectClear, lastStatus, nickname, pickHero, readJson, step, tapRoom,
+  topOut, waitFrame,
+} from './helpers/room-tap.js';
 
-const readJson = (name) => JSON.parse(readFileSync(new URL(`../../content/${name}`, import.meta.url), 'utf8'));
-const balance = readJson('balance.json');
 const spirits = readJson('spirits.json');
+// NFR-002 공격 반영 지연 — clear 송신(브라우저 A 소켓) → attack 수신(브라우저 B 소켓) 시각 차. 두 브라우저는 같은 PC 시계(Date.now)를 쓴다.
 const NFR002_MAX_MS = 100;
-const PIECE_GAP = 3; // clear 사이 고정 블록 수 — 콤보 0 유지(R-06), 칸 보존(R-04)
 const MAX_PIECE_JUMP = 90; // R-05 최근 5초 pieceCount 증가 ≤ 100
 const SPIRIT_SPACING_MS = 1700; // 같은 영 1.5초 재적용 금지(FR-030)보다 길게
-
-const nickname = (tag) => `E2E${tag}${Date.now().toString(36).slice(-6)}`; // 2~12자 · 영문/숫자
-
-/** GameRoom 소켓 중계 — 프레임 기록, 주입 후 seq 재번호, topout pieceCount 보정 */
-async function tapRoom(page) {
-  const tap = { inbound: [], lastSeq: 0, offset: 0, lastPieceCount: 0, lastWasTetris: false, toServer: null };
-  await page.routeWebSocket(/\/ws\/room\//, (ws) => {
-    const server = ws.connectToServer();
-    tap.toServer = (frame) => server.send(JSON.stringify(frame));
-    ws.onMessage((message) => {
-      let text = String(message);
-      try {
-        const frame = JSON.parse(text);
-        if (frame.data && Number.isInteger(frame.data.seq)) {
-          frame.data.seq += tap.offset;
-          tap.lastSeq = frame.data.seq;
-          if (frame.type === 'topout') frame.data.pieceCount = Math.max(frame.data.pieceCount, tap.lastPieceCount);
-          if (frame.type === 'clear') { tap.lastPieceCount = Math.max(tap.lastPieceCount, frame.data.pieceCount); tap.lastWasTetris = frame.data.lines === 4; }
-          text = JSON.stringify(frame);
-        }
-      } catch { /* 텍스트 그대로 중계 */ }
-      server.send(text);
-    });
-    server.onMessage((message) => {
-      const text = String(message);
-      try { tap.inbound.push({ at: Date.now(), frame: JSON.parse(text) }); } catch { /* 기록 생략 */ }
-      ws.send(text);
-    });
-  });
-  return tap;
-}
-
-/** clear 주입 → 송신 시각(ms) */
-function injectClear(tap, { lines, specials = [], pieceCount }) {
-  const b2b = lines === 4 && tap.lastWasTetris; // R-07: 직전 삭제가 테트리스일 때만
-  const count = pieceCount ?? tap.lastPieceCount + PIECE_GAP;
-  tap.offset += 1;
-  tap.lastSeq += 1;
-  tap.lastPieceCount = count;
-  tap.lastWasTetris = lines === 4;
-  const at = Date.now();
-  tap.toServer({ type: 'clear', data: { seq: tap.lastSeq, lines, combo: 0, b2b, tspin: false, pieceCount: count, specials } });
-  return at;
-}
-
-async function waitFrame(tap, since, predicate, timeout = 10000) {
-  let found = null;
-  await expect.poll(() => (found = tap.inbound.slice(since).find((e) => predicate(e.frame)) ?? null), { timeout }).not.toBeNull();
-  return found;
-}
-const lastStatus = (tap) => [...tap.inbound].reverse().find((e) => e.frame.type === 'playerStatus')?.frame.data ?? null;
-
-/** devguide §7.3 C-SPECIAL — 콤보 0·낮은 쌓임 기준으로 armorId 갑주 칸이 나오는 첫 순번 n(≥ minN) */
-function findArmorPiece({ seed, mode, stage }, armorId, minN) {
-  const sp = balance.specials;
-  const rand = mulberry32(deriveSeed(seed, sp.seedXor));
-  let nextWordAt = null;
-  const gap = (u1) => sp.word.minGap + Math.floor(u1 * (sp.word.maxGap - sp.word.minGap + 1));
-  for (let n = 0; n < 20000; n += 1) {
-    const u1 = rand();
-    rand(); // u2 (칸 번호) — 블록마다 항상 2회 소비
-    if (mode !== 'practice' && stage >= 1) {
-      if (nextWordAt === null) nextWordAt = n + gap(u1);
-      if (n === nextWordAt) { nextWordAt = n + gap(u1); continue; }
-    }
-    const pJ = stage >= 2 ? Math.min(sp.jericho.base, sp.jericho.max) : 0;
-    const pM = stage >= 2 ? sp.manna.lowChance : 0;
-    const pA = mode !== 'practice' ? sp.armor.chance : 0;
-    if (u1 >= pJ + pM && u1 < pJ + pM + pA && n >= minN && ARMOR_IDS[Math.floor(((u1 - pJ - pM) / pA) * 6)] === armorId) return n;
-  }
-  throw new Error('armor piece not found');
-}
+const ELO_INITIAL = 1000;
 
 /** 1줄 삭제(공격력 0)로 믿음만 채운다 (+5/줄 — balance.faith.gainByLines) */
 async function chargeFaith(tap, target) {
   for (let i = 0; i < 40 && (lastStatus(tap)?.faith ?? 0) < target; i += 1) {
-    injectClear(tap, { lines: 1 });
-    await new Promise((r) => setTimeout(r, 150));
+    await injectClear(tap, { lines: 1 });
+    await new Promise((r) => setTimeout(r, 250)); // 3블록/250ms = 5초 60블록 < R-05 상한 100 (150ms 간격은 상한에 닿아 거부됐다)
   }
   await expect.poll(() => lastStatus(tap)?.faith ?? 0, { timeout: 5000 }).toBeGreaterThanOrEqual(target);
 }
 
-async function enter(page, name) {
-  await page.goto('/');
-  await page.getByLabel('닉네임').fill(name);
-  await page.getByRole('button', { name: '입장하기' }).click();
-  await expect(page.getByRole('heading', { name: '모드를 고르세요' })).toBeVisible();
-}
-async function pickHero(page, accessibleName) {
-  await page.getByRole('radio', { name: accessibleName }).click();
-  await page.getByRole('button', { name: '확정' }).click();
-}
-
-test('브라우저 2개 대전: 테트리스 공격·영 연출·방어 3종·지연 측정·결과 화면', async ({ browser }) => {
+test('브라우저 2개 대전: 테트리스 공격·영 연출·방어 3종·지연 측정·결과·전적·랭킹', async ({ browser }) => {
   test.setTimeout(240000);
   const ctxA = await browser.newContext();
   const ctxB = await browser.newContext();
   const pageA = await ctxA.newPage();
   const pageB = await ctxB.newPage();
+  const consoleErrors = collectConsoleErrors([['A', pageA], ['B', pageB]]);
   const tapA = await tapRoom(pageA);
   const tapB = await tapRoom(pageB);
+  tapA.peer = tapB;
+  tapB.peer = tapA;
+  const nameA = nickname('A');
+  const nameB = nickname('B');
   let slotB = null;
   let start = null;
+  const latencies = [];
 
   await test.step('SCR-001~004: 입장 → 친구 초대 코드 → 짝 성사', async () => {
-    await enter(pageA, nickname('A'));
-    await enter(pageB, nickname('B'));
+    await enter(pageA, nameA);
+    await enter(pageB, nameB);
     await pageA.getByRole('button', { name: '방 만들기' }).click();
     await pickHero(pageA, '다윗 David');
     const display = pageA.locator('.code-display[aria-label^="초대 코드"]');
@@ -133,22 +57,21 @@ test('브라우저 2개 대전: 테트리스 공격·영 연출·방어 3종·�
     await pageB.getByRole('button', { name: '입장' }).click();
   });
 
-  await test.step('SCR-005: 두 방 입장·라운드 시작', async () => {
+  await test.step('SCR-005: 두 방 입장·같은 시드로 라운드 시작', async () => {
     const joinedB = await waitFrame(tapB, 0, (f) => f.type === 'joined', 30000);
     slotB = joinedB.frame.data.slot;
     await waitFrame(tapA, 0, (f) => f.type === 'joined', 30000);
     start = (await waitFrame(tapB, 0, (f) => f.type === 'start', 60000)).frame.data;
-    await waitFrame(tapA, 0, (f) => f.type === 'start', 10000);
+    const startA = (await waitFrame(tapA, 0, (f) => f.type === 'start', 10000)).frame.data;
+    expect(startA.seed).toBe(start.seed); // FR-005 같은 7-bag 시드
     await pageA.waitForTimeout(start.countdown + 500); // 카운트다운(EVT-18) 종료
   });
 
-  await test.step('FR-077·NFR-002: A 테트리스 → B 쓰레기 4줄 + 악한 영, 지연 ≤ 100ms', async () => {
+  await step('FR-077·NFR-002: A 테트리스 → B 쓰레기 4줄 + 악한 영', tapB, async () => {
     const since = tapB.inbound.length;
-    const sentAt = injectClear(tapA, { lines: 4, pieceCount: 12 });
+    const sentAt = await injectClear(tapA, { lines: 4, pieceCount: 12 });
     const attack = await waitFrame(tapB, since, (f) => f.type === 'attack');
-    const latency = attack.at - sentAt;
-    test.info().annotations.push({ type: 'NFR-002 clear→attack ms', description: String(latency) });
-    expect(latency).toBeLessThanOrEqual(NFR002_MAX_MS);
+    latencies.push(attack.at - sentAt);
     expect(attack.frame.data.garbage).toBe(4);
     expect(attack.frame.data.spiritId).not.toBeNull();
     await expect(pageB.locator('.garbage-meter__num')).toHaveText('4', { timeout: 3000 }); // HUD-05
@@ -156,24 +79,34 @@ test('브라우저 2개 대전: 테트리스 공격·영 연출·방어 3종·�
     if (spirit?.effect?.durationMs > 0) await expect(pageB.locator('.spirit-chips .chip').first()).toContainText(spirit.nameKo); // HUD-10
   });
 
-  await test.step('FR-037: B 믿음의 방패 — 갑주 칸 획득 → R 사용 → 다음 공격 완전 차단', async () => {
-    const n = findArmorPiece({ seed: start.seed, mode: 'invite', stage: start.stage }, 'shield_of_faith', tapB.lastPieceCount + 1);
+  await step('FR-037: B 믿음의 방패 — 갑주 칸 획득 → R 사용 → 다음 공격 완전 차단', tapB, async () => {
+    const { n } = findSpecialPiece({ seed: start.seed, mode: 'invite', stage: start.stage }, 'armor', tapB.lastPieceCount + 1, 'shield_of_faith');
     while (n + 1 - tapB.lastPieceCount > MAX_PIECE_JUMP) {
-      injectClear(tapB, { lines: 1, pieceCount: tapB.lastPieceCount + MAX_PIECE_JUMP });
+      await injectClear(tapB, { lines: 1, pieceCount: tapB.lastPieceCount + MAX_PIECE_JUMP });
       await pageB.waitForTimeout(5100);
     }
-    injectClear(tapB, { lines: 1, pieceCount: Math.max(n + 1, tapB.lastPieceCount + PIECE_GAP), specials: [{ kind: 'armor', pieceIndex: n, armorId: 'shield_of_faith' }] });
+    await injectClear(tapB, { lines: 1, pieceCount: Math.max(n + 1, tapB.lastPieceCount + PIECE_GAP), specials: [{ kind: 'armor', pieceIndex: n, armorId: 'shield_of_faith' }] });
     await expect.poll(() => lastStatus(tapB)?.armor ?? [], { timeout: 5000 }).toContain('shield_of_faith');
     await pageB.keyboard.press('r');
     await expect.poll(() => lastStatus(tapB)?.wards?.shield ?? false, { timeout: 5000 }).toBe(true);
     await pageB.waitForTimeout(SPIRIT_SPACING_MS);
     const since = tapB.inbound.length;
-    injectClear(tapA, { lines: 4 });
+    const sentAt = await injectClear(tapA, { lines: 4 });
     const attack = await waitFrame(tapB, since, (f) => f.type === 'attack');
+    latencies.push(attack.at - sentAt);
     expect(attack.frame.data).toMatchObject({ garbage: 0, spiritId: null }); // EVT-24
   });
 
-  await test.step('FR-035·FR-016: B 미가엘 장전 + 베드로 "이 반석 위에" → 쓰레기 0·용 상쇄', async () => {
+  // 입력 없는 보드는 중력만으로 약 1분 뒤 자연 Top-out한다 — 방어 시험을 두 라운드에 나눠 라운드 안에서 끝낸다 (광야: 라운드 중간 roundEnd로 시험이 끊기던 결함)
+  await step('FR-007: B Top-out 1라운드 → A 1승 → 2라운드 시작', tapB, async () => {
+    const since = tapB.inbound.length;
+    const end = await topOut(tapB, pageB);
+    expect(end.frame.data.winnerSlot).not.toBe(slotB);
+    const next = await waitFrame(tapB, since, (f) => f.type === 'start' && f.data.round === 2, 20000);
+    await pageB.waitForTimeout(next.frame.data.countdown + 500);
+  });
+
+  await step('FR-035·FR-016: B 미가엘 장전 + 베드로 "이 반석 위에" → 쓰레기 0·용 상쇄', tapB, async () => {
     const angelSkill = 'angel_michael';
     await chargeFaith(tapB, 80);
     await expect.poll(() => lastStatus(tapB)?.cooldowns?.[angelSkill] ?? 0, { timeout: 5000 }).toBe(0);
@@ -183,41 +116,63 @@ test('브라우저 2개 대전: 테트리스 공격·영 연출·방어 3종·�
     const sinceHero = tapB.inbound.length;
     await pageB.keyboard.press('a');
     await waitFrame(tapB, sinceHero, (f) => f.type === 'effect' && f.data.kind === 'hero' && f.data.bySlot === slotB);
-    injectClear(tapA, { lines: 1 }); // B2B 사슬 끊기 → 다음 테트리스는 일반 테트리스
+    await injectClear(tapA, { lines: 1 }); // B2B 사슬 끊기 → 다음 테트리스는 일반 테트리스
     await pageA.waitForTimeout(200);
     let since = tapB.inbound.length;
-    injectClear(tapA, { lines: 4 });
+    const sentAt = await injectClear(tapA, { lines: 4 });
     const first = await waitFrame(tapB, since, (f) => f.type === 'attack');
+    latencies.push(first.at - sentAt);
     expect(first.frame.data.garbage).toBe(0); // 베드로 10초 쓰레기 무효 (FR-016)
     for (let i = 0; i < 3 && (lastStatus(tapB)?.wards?.michael ?? 0) > 0; i += 1) { // B2B 테트리스 연속 → 용 (미가엘이 상쇄)
       await pageA.waitForTimeout(SPIRIT_SPACING_MS);
       since = tapB.inbound.length;
-      injectClear(tapA, { lines: 4 });
+      const at = await injectClear(tapA, { lines: 4 });
       const attack = await waitFrame(tapB, since, (f) => f.type === 'attack');
+      latencies.push(attack.at - at);
       expect(['dragon', 'angel_of_light']).not.toContain(attack.frame.data.spiritId);
       expect(attack.frame.data.garbage).toBe(0);
     }
     await expect.poll(() => lastStatus(tapB)?.wards?.michael ?? 0, { timeout: 5000 }).toBe(0);
   });
 
-  await test.step('SCR-006: B Top-out 2라운드 → A 승리·B 패배 결과 화면', async () => {
-    for (let round = 0; round < 2; round += 1) {
-      const since = tapB.inbound.length;
-      for (let i = 0; i < 120 && !tapB.inbound.slice(since).some((e) => e.frame.type === 'roundEnd'); i += 1) {
-        await pageB.keyboard.press('Space');
-        await pageB.waitForTimeout(120);
-      }
-      await waitFrame(tapB, since, (f) => f.type === 'roundEnd', 15000);
-      if (round === 0) {
-        const next = await waitFrame(tapB, since, (f) => f.type === 'start', 20000);
-        tapB.lastWasTetris = false;
-        await pageB.waitForTimeout(next.frame.data.countdown + 500);
-      }
-    }
+  await step('SCR-006 · FR-070: B Top-out 2라운드 → A 2선승·B 패배, 레이팅 변화 표시', tapB, async () => {
+    await topOut(tapB, pageB);
     await waitFrame(tapB, 0, (f) => f.type === 'matchEnd', 20000);
     await expect(pageA.getByRole('heading', { name: '승리' })).toBeVisible({ timeout: 15000 });
     await expect(pageB.getByRole('heading', { name: '패배' })).toBeVisible({ timeout: 15000 });
+    await expect(pageA.locator('.rating-line')).toHaveText(/레이팅 \d+ \(\+\d+\)/); // FR-070 사람 대 사람 Elo
+    await expect(pageB.locator('.rating-line')).toHaveText(/레이팅 \d+ \(−\d+\)/);
     await expect(pageA.getByRole('button', { name: '로비로' })).toBeVisible();
+  });
+
+  await step('SCR-007·008 · REQ-014·015: 저장된 전적·랭킹(Elo) 조회', tapA, async () => {
+    await pageA.getByRole('button', { name: '로비로' }).click();
+    await pageA.getByRole('button', { name: '전적' }).click();
+    const row = pageA.locator('.records__table tbody tr').first();
+    await expect(row).toContainText('승');
+    await expect(row).toContainText(nameB);
+    await expect(row).toContainText('2:0');
+    await pageA.getByRole('button', { name: '← 로비' }).click();
+    await pageA.getByRole('button', { name: '랭킹' }).click();
+    const me = pageA.locator('.ranking__table tr.is-me, .my-rank').first();
+    await expect(me).toContainText(nameA);
+    const ratingText = (await me.textContent()) ?? '';
+    const rating = Number(ratingText.trim().match(/(\d+)$/)?.[1]); // 표 행은 마지막 칸, 하단 고정 줄은 "· 1016"으로 끝난다
+    expect(rating).toBeGreaterThan(ELO_INITIAL);
+  });
+
+  await test.step('NFR-002: 모든 clear→attack 표본 ≤ 100ms', async () => {
+    const sorted = [...latencies].sort((x, y) => x - y);
+    const summary = `n=${sorted.length} median=${sorted[Math.floor(sorted.length / 2)]} max=${sorted.at(-1)} all=${latencies.join(',')}`;
+    test.info().annotations.push({ type: 'NFR-002 clear→attack ms', description: summary });
+    console.log('[NFR-002 clear→attack ms]', summary);
+    expect(sorted.length).toBeGreaterThanOrEqual(3);
+    expect(sorted.at(-1)).toBeLessThanOrEqual(NFR002_MAX_MS);
+  });
+
+  await test.step('경기 중 콘솔 오류 0건 (CSP worker-src·Tone.js 포함)', async () => {
+    // 서버가 일부러 거부한 시험 주입분(PROGRESS_REJECTED 등)은 오류 프레임이지 콘솔 오류가 아니다 — 콘솔은 0건이어야 한다.
+    expect(consoleErrors).toEqual([]);
   });
 
   await ctxA.close();

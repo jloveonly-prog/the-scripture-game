@@ -1,6 +1,6 @@
 // TASK-050 · REQ-013 · FR-058 · FR-061 · C-007 — 조작 효과음 SFX-01~09 Tone.js 합성 + 효과음 공통 음 계산(반음 이동·음량 배율)
 // 정본: design-vision §2.9 효과음 표 SFX-01~09 · 사건 → 사운드 큐 맵. 오디오 파일 0개 (C-007, NFR-005).
-import { getTone, getBus, onUnlocked, reportAudioError } from './audio-engine.js';
+import { getTone, getBus, onUnlocked, reportAudioError, strictStartTime } from './audio-engine.js';
 
 const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 const FLAT_TO_SHARP = { Db: 'C#', Eb: 'D#', Gb: 'F#', Ab: 'G#', Bb: 'A#' };
@@ -204,7 +204,7 @@ export function playControlSfx(id, opts = {}) {
     const voice = getVoice(T, id);
     if (!voice) return false;
     setVoiceDb(voice, cue.db);
-    PLAYERS[id](voice, cue, t);
+    PLAYERS[id](voice, cue, strictStartTime(voice, t)); // 광야 BUG-003 같은 음색 같은 시각 재시작 방지
     return true;
   } catch (err) {
     reportAudioError(id, err);

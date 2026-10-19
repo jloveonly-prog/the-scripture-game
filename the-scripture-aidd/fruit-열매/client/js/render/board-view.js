@@ -283,7 +283,9 @@ export class BoardView {
   }
 
   destroy() {
-    gsap.killTweensOf([this.active, this.cellsLayer, this.danger, this.dangerLine, this]);
+    // 광야 BUG-007: 배열로 넘기면 GSAP는 "대상 일부"만 빼려 하고, 아직 시작 전(delay)인 트윈(EVT-48 무너짐 300ms 지연)은 살아남아
+    // 파괴된 Container의 y를 매 프레임 읽다 예외를 던졌다 — 대상마다 따로 죽인다.
+    for (const target of [this.active, this.cellsLayer, this.danger, this.dangerLine, this]) gsap.killTweensOf(target);
     this.root.destroy({ children: true });
   }
 }

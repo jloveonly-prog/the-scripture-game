@@ -1,6 +1,6 @@
 // TASK-050 · REQ-013 · FR-059 · FR-055 · FR-061 · C-007 — 적응형 BGM: BGM-01 대기실 · BGM-02 대전 3층 · 위기 레이어(124BPM·심장박동·트레몰로) · 콤보 고조 · 덕킹
 // 정본: design-vision §2.9 "배경음악"·§4.11 상태 기계, devguide §7.10. 해제 전 호출은 상태만 기억했다가 unlockAudio 성공 시 적용한다.
-import { getTone, getBus, onUnlocked, reportAudioError } from './audio-engine.js';
+import { getTone, getBus, onUnlocked, reportAudioError, strictStartTime } from './audio-engine.js';
 
 /** setBgmState 상태 (devguide §7.10) */
 export const BGM_STATES = Object.freeze(['lobby', 'battle', 'stopped']);
@@ -74,6 +74,8 @@ function loop(T, track, interval, cb) {
   return l;
 }
 
+// 광야 BUG-003: 단음 신스(celesta·bass·hat·kick·heart)는 strictStartTime으로 시작 시각을 엄격히 증가시킨다 (audio-engine.js)
+
 function ensureDuckNode(T) {
   if (duckNode) return duckNode;
   const music = getBus('music');
@@ -101,7 +103,7 @@ function buildLobby(T, fade) {
   loop(T, track, '16n', (time) => {
     const chordIndex = Math.floor(step / SIXTEENTHS_PER_BAR) % LOBBY_ARPEGGIO.length;
     const notes = LOBBY_ARPEGGIO[chordIndex];
-    celesta.triggerAttackRelease(notes[step % notes.length], '16n', time);
+    celesta.triggerAttackRelease(notes[step % notes.length], '16n', strictStartTime(celesta, time));
     step = (step + 1) % (LOBBY_LOOP_BARS * SIXTEENTHS_PER_BAR);
   });
   return track;
@@ -129,14 +131,14 @@ function buildBattle(T, fade) {
   track.padFilter = padFilter;
   track.dangerGain = dangerGain;
   loop(T, track, '8n', (time) => {
-    bass.triggerAttackRelease(BATTLE_BASS_NOTE, '16n', time);
-    hat.triggerAttackRelease('32n', time);
+    bass.triggerAttackRelease(BATTLE_BASS_NOTE, '16n', strictStartTime(bass, time));
+    hat.triggerAttackRelease('32n', strictStartTime(hat, time));
   });
-  loop(T, track, '2n', (time) => kick.triggerAttackRelease(KICK_NOTE, '8n', time));
+  loop(T, track, '2n', (time) => kick.triggerAttackRelease(KICK_NOTE, '8n', strictStartTime(kick, time)));
   loop(T, track, '1m', (time) => pad.triggerAttackRelease(BATTLE_PAD_CHORD, '1m', time));
   loop(T, track, '4n', (time) => {
-    heart.triggerAttackRelease(HEARTBEAT_NOTE, '16n', time);
-    heart.triggerAttackRelease(HEARTBEAT_NOTE, '16n', time + HEARTBEAT_GAP_S);
+    heart.triggerAttackRelease(HEARTBEAT_NOTE, '16n', strictStartTime(heart, time));
+    heart.triggerAttackRelease(HEARTBEAT_NOTE, '16n', strictStartTime(heart, time + HEARTBEAT_GAP_S));
   });
   loop(T, track, '32n', (time) => tremolo.triggerAttackRelease(TREMOLO_CHORD, '64n', time));
   return track;

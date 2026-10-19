@@ -195,7 +195,7 @@ export class HudView {
   }
 
   destroy() {
-    gsap.killTweensOf([this.faith, this.grace]);
+    for (const target of [this.faith, this.grace]) gsap.killTweensOf(target); // 광야 BUG-007 — 배열 kill은 지연 트윈을 남긴다
     this.root.destroy({ children: true });
   }
 }
