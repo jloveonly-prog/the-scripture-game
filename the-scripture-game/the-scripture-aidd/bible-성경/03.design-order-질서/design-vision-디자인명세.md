@@ -132,7 +132,7 @@
 | GLW-idle | 블록 텍스처에 구운 바깥 번짐 (generateTexture 시 블러 처리된 사각형을 아래에 깔기) | 번짐 6px, 블록 바탕색, 투명도 0.35 | 모든 일반 블록 (실시간 필터 없음 — NFR-001) |
 | GLW-special | pixi-filters `GlowFilter` | distance 10, outerStrength 2.5, innerStrength 0.3, quality 0.25, color = 표의 발광색 | 특수 칸, 착지 힌트 |
 | GLW-gold | `GlowFilter` | distance 16, outerStrength 4, innerStrength 0.5, quality 0.25, color 0xE8B84A | T-Spin·B2B 순간, 스킬 준비 버튼(캔버스 측), 엠블럼 |
-| GLW-holy | `GlowFilter` + `AdvancedBloomFilter` | Glow distance 24, outerStrength 5, color 0xFFF8E7 / Bloom threshold 0.45, bloomScale 1.4, brightness 1.1, blur 8 | 천사·스킬 빛기둥, 예수님 이벤트(bloomScale 2.0) |
+| GLW-holy | `GlowFilter` + `AdvancedBloomFilter` | Glow distance 24, outerStrength 5, color 0xFFF8E7 / Bloom threshold 0.45, bloomScale 1.4, brightness 1.1, blur 8 | ~~천사·스킬 빛기둥~~ 천사 그림(Glow만), 예수님 실루엣(Bloom bloomScale 2.0) **[DCL-009 ③]** — 빛기둥은 구운 가산 텍스처(§4.6.5 주석) |
 | GLW-evil | `GlowFilter` | distance 14, outerStrength 3, color 0x8E2A5A | 악한 영 실루엣 가장자리 |
 | CSS 발광 | `text-shadow` / `box-shadow` | gold-sm `0 0 8px rgba(232,184,74,.45)` · gold-md `0 0 16px rgba(232,184,74,.55)` · gold-lg `0 0 32px rgba(246,217,139,.65)` · holy `0 0 48px rgba(255,248,231,.8)` · danger `0 0 16px rgba(229,72,77,.6)` | DOM 글자·버튼 |
 
@@ -658,7 +658,7 @@ flowchart LR
 | 상대 보드 | 946 | 140 | 220×440 | 칸 22 |
 | 상대 받을 공격 막대 | 1172 | 140 | 8×440 | opponentState.pending |
 | 상대 걸린 효과 칩 | 946 | 592 | 220×56 | 내가 보낸 영 이름 + 남은 시간 (attack.duration 기준 클라이언트 계산) |
-| 내 자막 영역 | 296 | 92 | 300×120 | 영·천사·스킬 이름 + 구절 3줄 |
+| 내 자막 영역 | 296 | 92 | 300×120 | 영·천사·스킬 이름 + 구절 3줄 — **[DCL-009 ④]** 높이 120을 넘는 긴 구절은 글을 자르지 않고(C-003) 배율만 낮춰 맞춤(최저 0.7배) |
 | 콜아웃 기준점 | 446 | 384 | — | 내 보드 가운데 |
 
 #### 3.5.2 세로형 720×1280 (휴대폰) — 사람 대 사람
@@ -1018,7 +1018,7 @@ flowchart LR
 | J-02 | 회전 성공 (SRS) | 회전 잔상: 이전 회전 상태의 블록 스프라이트 복사본 투명도 0.45 → 0, scale 1→1.06 (GuideLayer 위 ActivePieceLayer) / 벽차기 사용 시 PT-dust 4개 차인 쪽 | 새 상태 컨테이너 rotation ±12°(회전 방향 반대) → 0, 90ms `back.out(2)` / 잔상 120ms `power2.out` | SFX-02 (시계: 오르는 글라이드, 반시계: 내리는 글라이드, 벽차기 +2반음) | — | 잔상·회전 보간 없음 |
 | J-03 | 회전 실패 (모든 벽차기 막힘, UC-007 E1) | 블록 테두리 #9C93B3 섬광 1회 | rotation ±4° 2번 왕복 100ms | SFX-02 실패음 | — | 흔들기 없음 |
 | J-04 | 소프트 드롭 1칸 | BoardFxLayer: 블록 위 2칸 길이 꼬리(블록 밝은 면 색 투명도 0.2→0) | 꼬리 120ms 소멸 | SFX-03 (60ms에 1회까지) | — | 꼬리 없음 |
-| J-05 | 하드 드롭 | ① 낙하 궤적: 시작 위치~착지 위치 사이 블록 폭의 세로 빛줄기(블록 밝은 면 색 → 투명, 위로 갈수록 옅음) 투명도 0.7 ② 착지점 `ShockwaveFilter`(보드 컨테이너, center = 착지 블록 아래 가운데, amplitude 18, wavelength 90, speed 520, brightness 1.15, radius 260) ③ PT-dust 10 (착지 블록 아래 모서리에서 좌우로) | 궤적 투명도 0.7→0, 220ms `power2.out` / 블록 scaleY 1.15→1 80ms `ease.slam` 후 `back.out(3)` / 충격파 time 0→0.5s / SHK-2 (첫 오프셋 아래 +4px) | SFX-04 (착지음 SFX-05는 생략) | HP-light | 충격파 amplitude 6, 궤적 투명도 0.35, 흔들림 없음 |
+| J-05 | 하드 드롭 | ① 낙하 궤적: 시작 위치~착지 위치 사이 블록 폭의 세로 빛줄기(블록 밝은 면 색 → 투명, 위로 갈수록 옅음) 투명도 0.7 ② 착지점 `ShockwaveFilter`(보드 컨테이너, center = 착지 블록 아래 가운데, amplitude ~~18~~ 6, wavelength ~~90~~ 40, speed 520, brightness 1.15, radius 260 **[DCL-009]**) ③ PT-dust 10 (착지 블록 아래 모서리에서 좌우로) | 궤적 투명도 0.7→0, 220ms `power2.out` / 블록 scaleY 1.15→1 80ms `ease.slam` 후 `back.out(3)` / 충격파 time 0→0.5s / SHK-2 (첫 오프셋 아래 +4px) | SFX-04 (착지음 SFX-05는 생략) | HP-light | 충격파 amplitude ~~6~~ 2 **[DCL-009]**, 궤적 투명도 0.35, 흔들림 없음 |
 | J-06 | 착지·고정 (lock, 하드 드롭 아님) | 고정된 칸 FL-1 흰 섬광 | 칸 scaleY 0.92→1, 80ms `back.out(2)` | SFX-05 | — | 찌그러짐 없음 |
 | J-07 | 홀드 | 홀드 상자 금 테두리 맥동 1회 (#E8B84A 0→1→0) | 활성 블록이 홀드 상자로 scale 1→0.5·이동 160ms `power2.in` / 교체 블록 생성 위치에서 투명도 0.3→1 80ms | SFX-06 | — | 날아가기 없이 즉시 교체 |
 | J-07b | 홀드 거부 (같은 낙하 중 2회, UC-007 E2) | 홀드 상자 투명도 0.4 유지 | 상자 x ±3px 100ms | SFX-06 (−12dB, 피치 −7반음) | — | 흔들기 없음 |
@@ -1031,27 +1031,29 @@ flowchart LR
 | C-01 | 1줄 삭제 (엔진 clear lines=1) | 지울 줄 덮개 FL-1(흰색) → 칸마다 PT-shard 4 (40개) | 섬광 70ms 유지 후 80ms 소멸 → 위쪽 줄들 내려옴 120ms `power2.in` + 마지막 4px `back.out(3)` 60ms | SFX-07 (1줄) | HP-light | 파편 ×0.5 |
 | C-02 | 2줄 삭제 | C-01 + 파편 80 | C-01 + SHK-1 | SFX-07 (2줄) | HP-mid | 파편 ×0.5, 흔들림 없음 |
 | C-03 | 3줄 삭제 | C-01 + 파편 120 + PT-spark 12 | C-01 + SHK-2 | SFX-07 (3줄) | HP-mid | 같음 |
-| C-04 | 테트리스 (4줄) | t=0: 4줄 덮개 투명도 1.0 흰색 + HS-3 정지 / t=80ms: PT-shard 칸마다 6 (240), 스테이지 `ShockwaveFilter`(center = 4줄 가운데, amplitude 30, wavelength 140, speed 700, radius 420), 보드 `AdvancedBloomFilter`(threshold 0.5, bloomScale 1.6) 300ms, `RGBSplitFilter`(red [−4,0], green [0,0], blue [4,0]) 150ms / DOM 콜아웃 "TETRIS"(type.callout-xl, `--g-gold` 글자 채움, 6px #3A2A08 외곽선, gold-lg 발광) 내 보드 가운데 | HS-3 80ms → 콜아웃 scale 2.4·투명도 0 → 1·1, 180ms `expo.out`, 500ms 유지 중 ±2px 떨림(30Hz), 퇴장 scale 1.2·투명도 0, 300ms `power2.in` / SHK-4 / 줄 붕괴 C-01과 같음 | SFX-07 (4줄) | HP-heavy | 색수차 없음, 충격파 amplitude 10, 흔들림 없음, 콜아웃 투명도만 200ms 등장 |
+| C-04 | 테트리스 (4줄) | t=0: 4줄 덮개 투명도 1.0 흰색 + HS-3 정지 / t=80ms: PT-shard 칸마다 6 (240), 스테이지 `ShockwaveFilter`(center = 4줄 가운데, amplitude ~~30~~ 10, wavelength ~~140~~ 60, speed 700, brightness 1.2, radius 420 — time 0→0.6s **[DCL-009]**), 보드 `AdvancedBloomFilter`(threshold 0.5, bloomScale 1.6) 300ms, `RGBSplitFilter`(red [−4,0], green [0,0], blue [4,0]) 150ms / DOM 콜아웃 "TETRIS"(type.callout-xl, `--g-gold` 글자 채움, 6px #3A2A08 외곽선, gold-lg 발광) 내 보드 가운데 | HS-3 80ms → 콜아웃 scale 2.4·투명도 0 → 1·1, 180ms `expo.out`, 500ms 유지 중 ±2px 떨림(30Hz), 퇴장 scale 1.2·투명도 0, 300ms `power2.in` / SHK-4 / 줄 붕괴 C-01과 같음 | SFX-07 (4줄) | HP-heavy | 색수차 없음, 충격파 amplitude ~~10~~ 3 **[DCL-009]**, 흔들림 없음, 콜아웃 투명도만 200ms 등장 |
 | C-05 | 콤보 단계 1 (combo 1~2) | 콜아웃 "n COMBO"(type.callout-m 36px, #FFF8E7) 내 보드 오른쪽 위 | 팝 160ms `back.out(1.7)`, 700ms 뒤 투명도 0 200ms | SFX-08 (콤보 반음 상승) | — | 팝 없음 |
 | C-06 | 콤보 단계 2 (combo 3~4) | 44px #F6D98B + PT-spark 16 + 보드 테두리 금 맥동 1회 / 배경 P1 밝기 +10% | HS-1 50ms + SHK-1, 글자 ±1px 떨림 | SFX-08 + BGM 하이햇 열림(§4.7.4) | HP-tap | 떨림·흔들림 없음 |
 | C-07 | 콤보 단계 3 (combo 5~6) | 52px #E8B84A + `GlowFilter` 대신 DOM gold-md 발광 + PT-spark 28 / 배경 +20% | HS-2 66ms + SHK-2, ±2px 떨림 | SFX-08 (+ 옥타브 겹침) | HP-mid | 같음 |
 | C-08 | 콤보 단계 4 (combo ≥ 7) | 64px #FFFFFF + gold-lg 발광 + 글자 색수차 그림자(text-shadow −2px 0 #E8304A, 2px 0 #3D7BFF) + PT-spark 40 + 보드 둘레 빛 고리 확산 / 배경 +30% / 콤보가 끊길 때까지 보드 테두리 연속 맥동(0.5초 주기) | HS-4 100ms + SHK-3, ±3px 떨림 | SFX-08 (+ 반짝임 MetalSynth) | HP-heavy | 색수차·떨림·흔들림 없음 |
 | C-09 | 콤보 끊김 | 콤보 글자 소멸, 배경 밝기 원래대로 | 600ms `power2.out` | — | — | 같음 |
 | C-10 | T-Spin (clear tspin=true, lines 1~3) | 보드 덮개 FL-3(금 #E8B84A) + T 블록 칸 `GlowFilter`(GLW-gold) 300ms + 금 PT-spark 32 나선 / 콜아웃 "T-SPIN SINGLE·DOUBLE·TRIPLE"(type.callout-l, `--g-gold`) | HS-2 66ms + SHK-2, 콜아웃 scale 1.8→1 160ms `expo.out`, 600ms 유지 | SFX-09 | [25, 30, 25] | 나선 대신 방사, 흔들림 없음 |
-| C-11 | 백투백 (clear b2b=true — 테트리스 또는 T-Spin) | 주 콜아웃 위에 "BACK-TO-BACK"(Cinzel 700 28px, #F6D98B, 자간 0.12em) + FL-3 + 두 번째 충격파 고리(120ms 뒤, amplitude 20) | 히트스톱은 HS-4 100ms로 올림 / 띠 글자 x −40px→0 200ms `power2.out` | SFX-09 B2B 합창 찌르기 겹침 | HP-heavy | 두 번째 고리 없음 |
+| C-11 | 백투백 (clear b2b=true — 테트리스 또는 T-Spin) | 주 콜아웃 위에 "BACK-TO-BACK"(Cinzel 700 28px, #F6D98B, 자간 0.12em) + FL-3 + 두 번째 충격파 고리(120ms 뒤, amplitude ~~20~~ 7, wavelength 60, brightness 1.2 **[DCL-009]**) | 히트스톱은 HS-4 100ms로 올림 / 띠 글자 x −40px→0 200ms `power2.out` | SFX-09 B2B 합창 찌르기 겹침 | HP-heavy | 두 번째 고리 없음 |
 | C-12 | "아깝다!" 니어미스 — 콤보 끊김형 (FR-061) | 판정: combo ≥ 3이 끊기는 고정 순간, 보드에 "한 칸만 빈 줄"(10칸 중 9칸 찬 줄)이 3줄 이상 있으면 발동 → 그 줄들 외곽선 #FF6B6F 2px 강조 600ms / 콜아웃 "아깝다!"(type.callout-ko, #FF6B6F, 흰 외곽선 3px) | rotation ±3° 2번 왕복 300ms, 900ms 유지 후 소멸 | AUX-06 | [30, 30, 30] | 회전 없음 |
 | C-13 | "아깝다!" 니어미스 — 1칸 차이 패배형 (FR-061) | 판정: Top-out 순간 새 블록 생성 위치가 고정 블록과 정확히 1칸만 겹치면 발동 → 겹친 칸을 #FF6B6F 맥동으로 강조 / 같은 콜아웃 | 강조 600ms 후 M-03 시작 | AUX-06 | [30, 30, 30] | 같음 |
 
 > **[추가 2026-10-19 — RTM §5 DCL-008 ⑨]** 콤보 중 배경 P1 밝기는 이 표(C-06 +10% · C-07 +20% · C-08 +30%, C-05 변화 없음)를 따른다 — §2.12의 "+5%/콤보"보다 이 표가 우선.
 
+> **[추가 2026-10-19 — RTM §5 DCL-009 ①②] 충격파 = 빛 고리:** pixi-filters 6.1.5 `ShockwaveFilter`의 amplitude는 px 변위(최대 1.25 × amplitude)라 원래 값(C-04 30·띠 140)은 보드 테두리를 항아리 모양으로 휘었다. "고리"가 읽히도록 amplitude ×⅓·띠(wavelength) 60/40으로 고쳤다(최대 변위 C-04 12.5px ≈ 칸 0.42). 모든 충격파는 고리가 radius에 닿아 사라질 때까지 흐른다: time 0 → radius ÷ speed초(J-05 0.5s · C-04/C-11 0.6s · A-04 0.38s). 미지정 wavelength 기본 40.
+
 #### 4.6.3 공격 보내기 · 받기 · 상쇄 (FR-053, UC-008)
 
 | ID | 이벤트 · 트리거 | 시각 | 모션 | 소리 | 진동 | 감소 모드 |
 |:---|:---|:---|:---|:---|:---|:---|
-| A-01 | 공격 발사 (API-021 `attack`, from = 나, garbage > 0) | ProjectileLayer(70): "빛의 화살" — 길이 64·두께 10(공격력 1당 +2, 최대 18)의 끝이 뾰족한 빛창, 가운데 #FFFFFF → 가장자리 #F6D98B, GLW-gold, 꼬리 PT-spark 프레임당 3 / 화살 수 = min(garbage, 6) | 내 보드 위 가운데 → 상대 보드 위 가운데, 2차 베지어(정점 = 두 점 가운데에서 120px 위), 320ms `power2.in`, 화살마다 40ms 간격 / 도착 시 상대 보드에 붉은 FL-2 + 작은 충격파(amplitude 8) | SFX-10 (발사) + 도착 시 SFX-11 −10dB | HP-tap | 꼬리 입자 ×0.5 |
+| A-01 | 공격 발사 (API-021 `attack`, from = 나, garbage > 0) | ProjectileLayer(70): "빛의 화살" — 길이 64·두께 10(공격력 1당 +2, 최대 18)의 끝이 뾰족한 빛창, 가운데 #FFFFFF → 가장자리 #F6D98B, GLW-gold, 꼬리 PT-spark 프레임당 3 / 화살 수 = min(garbage, 6) | 내 보드 위 가운데 → 상대 보드 위 가운데, 2차 베지어(정점 = 두 점 가운데에서 120px 위), 320ms `power2.in`, 화살마다 40ms 간격 / 도착 시 상대 보드에 붉은 FL-2 + 작은 충격파(amplitude ~~8~~ 3 **[DCL-009]**) | SFX-10 (발사) + 도착 시 SFX-11 −10dB | HP-tap | 꼬리 입자 ×0.5 |
 | A-02 | 공격 받음 (API-021 `attack`, target = 나) | 내 보드 FL-2 붉은색 #E5484D / 받을 공격 막대 새 칸이 아래에서 자람 / 막대 위를 흰 선이 `rules.garbage.delayMs`(1,000ms) 동안 위→아래로 훑음(상승까지 남은 시간의 시각화) / 배경 P0·P2 붉은 어둠 물듦(§2.12) / 화살은 상대 보드에서 내 보드로 날아옴(A-01과 같은 그림, 색 #8E2A5A→#E5484D) | SHK-3 (보드) / 막대 칸 200ms `power2.out` 후 `sine.inOut` 400ms yoyo 맥동 | SFX-11 | HP-hit | 흔들림 없음, 맥동 대신 고정 밝기 |
 | A-03 | 내 줄 삭제로 대기 공격 상쇄 (`attack.canceled` > 0 또는 `status.pending` 감소) | 받을 공격 막대에서 상쇄된 칸이 위에서부터 금 PT-spark 8개씩으로 부서짐 / 막대 옆 "−n 상쇄"(type.caption 700, #F6D98B) | 칸마다 160ms, 40ms 간격 / 글자 y −16px 600ms 후 소멸 | SFX-10 상쇄 핑 | HP-tap | 부서짐 대신 투명도 |
-| A-04 | 양측 공격 가운데 충돌 상쇄 (FR-053 — 내 `attack`의 canceled > 0) | 내 화살(금)이 가운데 통로 충돌점(가로형 806,330 / 세로형 내 보드 위 가운데와 상대 보드 사이 가운데)으로, 상쇄된 양만큼 상대 쪽 어두운 화살(#8E2A5A)이 마주 날아와 충돌 → 충돌점 `ShockwaveFilter`(amplitude 20, radius 200) + 흰·금 PT-spark 40 + 빛 고리 확산(반지름 0→90, 투명도 1→0) / 남은 공격(garbage > 0)의 화살만 충돌 후 계속 상대에게 | 두 화살 240ms `power2.in`으로 만남 → 충돌 고리 300ms `expo.out` / SHK-2 (화면) | AUX-15 | HP-mid | 충격파 amplitude 8, 흔들림 없음 |
+| A-04 | 양측 공격 가운데 충돌 상쇄 (FR-053 — 내 `attack`의 canceled > 0) | 내 화살(금)이 가운데 통로 충돌점(가로형 806,330 / 세로형 내 보드 위 가운데와 상대 보드 사이 가운데)으로, 상쇄된 양만큼 상대 쪽 어두운 화살(#8E2A5A)이 마주 날아와 충돌 → 충돌점 `ShockwaveFilter`(amplitude ~~20~~ 7, radius 200 **[DCL-009]**) + 흰·금 PT-spark 40 + 빛 고리 확산(반지름 0→90, 투명도 1→0) / 남은 공격(garbage > 0)의 화살만 충돌 후 계속 상대에게 | 두 화살 240ms `power2.in`으로 만남 → 충돌 고리 300ms `expo.out` / SHK-2 (화면) | AUX-15 | HP-mid | 충격파 amplitude ~~8~~ 3 **[DCL-009]**, 흔들림 없음 |
 | A-05 | 쓰레기 줄 상승 (API-022 `garbage`, rows > 0) | 보드 내용 전체가 rows×칸 높이만큼 위로, 아래에서 쓰레기 줄(§2.3, 구멍 열 표시) 나타남, 바닥 PT-dust 20 / 받을 공격 막대 해당 칸 소멸 | 위로 140ms `power2.out` + 4px 넘침 후 복귀 60ms / SHK-2 | SFX-05 쓰레기 변형 × rows (40ms 간격, 최대 4번) | HP-mid | 넘침 없음, 흔들림 없음 |
 | A-05b | 상승 무효 (garbage `voided` > 0 — 베드로 반석) | 보드 아래 반석 띠(§4.6.7 H-03)에 쓰레기 줄 그림자가 부딪혀 회색 먼지로 부서짐 + "무효"(type.h3, #A9B4C4) | 부서짐 300ms | SFX-14 베드로 층의 바위 타격만 (−10dB) | HP-tap | 먼지 ×0.5 |
 | A-06 | 방어 완전 차단 (`attack.blockedBy` = shield_of_faith 또는 michael) | 받는 쪽: 내 보드 앞에 방패 아이콘(§2.13.4, 96px) 또는 미가엘 빛의 검이 나타나 화살을 막고 화살이 금 불꽃으로 흩어짐 + "차단"(type.h2, #F6D98B) / 보낸 쪽: 상대 보드 앞에서 같은 그림 축소 | 방패 등장 scale 0.6→1 160ms `back.out(2)`, 400ms 유지, 소멸 200ms / SHK-1 | AUX-13 | HP-mid | 흔들림 없음 |
@@ -1105,6 +1107,8 @@ flowchart LR
 | G-04 | 스랍 seraphim — `cleared: [spiritId…]` | 숯불이 보드로 내려와 걸린 효과 칩·덮개·필터가 주황 불티로 흩어짐, 납 블록 줄은 주황으로 달아올랐다 녹아 사라짐 | 칩·덮개 300ms, 납 줄 400ms (아래→위) |
 | G-05 | 섬기는 영들 ministering_spirits — `rows: 1` | 작은 빛 구슬 12개가 맨 아래 쓰레기 줄로 내려가 줄을 들어 올리며 빛 입자로 녹임 | 구슬 하강 400ms, 줄 소멸 300ms, 보드 내림 120ms |
 
+> **[추가 2026-10-19 — RTM §5 DCL-009 ③] 빛기둥 그리기:** GLW-holy(Glow outerStrength 5 + Bloom)를 기둥에 그대로 걸면 불투명한 흰 막대가 되어 "기둥 위 천사 그림"이 흰 위의 흰으로 사라진다. 기둥은 시작 시 구운 텍스처 1장을 가산 혼합(add)으로 그린다 — 단면 3겹: 바깥 번짐(폭 2.2배, 최대 투명도 0.16) · 몸체(`--g-holy` 단면, 최대 0.5) · 흰 심(폭 0.14배, 0.9), 아래 40% 구간에서 투명으로 옅어짐(실시간 필터 0 — NFR-001). 천사 그림에는 GLW-holy의 Glow만(흰 날개에 Bloom을 걸면 형태가 뭉개짐), 위인 엠블럼은 GLW-gold 그대로. §4.6.7 스킬 기둥(폭 140)·상대 화면(폭 110)·§4.6.8 예수님 기둥(폭 220)도 같은 텍스처.
+
 #### 4.6.6 전신갑주 6종 (FR-036, FR-037, UC-011)
 
 **공통 사용 (API-023 `effect` source=armor):** 해당 슬롯 아이콘이 내 보드 위쪽 가운데로 날아가 96px로 커짐(200ms `power2.out`), GLW-holy 금빛, 600ms 유지 후 아래 연출로 이어지고 소멸(200ms). 자막: 갑주 이름 + armor.json `verse_ref`(Ephesians 6:14~17) 3줄 1,600ms. 소리 AUX-13(방패·투구·검) / AUX-09(띠·흉배·신). 진동 HP-mid. 슬롯 수 감소 팝. 상대 화면: 상대 보드 위 아이콘만 48px로 600ms.
@@ -1153,6 +1157,8 @@ flowchart LR
 | 결과 화면 | 이 경기 말씀 카드 구절 = John 16:33 (rules `verseCard`) — 카드의 엠블럼 자리에는 §2.13.6 빛 별 문양만 그린다(실루엣 없음) |
 
 > **[추가 2026-10-19 — RTM §5 DCL-008 ⑧]** 자막 넓은 영역 좌표: 가로형 (616, 64) 폭 324 · 세로형 (16, 744) 폭 688 — 보드 칸을 가리지 않는 자리(다음 블록·점수 HUD 위, 포인터 이벤트 없음).
+
+> **[추가 2026-10-19 — RTM §5 DCL-009 ③]** `GodrayFilter`는 필터 영역 사각형 전체에 빛살 안개(알파 1)를 더한다 — 빛기둥 모양 알파 마스크 안에만 남겨 "한 줄기 빛"으로 보이게 한다(마스크 없으면 기둥 투명도 0에서도 회색 사각형).
 
 #### 4.6.9 말씀 대결 (FR-040~FR-042, UC-013)
 

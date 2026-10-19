@@ -116,8 +116,8 @@ export const CORE = {
       const xs = cells.map(([x]) => x);
       const bottom = Math.max(...cells.map(([, y]) => y)) + 1;
       const cx = ((Math.min(...xs) + Math.max(...xs) + 1) / 2) * b.cell;
-      // 충격파: 보드 컨테이너, center = 착지 블록 아래 가운데 (감소 모드 amplitude 6)
-      f.filters.shockwave(b.root, { x: cx, y: bottom * b.cell, amplitude: f.reduced ? 6 : 18, wavelength: 90,
+      // 충격파: 보드 컨테이너, center = 착지 블록 아래 가운데 (감소 모드 amplitude 2) — RTM §5 DCL-009 ① 고리 크기
+      f.filters.shockwave(b.root, { x: cx, y: bottom * b.cell, amplitude: f.reduced ? 2 : 6, wavelength: 40,
         speed: 520, brightness: 1.15, radius: 260 });
       const left = b.cellCenter(Math.min(...xs), bottom - 0.5);
       const right = b.cellCenter(Math.max(...xs), bottom - 0.5);
@@ -177,8 +177,8 @@ export const CORE = {
     const b = f.board(c.side);
     const mid = b.cellCenter(4.5, (Math.min(...c.rows) + Math.max(...c.rows)) / 2);
     f.later(80, () => { // t = 80ms (HS-3 뒤)
-      f.filters.shockwave(f.pixi.screenRoot, { x: mid.x, y: mid.y, amplitude: f.reduced ? 10 : 30, wavelength: 140,
-        speed: 700, radius: 420 });
+      f.filters.shockwave(f.pixi.screenRoot, { x: mid.x, y: mid.y, amplitude: f.reduced ? 3 : 10, wavelength: 60,
+        speed: 700, brightness: 1.2, radius: 420 }); // RTM §5 DCL-009 ① — 최대 변위 12.5px의 빛 고리, 0.6초
       f.filters.bloom(b.root, { threshold: 0.5, bloomScale: 1.6, durationMs: 300 });
       if (!f.reduced) f.filters.rgbSplit(b.root, { red: [-4, 0], green: [0, 0], blue: [4, 0], durationMs: 150 });
       if (!f.reduced) f.shk("SHK-4");
@@ -213,15 +213,15 @@ export const CORE = {
     f.sound("SFX-09", { b2b: !!c.b2b });
     f.haptic([25, 30, 25]);
   },
-  /** C-11 백투백 {center?: 가상 좌표, tspin?} — 주 콜아웃 위 띠 + FL-3 + 두 번째 충격파 고리(120ms 뒤, amplitude 20) */
+  /** C-11 백투백 {center?: 가상 좌표, tspin?} — 주 콜아웃 위 띠 + FL-3 + 두 번째 충격파 고리(120ms 뒤, amplitude 7 — DCL-009 ①) */
   "C-11"(f, c) {
     const b = f.me();
     f.overlay.b2bBand(80);
     f.fl("FL-3", { board: b });
     f.hs("HS-4");
     const mid = c.center ?? b.cellCenter(4.5, 17);
-    if (!f.reduced) f.later(120, () => f.filters.shockwave(f.pixi.screenRoot, { x: mid.x, y: mid.y, amplitude: 20,
-      wavelength: 140, speed: 700, radius: 420 }));
+    if (!f.reduced) f.later(120, () => f.filters.shockwave(f.pixi.screenRoot, { x: mid.x, y: mid.y, amplitude: 7,
+      wavelength: 60, speed: 700, brightness: 1.2, radius: 420 }));
     if (!c.tspin) f.sound("SFX-09", { b2b: true }); // T-Spin B2B는 C-10이 합창 찌르기까지 냄 (30ms 중복 생략 회피)
     f.haptic("HP-heavy");
   },

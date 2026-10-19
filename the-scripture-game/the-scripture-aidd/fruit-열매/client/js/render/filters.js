@@ -80,18 +80,22 @@ export function createFilters(pixi) {
   return {
     attach,
     /**
-     * ShockwaveFilter (J-05·C-04·A-01·A-04) — center는 대상 지역 좌표, 수치는 가상 px(배율 반영), time 0→0.5s
+     * ShockwaveFilter (J-05·C-04·C-11·A-01·A-04) — center는 대상 지역 좌표, 수치는 가상 px(배율 반영).
+     * time 0 → radius/speed초: 고리가 radius에 닿아 fade(1 − (r/radius)²)가 0이 되는 순간 해제 — 뚝 끊기지 않는다
+     * (J-05 260/520 = 원문 0.5s, C-04 420/700 = 0.6s). amplitude = 최대 변위 px ÷ 1.25 (pixi-filters 6.1.5 셰이더)
      * @param {any} target @param {{ x: number, y: number, amplitude: number, wavelength?: number, speed?: number,
      *   brightness?: number, radius?: number }} o
      */
     shockwave(target, o) {
       const fs = filterSpace(target, o.x, o.y);
+      const speed = o.speed ?? 520;
+      const radius = o.radius ?? 260;
       const f = new ShockwaveFilter({
-        center: { x: fs.x, y: fs.y }, amplitude: o.amplitude * fs.scale, wavelength: (o.wavelength ?? 90) * fs.scale,
-        speed: (o.speed ?? 520) * fs.scale, brightness: o.brightness ?? 1, radius: (o.radius ?? 260) * fs.scale,
-          time: 0,
+        center: { x: fs.x, y: fs.y }, amplitude: o.amplitude * fs.scale, wavelength: (o.wavelength ?? 40) * fs.scale,
+        speed: speed * fs.scale, brightness: o.brightness ?? 1, radius: radius * fs.scale, time: 0,
       });
-      return timed(attach(target, f, { kind: "shockwave" }), 500, (k) => { f.time = 0.5 * k; });
+      const sec = radius / speed;
+      return timed(attach(target, f, { kind: "shockwave" }), sec * 1000, (k) => { f.time = sec * k; });
     },
     /** AdvancedBloomFilter (C-04 300ms·M-04 600ms) — 가벼운 그리기면 끔(§4.9) @param {any} target @param {any} o */
     bloom(target, o) {

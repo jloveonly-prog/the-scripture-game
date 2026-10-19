@@ -235,7 +235,9 @@ export function createOverlay({ root, geometry }) {
      */
     banner(o) {
       gsap.killTweensOf(ban);
-      const box = '<div style="white-space:normal;width:560px;margin:12px auto 0">';
+      // 구절 상자: 큰 글자의 자간·발광을 물려받지 않게 하고(한글 자간 벌어짐), 콘페티·보드 위에서 읽히는 바탕 (C-003 판독)
+      const box = '<div style="white-space:normal;width:560px;margin:12px auto 0;letter-spacing:normal;text-shadow:none;'
+        + 'background:rgba(7,6,13,0.6);border-radius:8px;padding:8px 12px">';
       const verse = o.verseRef ? `${box}${verseHtml(o.verseRef)}`
         + "</div>" : "";
       ban.innerHTML = `<div>${escapeHtml(o.text)}</div>${verse}`;

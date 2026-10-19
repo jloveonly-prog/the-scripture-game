@@ -109,9 +109,12 @@ export function createJuice(deps) {
     window.addEventListener("touchstart", onTouch, { passive: true });
   }
 
-  /** §6.3 감소 모드 반영 — 가림 정도(spirit 수치)는 바꾸지 않는다(D3-09) */
+  /**
+   * §6.3 감소 모드 반영 — 가림 정도(spirit 수치)는 바꾸지 않는다(D3-09). 감소 모드 = prefers-reduced-motion 또는 흔들림 끔
+   * (§2.9 머리 주석) — 섬광 "약"은 FL 배율·가장자리 발광만 바꾼다(§2.10·§6.3 섬광 행), 움직임은 줄이지 않는다
+   */
   function propagate() {
-    f.reduced = opts.reducedMotion || !opts.shake || opts.flash === "weak";
+    f.reduced = opts.reducedMotion || !opts.shake;
     deps.shake.setEnabled(opts.shake);
     deps.flash.setLevel(opts.flash);
     deps.overlay.setJitter(opts.shake);

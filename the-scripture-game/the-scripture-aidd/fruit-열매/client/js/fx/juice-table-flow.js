@@ -46,7 +46,7 @@ export const FLOW = {
       onArrive: (i) => {
         if (i !== 0) return;
         f.fl("FL-2", { board: opp, color: 0xe5484d });
-        f.filters.shockwave(opp.root, { x: opp.width / 2, y: 0, amplitude: 8 });
+        f.filters.shockwave(opp.root, { x: opp.width / 2, y: 0, amplitude: 3 }); // DCL-009 ①
         f.sound("SFX-11", { db: -10 });
       } });
   },
@@ -95,7 +95,8 @@ export const FLOW = {
     f.arrows.fly({ from: top(me), to: p, count: n, durationMs: 240, lift: 60 });
     f.arrows.fly({ from: top(opp), to: p, count: n, palette: "dark", durationMs: 240, lift: 60, onArrive: (i) => {
       if (i !== 0) return;
-      f.filters.shockwave(f.pixi.screenRoot, { x: p.x, y: p.y, amplitude: f.reduced ? 8 : 20, radius: 200 });
+      // DCL-009 ① 고리 크기
+      f.filters.shockwave(f.pixi.screenRoot, { x: p.x, y: p.y, amplitude: f.reduced ? 3 : 7, radius: 200 });
       f.particles.emit("PT-spark", { ...p, count: 20 });
       f.particles.emit("PT-spark", { ...p, count: 20, color: 0xffffff });
       f.arrows.ring(p);

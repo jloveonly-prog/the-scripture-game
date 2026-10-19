@@ -407,9 +407,9 @@ export async function postGuests(request: Request, env: Env): Promise<Response> 
 | Matchmaker `worker/src/matchmaker.ts`, `lobby/` | REQ-004~REQ-006 | ARCH-010 | TASK-032 | 02 | ✅ | ✅ |
 | GameRoom `worker/src/game-room.ts`, `room/handlers.ts`, `room/outbox.ts`, `room/bot-driver.ts` | REQ-001, REQ-005, REQ-007~REQ-011 | ARCH-011 | TASK-033 | 02 | ✅ | ✅ |
 | Worker 진입 `worker/src/index.ts` | REQ-016 | ARCH-009 | TASK-034 | 02 | ✅ | ✅ |
-| 렌더 `client/js/render/`, `client/js/art/` | REQ-013 | ARCH-004 | TASK-040~TASK-045 | 03-A | 🔄 | ⬜ |
-| 오디오 `client/js/audio/` | REQ-013 | ARCH-006 | TASK-050-1, TASK-050-2 | 03-B | 🔄 | ⬜ |
-| 연출 `client/js/fx/` | REQ-011, REQ-013 | ARCH-005 | TASK-051-1~TASK-053 | 03-B | 🔄 | ⬜ |
+| 렌더 `client/js/render/`, `client/js/art/` | REQ-013 | ARCH-004 | TASK-040~TASK-045 | 03-A | ✅ | ✅ |
+| 오디오 `client/js/audio/` | REQ-013 | ARCH-006 | TASK-050-1, TASK-050-2 | 03-B | ✅ | ✅ |
+| 연출 `client/js/fx/` | REQ-011, REQ-013 | ARCH-005 | TASK-051-1~TASK-053 | 03-B | ✅ | ✅ |
 | 셸·스타일·라우터 (`index.html`, `style.css`, `styles/`, `main.js`, `screens/shell.js`, `store/session.js`) | REQ-013, FR-078 | ARCH-001 | TASK-060-1, TASK-060-2, TASK-061 | 03-C | ⬜ | ⬜ |
 | 저장·네트워크 `client/js/store/guest·settings.js`, `client/js/net/` | REQ-002, REQ-004 | ARCH-008 | TASK-062-1, TASK-062-2 | 03-C | ⬜ | ⬜ |
 | 입력 `client/js/input/` | REQ-001 | ARCH-007 | TASK-063 | 03-C | ⬜ | ⬜ |

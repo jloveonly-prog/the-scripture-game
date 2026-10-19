@@ -2,7 +2,7 @@
 
 > ⚠️ **파생 문서(Derived).** 이 서신은 원본이 아니다. 직접 수정 금지 — 원본을 고친 뒤 이 서신을 재생성하라.
 > 원본: `bible-성경/01.requirement-hearing-들음/spec-tablet-명세서.md`, `bible-성경/03.design-order-질서/screen-vision-화면설계.md`, `bible-성경/02.architecture-foundation-기초/api-gate-성문.md` (§1 목록·§2 공통 규약·§4 에러 코드), `bible-성경/02.architecture-foundation-기초/architecture-temple-성전설계.md` (§10 보안), `statute-율법/04.development-repentance-회개/security-seal-봉인.md` (봉인 계명)
-> 생성일: 2026-10-19 / 생성 기준: RTM 설계 변경 이력 최종 행 = 2026-10-19 DCL-006 (rtm-covenant-언약추적.md §5 — DCL-001 data-ark §6.1 부록·§7, DCL-002 data-ark TBL-018 `rateLimit`, DCL-003 data-ark TBL-018 `gravity.accelAfterMs`·`ledger.*`, DCL-004 architecture ARCH-002·ARCH-013 착지 평가 위치 + data-ark TBL-018 `placement.weights`, DCL-005 data-ark TBL-018 `net.joinTimeoutMs`·`net.readyTimeoutMs`, DCL-006 data-ark TBL-018 `bot.*` 난이도 수치·`lineBias`·`biasMaxHeight`) · **재생성 2026-10-19 W-02** (W-01 재생성본은 DCL-005·DCL-006 추가로 무효 — acts-행전 README "서신은 무효가 된다")
+> 생성일: 2026-10-19 / 생성 기준: RTM 설계 변경 이력 최종 행 = 2026-10-19 DCL-009 (rtm-covenant-언약추적.md §5 — DCL-001 data-ark §6.1 부록·§7, DCL-002 data-ark TBL-018 `rateLimit`, DCL-003 data-ark TBL-018 `gravity.accelAfterMs`·`ledger.*`, DCL-004 architecture ARCH-002·ARCH-013 착지 평가 위치 + data-ark TBL-018 `placement.weights`, DCL-005 data-ark TBL-018 `net.joinTimeoutMs`·`net.readyTimeoutMs`, DCL-006 data-ark TBL-018 `bot.*` 난이도 수치·`lineBias`·`biasMaxHeight`), DCL-007 design-vision §2.8·§2.10·§4.6.8·§4.9 렌더 구조 주석, DCL-008 design-vision §2.10·§4.6.2·§4.6.8·§4.7.1·§4.7.3·§4.7.4 03-B 세부 수치 주석, DCL-009 design-vision §2.5·§3.5.1·§4.6.1~§4.6.3·§4.6.5·§4.6.8 충격파 고리·빛기둥·자막 맞춤) · **재생성 2026-10-19 W-03A·W-03B** (W-02 재생성본은 DCL-007~DCL-009 추가로 무효 — acts-행전 README "서신은 무효가 된다". DCL-007~009는 모두 design-vision 개정이며 design-vision은 이 서신에 발췌하지 않고 아래 포인터로만 가리킨다 — 발췌 행 변경 0, 표 행 원문 대조 비원문 0)
 >
 > **규격:** `statute-율법/04.development-repentance-회개/epistle-서신-template.md`
 > **이 지역의 개발 계층:** 프론트엔드/UI(03-A 렌더 코어 → 03-B 오디오·타격감 → 03-C 화면·HUD·네트워크) + 인증·보안 봉인 + 로컬 실행 인프라(03-D) (task-wall 4~6단계)
@@ -22,9 +22,9 @@
 - 무효 조건: 이 서신 생성 이후 RTM §5 설계 변경 이력에 새 행이 생겼으면 이 서신은 무효 — 재생성 후 착수한다.
 
 ## 그룹별 원본 열람 지시 (포인터 — 발췌 아님)
-- 03-A 렌더 코어: `design-vision-디자인명세.md` §2.2~§2.5·§2.8·§2.10~§2.13·§4.9·§5.2 — 좌표·색·텍스처·파티클·필터 수치의 원본. 이 서신에는 싣지 않았다(1,453줄 문서 — 그룹 Doer가 원본을 직접 읽는다).
+- 03-A 렌더 코어: `design-vision-디자인명세.md` §2.2~§2.5·§2.8·§2.10~§2.13·§4.9·§5.2 — 좌표·색·텍스처·파티클·필터 수치의 원본. 이 서신에는 싣지 않았다(1,473줄 문서 — 그룹 Doer가 원본을 직접 읽는다). 원본의 `[추가 2026-10-19 — RTM §5 DCL-007·DCL-008·DCL-009]` 주석과 취소선 수치(~~옛 값~~ 새 값)가 현재 값이다.
 - 03-B 오디오·타격감: `design-vision-디자인명세.md` §2.9~§2.10·§4.6 전체(이벤트 ID 표)·§4.7(SFX·AUX·BGM)·§4.8·§6.3.
-- 03-C 화면·HUD·네트워크: 아래 SCR 발췌 + `design-vision-디자인명세.md` §2.1·§2.6~§2.8·§3(와이어프레임 WF-001~WF-009 좌표표)·§4.1~§4.5·§5·§6, `api-gate-성문.md` §3 메시지 상세(API-001~API-031).
+- 03-C 화면·HUD·네트워크: 아래 SCR 발췌 + `design-vision-디자인명세.md` §2.1·§2.6~§2.8·§3(와이어프레임 WF-001~WF-009 좌표표)·§4.1~§4.5·§5·§6, `api-gate-성문.md` §3 메시지 상세(API-001~API-031). 03-C는 03-A·03-B 모듈을 조립만 한다 — 스테이지 구조(design-vision §2.8 DCL-007 주석: letterbox → [screenRoot, HolyLayer, ScreenFx]), 자막 영역 맞춤(§3.5.1 DCL-009 ④), 감소 모드 정의(§2.9 머리 주석·§6.3)를 원본에서 확인한다.
 - 03-D 봉인·실행: 아래 봉인 발췌 + `statute-율법/04.development-repentance-회개/sync-fruit-열매검증-template.md`, `parable-비유/04.development-repentance-회개/security-seal-봉인-example.md`, `.skill/UTIL-census-언약계수.md`.
 
 ## REQ 원문 발췌

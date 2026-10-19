@@ -4,7 +4,7 @@
 // C-002: 예수님 실루엣은 얼굴 없는 단색 빛(shapes-angels JESUS_LIGHT)뿐. HolyLayer는 흔들림 루트 밖(DCL-007 ④)이라 흔들리지 않고,
 // 밝기 필터(screenRoot)도 닿지 않는다. 실루엣보다 위에 그리는 그래픽 0 — 같은 층의 빛 띠는 실루엣 아래에 넣는다.
 // 이벤트 동안 isShielded(side) = true → 03-B는 그 보드로 오는 빛의 화살 연출을 그리지 않는다(§2.13.5 겹침 행).
-import { Container, FillGradient, Graphics } from "pixi.js";
+import { Container, Graphics, Sprite, Texture } from "pixi.js";
 import { buildShape } from "../art/to-pixi.js";
 import { ANGEL_SHAPES, JESUS_LIGHT } from "../art/shapes-angels.js";
 import { EMBLEMS } from "../art/shapes-heroes-armor.js";
@@ -12,28 +12,51 @@ import { GLW } from "./filters.js";
 
 const TAU = Math.PI * 2;
 
-/**
- * 세로 빛기둥 — 가로 단면 = --g-holy (radial: #FFFFFF 0% → #FFF8E7 35% → 투명 70%, §2.1), 아래 끝 1/4은 보드 위로 옅어짐.
- * 피벗 = 위 가운데. @param {number} w @param {number} h
- */
-function beam(w, h) {
-  const c = new Container({ label: "beam" });
-  const across = new FillGradient({
-    type: "linear", start: { x: -w / 2, y: 0 }, end: { x: w / 2, y: 0 }, textureSpace: "global",
-    colorStops: [{ offset: 0.15, color: "rgba(255,248,231,0)" }, { offset: 0.325, color: "#FFF8E7" },
-      { offset: 0.5, color: "#FFFFFF" }, { offset: 0.675, color: "#FFF8E7" }, { offset: 0.85,
-        color: "rgba(255,248,231,0)" }],
-  });
-  const body = h * 0.75;
-  c.addChild(new Graphics().rect(-w / 2, 0, w, body).fill(across));
-  const steps = 8;
-  for (let i = 0; i < steps; i += 1) {
-    const slice = new Graphics().rect(-w / 2, body + ((h - body) * i) / steps, w,
-      (h - body) / steps + 0.5).fill(across);
-    slice.alpha = 1 - (i + 1) / (steps + 1);
-    c.addChild(slice);
+/** 빛기둥 단면 3겹 (RTM §5 DCL-009 ③ — design-vision §4.6.5): [반폭 배율, 최대 투명도, 색] — 바깥 번짐·몸체(--g-holy)·심 */
+const BEAM_LAYERS = [[1.1, 0.16, "255,248,231"], [0.5, 0.5, "255,248,231"], [0.07, 0.9, "255,255,255"]];
+/** §4.6.8 빛 띠 6px × 8줄 투명도 (가운데 최대 0.8) */
+const BAND_ALPHA = [0.15, 0.4, 0.65, 0.8, 0.8, 0.65, 0.4, 0.15];
+const BEAM_FADE = 0.4; // 아래쪽 이 비율 구간에서 투명으로 옅어짐
+/** @type {Texture | null} 구운 빛기둥 텍스처 1장 (모든 기둥 공용 — 실시간 필터 0, NFR-001) */
+let beamTexture = null;
+
+/** --g-holy 단면 비율 [위치, 투명도 배율] — 가운데 → 35% 크림 → 70% 투명 (§2.1) */
+const HOLY_STOPS = [[0, 0], [0.15, 0.35], [0.325, 0.8], [0.5, 1], [0.675, 0.8], [0.85, 0.35], [1, 0]];
+
+/** 빛기둥 텍스처 굽기(1회) — 가로 = 3겹 단면(겹마다 --g-holy), 세로 = 아래 40% 옅어짐 */
+function bakeBeam() {
+  if (beamTexture) return beamTexture;
+  const [W, H] = [128, 256];
+  const cv = Object.assign(document.createElement("canvas"), { width: W, height: H });
+  const g = cv.getContext("2d");
+  const half = W / 2 / BEAM_LAYERS[0][0]; // 몸체 반폭(px) — 바깥 번짐이 텍스처 가장자리에 닿음
+  g.globalCompositeOperation = "lighter";
+  for (const [k, a, rgb] of BEAM_LAYERS) {
+    const grad = g.createLinearGradient(W / 2 - half * k, 0, W / 2 + half * k, 0);
+    for (const [o, m] of HOLY_STOPS) grad.addColorStop(o, `rgba(${rgb},${a * m})`);
+    g.fillStyle = grad;
+    g.fillRect(W / 2 - half * k, 0, 2 * half * k, H);
   }
-  return c;
+  g.globalCompositeOperation = "destination-in";
+  const v = g.createLinearGradient(0, 0, 0, H);
+  for (const [o, m] of [[0, 1], [1 - BEAM_FADE, 0.85], [1, 0]]) v.addColorStop(o, `rgba(0,0,0,${m})`);
+  g.fillStyle = v;
+  g.fillRect(0, 0, W, H);
+  return (beamTexture = Texture.from(cv));
+}
+
+/** 빛기둥 컨테이너(scaleY 자람용) — 피벗 = 위 가운데 @param {number} w 몸체 폭 @param {number} h */
+const beam = (w, h) => new Container({ label: "beam", children: [beamSprite(w, h)] });
+
+/**
+ * 몸체 폭 w(--g-holy 단면) + 바깥 번짐(폭 2.2w) + 흰 심 — 가산 혼합: 빛이 아래 그림에 더해져 블록·천사가 비친다.
+ * @param {number} w @param {number} h
+ */
+function beamSprite(w, h) {
+  const sp = new Sprite({ texture: bakeBeam(), anchor: { x: 0.5, y: 0 }, blendMode: "add" });
+  sp.width = w * 2 * BEAM_LAYERS[0][0];
+  sp.height = h;
+  return sp;
 }
 
 /**
@@ -69,7 +92,6 @@ export function createHolyFx({ pixi, particles, filters, background }) {
     const col = beam(width, Math.max(40, b.y + b.height * 0.5 - ctx.screen.y));
     col.position.set(b.x + b.width / 2, ctx.screen.y);
     root.addChild(col);
-    const glow = filters.holy(col);
     let figure = null;
     let tick = null;
     if (o.angel && ANGEL_SHAPES[o.angel]) {
@@ -90,7 +112,9 @@ export function createHolyFx({ pixi, particles, filters, background }) {
     if (figure) {
       figure.alpha = 0;
       root.addChild(figure);
-      figGlow = o.emblem ? filters.glow(figure, GLW.gold) : null;
+      // 천사 그림 = GLW-holy의 Glow(바깥 빛), 엠블럼 = GLW-gold. 기둥은 구운 번짐이라 필터 0, 흰 날개에 Bloom을 걸면
+      // 형태가 흰 덩어리로 뭉개진다 (RTM §5 DCL-009 ③)
+      figGlow = filters.glow(figure, o.emblem ? GLW.gold : GLW.holy);
     }
     layer.addChild(root);
     col.scale.y = reduced ? 1 : 0;
@@ -105,7 +129,6 @@ export function createHolyFx({ pixi, particles, filters, background }) {
     pixi.animate(500, (t) => { root.alpha = 1 - t; }, {
       delayMs: 220 + 600, onComplete: () => {
         if (tick) live.delete(tick);
-        glow?.release();
         figGlow?.release();
         root.destroy({ children: true });
       },
@@ -182,10 +205,19 @@ export function createHolyFx({ pixi, particles, filters, background }) {
     // 300~900ms 폭 220 세로 빛기둥 + GodrayFilter(HolyLayer 안) · 실루엣 투명도 0→0.55
     // 화면 위 가운데에서 내려오는 한 줄기 빛 — 보드 위쪽 1/4에서 옅어져 실루엣(최대 0.55) 아래 블록이 보이게
     const width = 220 * (b.width / (ctx.me ? ctx.me.rect().width : b.width));
-    const col = beam(width, b.y + b.height * 0.25 - ctx.screen.y);
+    // GodrayFilter는 필터 영역 전체(사각형)에 빛살 안개를 더하므로, 기둥 모양 알파 마스크로 한 줄기 빛 안에만 남긴다
+    // (마스크 없으면 투명도 0에서도 회색 사각형 — RTM §5 DCL-009 ③)
+    const shaftH = b.y + b.height * 0.25 - ctx.screen.y;
+    const col = new Container({ label: "jesus:shaft" });
+    const light = beamSprite(width, shaftH);
+    const mask = beamSprite(width, shaftH);
+    col.addChild(light, mask);
+    col.mask = mask;
     col.position.set(b.x + b.width / 2, ctx.screen.y);
     col.alpha = 0;
-    const band = new Graphics().rect(0, 0, b.width, 48).fill({ color: 0xfff8e7, alpha: 0.8 });
+    // 빛 띠 높이 48·최대 0.8 — 위아래 가장자리를 옅게(빛의 띠로 읽히게, 흰 막대 아님)
+    const band = new Graphics();
+    BAND_ALPHA.forEach((a, i) => band.rect(0, i * 6, b.width, 6).fill({ color: 0xfff8e7, alpha: a }));
     band.position.set(b.x, b.y);
     band.alpha = 0;
     const size = b.height * 0.9;
@@ -194,7 +226,7 @@ export function createHolyFx({ pixi, particles, filters, background }) {
     sil.position.set(b.x + b.width / 2, b.y + b.height / 2);
     // 그리는 순서: 기둥 → 빛 띠 → 실루엣(맨 위 — 실루엣에 닿는 그래픽 0)
     root.addChild(col, band, sil);
-    const rays = filters.godray(col, { frozen: reduced });
+    const rays = filters.godray(light, { frozen: reduced });
     const bloom = filters.holy(sil, 2.0); // §2.13.5 AdvancedBloomFilter bloomScale 2.0
     // §2.13.5 최대 투명도 0.55(상대 화면 0.45) — 번짐 뒤에 거는 AlphaFilter라 Bloom 결과까지 이 값 안 (블록이 보이게)
     const peak = me ? 0.55 : 0.45;

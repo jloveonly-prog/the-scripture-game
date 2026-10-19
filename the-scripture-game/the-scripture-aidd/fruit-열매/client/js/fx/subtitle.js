@@ -11,6 +11,9 @@ export const KO = "'Noto Serif KR', serif";
 /** §4.8 자막 순서: 예수님 > 악한 영 > 천사 > 위인 스킬 > 갑주 */
 const SUB_RANK = { jesus: 5, spirit: 4, angel: 3, hero: 2, armor: 1 };
 const MAX_WAIT = 2;
+/** §3.5.1 내 자막 영역 높이(가로형 보드 칸 30 기준) · 맞춤 최저 배율(18px → 12.6px) */
+const AREA_H = 120;
+const FIT_MIN = 0.7;
 /** §4.6.8 예수님 자막 넓은 영역 — 보드 칸을 가리지 않는 자리 (RTM §5 DCL-008: 가로형 가운데 통로 포함 (616,64) 폭 324,
  * 세로형 내 보드 아래 (16,744) 폭 688) */
 const JESUS_AREA = Object.freeze({ landscape: { x: 616, y: 64, w: 324 }, portrait: { x: 16, y: 744, w: 688 } });
@@ -52,16 +55,37 @@ export function createSubtitle({ el, geometry, isReduced }) {
     }
     if (s.note) lines.push(`<div style="font:400 14px ${KO};color:#9C93B3">${escapeHtml(s.note)}</div>`);
     (s.verseRefs ?? []).forEach((ref, i) => lines.push(verseHtml(ref, !!s.wide && i === 0)));
-    el.innerHTML = lines.join("");
     const g = geometry();
     const b = g.myBoard;
     const wide = s.wide ? JESUS_AREA[g.kind ?? "landscape"] : null;
+    const width = wide ? wide.w : b.cell * 10 - 16;
+    el.innerHTML = `<div>${lines.join("")}</div>`;
     // §3.5.1 내 자막 영역 (296,92) 300×120 = 보드 왼쪽 위 + 8
     Object.assign(el.style, { left: `${wide ? wide.x : b.x + 8}px`, top: `${wide ? wide.y : b.y + 8}px`,
-      width: `${wide ? wide.w : b.cell * 10 - 16}px`, boxSizing: "border-box", background: "rgba(7,6,13,0.55)",
-      padding: "8px 10px",
-      borderRadius: "8px" });
+      width: `${width}px`, boxSizing: "border-box", background: "rgba(7,6,13,0.55)",
+      padding: "8px 10px", borderRadius: "8px", height: "auto", overflow: "visible" });
     gsap.set(el, { xPercent: 0, yPercent: 0, x: 0 });
+    if (!wide) fitArea(/** @type {HTMLElement} */ (el.firstElementChild), width - 20, AREA_H * (b.cell / 30) - 16);
+  }
+
+  /**
+   * §3.5.1 자막 영역 높이 120(보드 칸 30 기준) 안에 맞춤 — 긴 구절이 보드 위쪽 대부분을 가리지 않게 (RTM §5 DCL-009 ④).
+   * 글자는 자르지 않고(C-003 원문 그대로) 배율만 낮춘다: 안쪽 폭 = 폭 ÷ 배율 → 줄 수 감소, 최저 배율 FIT_MIN.
+   * 보일 때 1회만 잰다(레이아웃 읽기 — 트윈 중 아님, §4.9). @param {HTMLElement} inner @param {number} w @param {number} h
+   */
+  function fitArea(inner, w, h) {
+    let k = 1;
+    inner.style.transformOrigin = "0 0";
+    for (;;) {
+      Object.assign(inner.style, { width: `${w / k}px`, transform: k < 1 ? `scale(${k})` : "" });
+      const need = inner.scrollHeight * k;
+      if (need <= h || k <= FIT_MIN) {
+        el.style.height = `${Math.ceil(need) + 16}px`;
+        el.style.overflow = "hidden";
+        return;
+      }
+      k = Math.max(FIT_MIN, k - 0.05);
+    }
   }
 
   /** 등장 y −12→0 240ms power2.out, 유지(기본 2,400ms), 300ms 소멸 / 예수님: 줄마다 투명도 400ms, 600ms 간격 @param {any} s */
@@ -72,7 +96,7 @@ export function createSubtitle({ el, geometry, isReduced }) {
     if (s.wide) {
       gsap.set(el, { opacity: 1, y: 0 });
       // 줄마다 투명도 0→1 400ms, 600ms 간격 (구절 블록 안의 원문·번역·출처 줄 단위)
-      gsap.fromTo(el.querySelectorAll(":scope > div > div"), { opacity: 0 }, { opacity: 1, duration: 0.4,
+      gsap.fromTo(el.querySelectorAll(":scope > div > div > div"), { opacity: 0 }, { opacity: 1, duration: 0.4,
         stagger: 0.6 });
     } else {
       gsap.fromTo(el, { opacity: 0, y: isReduced() ? 0 : -12 }, { opacity: 1, y: 0, duration: 0.24,
