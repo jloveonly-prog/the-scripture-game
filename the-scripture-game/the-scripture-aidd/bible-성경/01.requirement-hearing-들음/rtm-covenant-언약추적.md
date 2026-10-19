@@ -5,7 +5,7 @@
 > **규격:** `statute-율법/01.requirement-hearing-들음/rtm-covenant-언약추적-template.md`
 > **참조 예시:** `parable-비유/01.requirement-hearing-들음/rtm-covenant-언약추적-example.md`
 > **근거 산출물:** [`spec-tablet-명세서.md`](./spec-tablet-명세서.md) (REQ 17 · FR 78 · NFR 8 · C 13), [`usecase-path-사용사례.md`](./usecase-path-사용사례.md) (UC-001~UC-022)
-> **갱신 시점:** Phase 1 완료 — REQ 열 전체 등재 + UC-ID 연결. **Phase 2 완료(2026-10-19)** — 언약추적 갱신 규칙 "Phase 2 완료 시 ARCH-ID, API-ID, TBL-ID 열 채움"에 따라 116행 전부 연결, 상태 ⬜ → 🔄(설계 산출물에만 연결). **Phase 3 완료(2026-10-19)** — "화면 관련 항목 연결 확인"을 §7에 기록(매트릭스 열·상태 변경 없음). 코드 모듈·테스트 ID 열은 Phase 4·5에서 채운다. 이 RTM은 프로젝트 전체에서 단 1개이며 Phase 3~7에서 계속 갱신된다.
+> **갱신 시점:** Phase 1 완료 — REQ 열 전체 등재 + UC-ID 연결. **Phase 2 완료(2026-10-19)** — 언약추적 갱신 규칙 "Phase 2 완료 시 ARCH-ID, API-ID, TBL-ID 열 채움"에 따라 116행 전부 연결, 상태 ⬜ → 🔄(설계 산출물에만 연결). **Phase 3 완료(2026-10-19)** — "화면 관련 항목 연결 확인"을 §7에 기록(매트릭스 열·상태 변경 없음). 코드 모듈·테스트 ID 열은 Phase 4·5에서 채운다. **Phase 4 계획(2026-10-19)** — task-wall 태스크 ↔ REQ 연결을 §8에 기록(§1 매트릭스 열·상태 변경 없음). 이 RTM은 프로젝트 전체에서 단 1개이며 Phase 3~7에서 계속 갱신된다.
 > **Phase 3 근거 산출물:** [`design-vision-디자인명세.md`](../03.design-order-질서/design-vision-디자인명세.md) · [`screen-vision-화면설계.md`](../03.design-order-질서/screen-vision-화면설계.md) (SCR-001~SCR-009)
 > **Phase 2 근거 산출물:** [`architecture-temple-성전설계.md`](../02.architecture-foundation-기초/architecture-temple-성전설계.md) (ARCH-001~ARCH-018), [`api-gate-성문.md`](../02.architecture-foundation-기초/api-gate-성문.md) (API-001~API-031), [`data-ark-법궤.md`](../02.architecture-foundation-기초/data-ark-법궤.md) (TBL-001~TBL-006 원장, TBL-011~TBL-018 콘텐츠 JSON)
 
@@ -217,6 +217,7 @@
 | 최종 판정 | **✅ IRONCLAD** (exit 0) | **✅ IRONCLAD** (exit 0) — 기록의 서 `fruit-열매/history/2026-10-19.md`에 자동 기록됨 | **✅ IRONCLAD** (exit 0) — 기록의 서에 자동 기록됨 |
 
 > AI의 자기신고가 아니라 계수기 출력이 증거다 (UTIL-census-언약계수.md). Phase 4·5·6·7 완료 직전에 `--phase N`으로 다시 계수한다.
+> **Phase 4 계획 시점 계수 (2026-10-19 15:37:55 UTC):** `python .skill/tools-도구/census-count-언약계수.py bible-성경/01.requirement-hearing-들음 --log` → **✅ IRONCLAD** (exit 0) — 실계수 116 (🔄 116), 문서 기재값 5항목 일치, spec-tablet ID 116개 전부 등재. §8 태스크 연결 표 추가 후에도 매트릭스 파싱·수치 불변 확인. `--phase 4`(코드 모듈 열 충족)는 구현 완료 후 TASK-072에서 실행한다.
 
 ---
 
@@ -344,3 +345,130 @@
 | C-013 | N/A (.gitignore 정책) | N/A 판정 |
 
 > 집계: 116개 ID 중 화면 연결 105건 · N/A 판정 11건 (사유 명시) · 미확인 0건. 화면 9개 전부가 1개 이상의 REQ에 연결되고(screen-vision §1), REQ 17건 중 화면이 있는 15건은 전부 SCR에 연결된다.
+
+---
+
+## 8. Phase 4 태스크 연결 (task-wall ↔ REQ — task-wall 정경화 조건 "RTM에 태스크 ↔ REQ 연결 반영")
+
+> **갱신:** 2026-10-19 Phase 4 계획(SKILL-04 1단계) — [`task-wall-성벽.md`](../04.development-repentance-회개/task-wall-성벽.md)의 실행 단위 64개를 116 ID에 연결했다. 미연결 0건(스크립트 대조).
+> **§1 매트릭스와의 관계:** §1의 `코드 모듈` 열은 언약추적 갱신 규칙("Phase 4 완료 시 코드 모듈 열 채움")에 따라 **구현이 끝난 뒤** TASK-072가 실제 파일 경로로 채운다. 계획 단계에서 그 열에 TASK-ID를 미리 적으면 `census --phase 4`가 코드 없이 통과하는 거짓 증거가 되므로, 계획 연결은 이 절에만 적는다. 이 표는 계수 대상 표가 아니다(머리글에 REQ-ID·상태 열 없음). 상태의 원본은 task-wall이다.
+> **지역 열 약어:** 00 = 00.jerusalem-예루살렘, 01 = 01.judaea-유대, 02 = 02.samaria-사마리아, 03 = 03.uttermost-땅끝 (그룹 03-A·03-B·03-C·03-D는 task-wall §1.1).
+
+| ID | 요구사항 요약 | 연결 TASK-ID (task-wall 실행 단위) | 지역 |
+|:---|:---|:---|:---:|
+| REQ-001 | 사용자가 브라우저에서 KJV 성경 기반 실시간 2인 대전 테트리스를 플레이한다 | TASK-008, TASK-010-1, TASK-010-2, TASK-010-3, TASK-010-4, TASK-018, TASK-030, TASK-033, TASK-041, TASK-062-2, TASK-063, TASK-065, TASK-066, TASK-067-1 | 00, 01, 02, 03 |
+| REQ-002 | 사용자는 게스트 닉네임으로 입장한다 | TASK-020-1, TASK-020-2, TASK-020-3, TASK-031, TASK-032, TASK-061, TASK-062-1, TASK-062-2, TASK-064-1, TASK-064-2 | 01, 02, 03 |
+| REQ-003 | 사용자는 위인 4명(다윗·솔로몬·베드로·바울) 중 한 명을 고른다 | TASK-005, TASK-011, TASK-015-1, TASK-015-2, TASK-044-1, TASK-044-2, TASK-044-3, TASK-064-1, TASK-064-2 | 00, 01, 03 |
+| REQ-004 | 사용자는 대전 모드(사람 대 사람, 랜덤 매칭 + 친구 초대 코드)를 고를 수 있다 | TASK-032, TASK-062-1, TASK-062-2, TASK-064-1, TASK-064-2 | 02, 03 |
+| REQ-005 | 사용자는 AI 봇 대전(쉬움·보통·어려움)을 고를 수 있다 | TASK-008, TASK-019, TASK-032, TASK-033, TASK-062-2, TASK-064-1, TASK-064-2, TASK-066 | 00, 01, 02, 03 |
+| REQ-006 | 사용자는 연습 모드를 고를 수 있다 | TASK-018, TASK-032, TASK-062-2, TASK-064-1, TASK-064-2, TASK-066 | 01, 02, 03 |
+| REQ-007 | 줄을 지우면 상대에게 쓰레기 줄과 악한 영(14종)이 공격으로 간다. 서버가 공격을 판정한다 | TASK-005, TASK-008, TASK-011, TASK-012, TASK-013, TASK-014, TASK-030, TASK-033, TASK-044-3, TASK-045, TASK-051-2, TASK-065, TASK-066 | 00, 01, 02, 03 |
+| REQ-008 | 사용자는 믿음 게이지로 위인 스킬과 천사 5종을 쓴다 | TASK-005, TASK-008, TASK-011, TASK-013, TASK-015-1, TASK-015-2, TASK-033, TASK-044-3, TASK-045, TASK-065, TASK-066 | 00, 01, 02, 03 |
+| REQ-009 | 사용자는 전신갑주 6종을 얻어 쓴다 | TASK-005, TASK-010-1, TASK-010-2, TASK-010-3, TASK-010-4, TASK-011, TASK-015-1, TASK-015-2, TASK-016, TASK-033, TASK-044-2, TASK-065, TASK-066 | 00, 01, 02, 03 |
+| REQ-010 | 예수님 "세상을 이기었노라" 이벤트(첨부 A §3.2 원칙 그대로)가 경기당 1회 일어날 수 있다 | TASK-008, TASK-011, TASK-015-1, TASK-015-2, TASK-044-3, TASK-045, TASK-065, TASK-066 | 00, 01, 03 |
+| REQ-011 | 말씀 대결(성경 퀴즈, 60문항 이상)이 있다 | TASK-006, TASK-007, TASK-017, TASK-033, TASK-052, TASK-065, TASK-066 | 00, 01, 02, 03 |
+| REQ-012 | 특수 블록 3종(말씀·여리고 나팔·만나)이 있다 | TASK-008, TASK-010-1, TASK-010-2, TASK-010-3, TASK-010-4, TASK-011, TASK-016, TASK-020-3, TASK-065, TASK-066 | 00, 01, 03 |
+| REQ-013 | 디자인·액션·사운드·재미 요구사항(첨부 A §5 전체)은 필수다. 첨부 B의 체크리스트를 충족해야 한다 | TASK-008, TASK-013, TASK-018, TASK-020-1, TASK-020-2, TASK-020-3, TASK-033, TASK-040, TASK-041, TASK-042, TASK-043, TASK-044-1, TASK-044-2, TASK-044-3, TASK-045, TASK-050-1, TASK-050-2, TASK-051-1, TASK-051-2, TASK-052, TASK-053, TASK-060-1, TASK-060-2, TASK-061, TASK-066, TASK-067-1, TASK-067-2 | 00, 01, 02, 03 |
+| REQ-014 | 경기 결과(전적)가 저장되고 조회된다 | TASK-002, TASK-003, TASK-018, TASK-020-1, TASK-020-2, TASK-020-3, TASK-031, TASK-032, TASK-062-1, TASK-067-1, TASK-067-2 | 00, 01, 02, 03 |
+| REQ-015 | 랭킹(Elo)이 저장되고 조회된다 | TASK-002, TASK-003, TASK-008, TASK-020-1, TASK-020-2, TASK-020-3, TASK-031, TASK-032, TASK-062-1, TASK-067-1, TASK-067-2 | 00, 01, 02, 03 |
+| REQ-016 | 외부 서비스 키 없이 `npm install && npm run dev` 한 번으로 전부 동작해야 한다. Supabase는 환경변수가 있을 때만 쓰는 어댑터로 둔다 | TASK-001-1, TASK-001-2, TASK-001-3, TASK-001-4, TASK-001-5, TASK-002, TASK-003, TASK-004, TASK-009, TASK-034, TASK-070, TASK-071 | 00, 02, 03 |
+| REQ-017 | 테스트: Vitest(단위) + Playwright(브라우저 2개 E2E) | TASK-001-1, TASK-001-2, TASK-001-3, TASK-001-4, TASK-001-5, TASK-009, TASK-070, TASK-072 | 00, 03 |
+| FR-001 | 보드·테트로미노·7-bag | TASK-010-1, TASK-010-4, TASK-041 | 01, 03 |
+| FR-002 | SRS 회전 | TASK-010-1 | 01 |
+| FR-003 | 이동·드롭·홀드·고스트 | TASK-010-2, TASK-010-4, TASK-041, TASK-063 | 01, 03 |
+| FR-004 | 줄 삭제·판정·점수 | TASK-008, TASK-010-2, TASK-010-4 | 00, 01 |
+| FR-005 | 같은 시드 시작 | TASK-010-1, TASK-018, TASK-033, TASK-065 | 01, 02, 03 |
+| FR-006 | 상대 보드 실시간 표시 | TASK-011, TASK-033, TASK-041, TASK-065, TASK-066 | 01, 02, 03 |
+| FR-007 | 승리 조건 | TASK-018, TASK-066, TASK-067-1 | 01, 03 |
+| FR-008 | 실시간 통신 프로토콜 | TASK-030, TASK-032, TASK-033, TASK-034, TASK-062-1, TASK-062-2, TASK-065 | 02, 03 |
+| FR-009 | 상대 이탈 처리 | TASK-018, TASK-033, TASK-066 | 01, 02, 03 |
+| FR-010 | 난이도 곡선 | TASK-008, TASK-010-3, TASK-010-4 | 00, 01 |
+| FR-011 | 조작 입력 | TASK-040, TASK-060-2, TASK-063 | 03 |
+| FR-012 | 게스트 닉네임 입장 | TASK-003, TASK-020-1, TASK-031, TASK-062-1, TASK-062-2, TASK-064-1 | 00, 01, 02, 03 |
+| FR-013 | 캐릭터 선택 화면 | TASK-005, TASK-044-1, TASK-044-2, TASK-044-3, TASK-064-2 | 00, 03 |
+| FR-014 | 다윗 — 물맷돌 | TASK-005, TASK-011, TASK-015-1, TASK-051-2 | 00, 01, 03 |
+| FR-015 | 솔로몬 — 지혜로운 마음 | TASK-005, TASK-011, TASK-015-1 | 00, 01 |
+| FR-016 | 베드로 — 이 반석 위에 | TASK-005, TASK-011, TASK-014, TASK-015-1 | 00, 01 |
+| FR-017 | 바울 — 옥문이 열리다 | TASK-005, TASK-011, TASK-015-1 | 00, 01 |
+| FR-018 | 랜덤 매칭 | TASK-020-1, TASK-032, TASK-064-2 | 01, 02, 03 |
+| FR-019 | 친구 초대 코드 | TASK-008, TASK-032, TASK-064-1, TASK-064-2 | 00, 02, 03 |
+| FR-020 | 대기 취소·대기열 정리 | TASK-032, TASK-062-2, TASK-064-2 | 02, 03 |
+| FR-021 | AI 봇 대전 | TASK-019, TASK-032, TASK-064-2 | 01, 02, 03 |
+| FR-022 | 봇의 말씀 대결 응답 | TASK-017, TASK-019 | 01 |
+| FR-023 | 연습 모드 | TASK-018, TASK-032, TASK-064-2, TASK-066 | 01, 02, 03 |
+| FR-024 | 공격력 계산 | TASK-012 | 01 |
+| FR-025 | 쓰레기 줄 삽입·상쇄 | TASK-010-2, TASK-011, TASK-014 | 01 |
+| FR-026 | 악한 영 소환 결정 | TASK-005, TASK-012 | 00, 01 |
+| FR-027 | 악한 영 1~2등급 효과 | TASK-005, TASK-011, TASK-045 | 00, 01, 03 |
+| FR-028 | 악한 영 3등급 효과 | TASK-005, TASK-011, TASK-013, TASK-045 | 00, 01, 03 |
+| FR-029 | 악한 영 4등급 효과 | TASK-005, TASK-010-2, TASK-011, TASK-045 | 00, 01, 03 |
+| FR-030 | 악한 영 5등급·보스 효과 | TASK-005, TASK-011, TASK-045 | 00, 01, 03 |
+| FR-031 | 방해 상한 규칙 | TASK-008, TASK-011, TASK-013 | 00, 01 |
+| FR-032 | 서버 진행 검증 | TASK-016, TASK-030, TASK-033 | 01, 02 |
+| FR-033 | 믿음 게이지 | TASK-013, TASK-066 | 01, 03 |
+| FR-034 | 위인 스킬 발동 | TASK-015-1, TASK-065, TASK-066 | 01, 03 |
+| FR-035 | 천사 5종 소환 | TASK-005, TASK-011, TASK-015-2, TASK-044-3 | 00, 01, 03 |
+| FR-036 | 갑주 출현·획득 | TASK-010-3, TASK-015-2, TASK-016 | 01 |
+| FR-037 | 갑주 6종 사용 | TASK-005, TASK-011, TASK-015-2, TASK-044-2 | 00, 01, 03 |
+| FR-038 | 상성표 | TASK-005, TASK-009, TASK-015-2 | 00, 01 |
+| FR-039 | "세상을 이기었노라" 이벤트 | TASK-011, TASK-015-1, TASK-044-3, TASK-045 | 01, 03 |
+| FR-040 | 말씀 대결 발생 | TASK-017, TASK-066 | 01, 03 |
+| FR-041 | 진행·판정·보상 | TASK-007, TASK-017, TASK-066 | 00, 01, 03 |
+| FR-042 | 니어미스 연출 | TASK-017, TASK-052, TASK-066 | 01, 03 |
+| FR-043 | 퀴즈 콘텐츠 | TASK-006, TASK-007, TASK-017 | 00, 01 |
+| FR-044 | 말씀 블록 | TASK-010-3, TASK-016 | 01 |
+| FR-045 | 여리고 나팔 블록 | TASK-010-3, TASK-011, TASK-016 | 01 |
+| FR-046 | 만나 블록 | TASK-010-3, TASK-011, TASK-016 | 01 |
+| FR-047 | 단계적 해금 | TASK-010-3, TASK-016, TASK-020-3 | 01 |
+| FR-048 | 아트 방향 | TASK-040, TASK-041, TASK-043, TASK-060-1, TASK-060-2 | 03 |
+| FR-049 | 존재 시각 표현 | TASK-044-1, TASK-044-2, TASK-044-3, TASK-045 | 03 |
+| FR-050 | 폰트 번들 | TASK-060-1, TASK-060-2, TASK-061 | 03 |
+| FR-051 | 조작 연출 | TASK-041, TASK-051-1, TASK-053 | 03 |
+| FR-052 | 삭제 연출 | TASK-042, TASK-051-1, TASK-051-2, TASK-053 | 03 |
+| FR-053 | 공격 연출 | TASK-042, TASK-043, TASK-051-1, TASK-051-2, TASK-053 | 03 |
+| FR-054 | 영·천사·스킬 등장 연출 | TASK-045, TASK-052, TASK-053 | 03 |
+| FR-055 | 위기 연출·위험선 | TASK-010-2, TASK-041, TASK-043, TASK-050-1, TASK-050-2, TASK-053 | 01, 03 |
+| FR-056 | 승리·패배 연출 | TASK-042, TASK-051-1, TASK-051-2, TASK-053, TASK-067-1 | 03 |
+| FR-057 | 연출 세기 옵션 | TASK-051-1, TASK-060-2, TASK-062-1, TASK-063, TASK-067-2 | 03 |
+| FR-058 | 효과음 | TASK-050-1, TASK-050-2 | 03 |
+| FR-059 | 배경음악 | TASK-050-1, TASK-050-2 | 03 |
+| FR-060 | 음량 조절 | TASK-050-1, TASK-050-2, TASK-062-1, TASK-067-2 | 03 |
+| FR-061 | 타격 피드백 동기화 | TASK-050-2, TASK-051-1, TASK-051-2, TASK-052, TASK-053 | 03 |
+| FR-062 | 실력 보정 "은혜(Grace)" | TASK-008, TASK-011, TASK-013, TASK-014, TASK-020-3, TASK-044-1, TASK-052 | 00, 01, 03 |
+| FR-063 | 말씀 카드 | TASK-018, TASK-052, TASK-067-1 | 01, 03 |
+| FR-064 | 감정 표현 리액션 | TASK-008, TASK-033, TASK-052, TASK-066 | 00, 02, 03 |
+| FR-065 | 업적 | TASK-008, TASK-018, TASK-020-3, TASK-044-1, TASK-067-1 | 00, 01, 03 |
+| FR-066 | 개인 기록·성장 수치 | TASK-018, TASK-020-3, TASK-067-1 | 01, 03 |
+| FR-067 | 플레이어 진행 기록 | TASK-002, TASK-003, TASK-020-3 | 00, 01 |
+| FR-068 | 경기 결과 저장 | TASK-002, TASK-003, TASK-018, TASK-020-2, TASK-032 | 00, 01, 02 |
+| FR-069 | 전적 조회 | TASK-003, TASK-020-2, TASK-031, TASK-062-1, TASK-067-2 | 00, 01, 02, 03 |
+| FR-070 | Elo 레이팅 갱신 | TASK-002, TASK-003, TASK-008, TASK-020-1, TASK-020-2, TASK-067-1 | 00, 01, 03 |
+| FR-071 | 랭킹 조회 | TASK-003, TASK-020-2, TASK-031, TASK-062-1, TASK-067-2 | 00, 01, 02, 03 |
+| FR-072 | 저장소 어댑터 자동 전환 | TASK-001-3, TASK-002, TASK-003, TASK-004, TASK-070 | 00, 03 |
+| FR-073 | 단일 명령 로컬 실행 | TASK-001-1, TASK-001-2, TASK-001-3, TASK-034, TASK-070 | 00, 02, 03 |
+| FR-074 | 공용 게임 콘텐츠 | TASK-005, TASK-006, TASK-009 | 00 |
+| FR-075 | 단위 테스트 (Vitest) | TASK-001-5, TASK-010-4 | 00, 01 |
+| FR-076 | 콘텐츠 검사 스크립트 | TASK-009 | 00 |
+| FR-077 | E2E 테스트 (Playwright) | TASK-001-5 | 00 |
+| FR-078 | 화면 흐름 | TASK-060-1, TASK-061, TASK-064-1, TASK-066, TASK-067-1, TASK-067-2 | 03 |
+| NFR-001 | 렌더링 60fps (중급 모바일), 파티클 오브젝트 풀링 | TASK-040, TASK-042 | 03 |
+| NFR-002 | 공격 반영 지연 100ms 이하 | TASK-012, TASK-033, TASK-065 | 01, 02, 03 |
+| NFR-003 | 서버 메시지 스키마·게스트 토큰·닉네임·빈도 검증 | TASK-001-4, TASK-008, TASK-020-1, TASK-030, TASK-031, TASK-033, TASK-034, TASK-064-1, TASK-071 | 00, 01, 02, 03 |
+| NFR-004 | Supabase service role 키 클라이언트 비노출 | TASK-001-3, TASK-001-4, TASK-004, TASK-071 | 00, 03 |
+| NFR-005 | 외부 네트워크 리소스 없이 로컬 번들 자산으로 동작 | TASK-050-1, TASK-050-2, TASK-061 | 03 |
+| NFR-006 | 첨부 B 체크리스트 8항목 충족 매핑 | TASK-053, TASK-072 | 03 |
+| NFR-007 | 라이브러리 최신 안정판 lockfile 고정, 2주 미만 버전 회피 | TASK-001-1, TASK-001-2, TASK-001-3 | 00 |
+| NFR-008 | 수집 정보 최소화 (닉네임·게스트 ID·토큰·경기 기록) | TASK-001-4, TASK-002, TASK-020-1, TASK-071 | 00, 01, 03 |
+| C-001 | 현금 결제·가챠 영구 금지 | TASK-008, TASK-016, TASK-071 | 00, 01, 03 |
+| C-002 | 예수님 표현 원칙 (선택 불가, 빛·실루엣, 경기당 1회 이벤트) | TASK-015-1, TASK-044-3, TASK-045, TASK-071 | 01, 03 |
+| C-003 | KJV 1769 원문, 한국어 직접 번역, 출처 장·절 표기 | TASK-006, TASK-007, TASK-052 | 00, 03 |
+| C-004 | 외부 서비스 키 0개로 동작 | TASK-001-3, TASK-004, TASK-070 | 00, 03 |
+| C-005 | 기술 스택 고정 (Vite·PixiJS v8·Workers+DO·DO SQLite·Vitest·Playwright 등) | TASK-001-1, TASK-001-2, TASK-001-3 | 00 |
+| C-006 | Socket.IO·Express 미사용 | TASK-030, TASK-034, TASK-062-2 | 02, 03 |
+| C-007 | 녹음 음원·일러스트 미사용 (코드 합성·코드 그래픽) | TASK-044-1, TASK-044-2, TASK-044-3, TASK-050-1, TASK-050-2 | 03 |
+| C-008 | 이번 실행 제외 범위 구현 금지 | TASK-072 | 03 |
+| C-009 | 채팅 없음 (리액션만) | TASK-052, TASK-066 | 03 |
+| C-010 | KJV 근거 없는 존재 미등장, 모든 캐릭터 근거 구절 표시 | TASK-005, TASK-006, TASK-009, TASK-044-3 | 00, 03 |
+| C-011 | 고어·선정 표현 금지 (전 연령) | TASK-005, TASK-044-1, TASK-044-2, TASK-044-3, TASK-045 | 00, 03 |
+| C-012 | 소스는 fruit-열매/ 아래 첨부 A §4.5 구조 | TASK-001-1 | 00 |
+| C-013 | backup/ 폴더 git 미커밋·비공개 | TASK-001-1 | 00 |
