@@ -2,7 +2,7 @@
 
 > ⚠️ **파생 문서(Derived).** 이 서신은 원본이 아니다. 직접 수정 금지 — 원본을 고친 뒤 이 서신을 재생성하라.
 > 원본: `bible-성경/01.requirement-hearing-들음/spec-tablet-명세서.md`, `bible-성경/03.design-order-질서/screen-vision-화면설계.md`, `bible-성경/02.architecture-foundation-기초/api-gate-성문.md` (§1 목록·§2 공통 규약·§4 에러 코드), `bible-성경/02.architecture-foundation-기초/architecture-temple-성전설계.md` (§10 보안), `statute-율법/04.development-repentance-회개/security-seal-봉인.md` (봉인 계명)
-> 생성일: 2026-10-19 / 생성 기준: RTM 설계 변경 이력 최종 행 = 2026-10-19 DCL-004 (rtm-covenant-언약추적.md §5 — DCL-001 data-ark §6.1 부록·§7, DCL-002 data-ark TBL-018 `rateLimit`, DCL-003 data-ark TBL-018 `gravity.accelAfterMs`·`ledger.*`, DCL-004 architecture ARCH-002·ARCH-013 착지 평가 위치 + data-ark TBL-018 `placement.weights`) · **재생성 2026-10-19 W-01** (W-00 재생성본은 DCL-003·DCL-004 추가로 무효 — acts-행전 README "서신은 무효가 된다")
+> 생성일: 2026-10-19 / 생성 기준: RTM 설계 변경 이력 최종 행 = 2026-10-19 DCL-006 (rtm-covenant-언약추적.md §5 — DCL-001 data-ark §6.1 부록·§7, DCL-002 data-ark TBL-018 `rateLimit`, DCL-003 data-ark TBL-018 `gravity.accelAfterMs`·`ledger.*`, DCL-004 architecture ARCH-002·ARCH-013 착지 평가 위치 + data-ark TBL-018 `placement.weights`, DCL-005 data-ark TBL-018 `net.joinTimeoutMs`·`net.readyTimeoutMs`, DCL-006 data-ark TBL-018 `bot.*` 난이도 수치·`lineBias`·`biasMaxHeight`) · **재생성 2026-10-19 W-02** (W-01 재생성본은 DCL-005·DCL-006 추가로 무효 — acts-행전 README "서신은 무효가 된다")
 >
 > **규격:** `statute-율법/04.development-repentance-회개/epistle-서신-template.md`
 > **이 지역의 개발 계층:** 프론트엔드/UI(03-A 렌더 코어 → 03-B 오디오·타격감 → 03-C 화면·HUD·네트워크) + 인증·보안 봉인 + 로컬 실행 인프라(03-D) (task-wall 4~6단계)
@@ -704,7 +704,7 @@ Phase 4가 반드시 받아야 할 정경 결정:
 
 — 출처: bible-성경/02/architecture-temple-성전설계.md §1 ARCH-002, ARCH-013
 
-### TBL-018: rules.json (규칙 수치 — 콘텐츠) — 발췌: 03 클라이언트가 읽는 엔진·힌트 행 (DCL-003·DCL-004 영향)
+### TBL-018: rules.json (규칙 수치 — 콘텐츠) — 발췌: 03 클라이언트가 읽는 엔진·힌트·소켓 행 (DCL-003·DCL-004·DCL-005 영향)
 
 > **목적:** spec-tablet §4.2 머리말이 Phase 2에 위임한 **모든 수치의 단일 원천**. 서버 판정과 클라이언트 표시가 같은 값을 읽는다 — 화면·코드 하드코딩 금지
 > **연결 REQ:** REQ-001, REQ-005, REQ-007~REQ-013, REQ-015, FR-004, FR-010, FR-019, FR-021~FR-047, FR-062, FR-064, FR-065, FR-070, NFR-003
@@ -722,8 +722,10 @@ Phase 4가 반드시 받아야 할 정경 결정:
 | `heroSkills.understanding_heart` | cost 40, cooldownMs 20000, hintMs 10000 | — | FR-015 |
 | `angels.gabriel` | cost 40, cooldownMs 20000, pieces 7 | — | FR-035 |
 | `placement.weights` | `{"aggregateHeight": -0.510066, "lines": 0.760666, "holes": -0.35663, "bumpiness": -0.184483}` | 가중치 | **[추가 2026-10-19 — RTM §5 DCL-004]** 착지 평가 점수 = Σ 가중치 × 특징(집계 높이·지운 줄·구멍·울퉁불퉁함). FR-015 솔로몬·FR-035 가브리엘 "최적 착지 위치 힌트" = 이 점수가 가장 큰 착지(`client/js/engine/placement.js`, 클라이언트 로컬 엔진). FR-021 봇은 같은 점수에 `bot.*`의 `evalNoise`·`mistakeRate`를 더한다(난이도 차이는 `bot.*`만). 값 = 01 지역 D-01 구현 상수(공개 휴리스틱) 그대로 이전 — 새 수치 발명 0 |
+| `net.stateHz` | 12 | 회/초 | FR-006 "초당 10~15회" 안 |
+| `net.joinTimeoutMs` / `net.readyTimeoutMs` | 5000 / 10000 | ms | **[추가 2026-10-19 — RTM §5 DCL-005]** 로비 소켓 연결 후 `join` 기한(API-005)·방 소켓 연결 후 `ready` 기한(API-006) — 넘으면 `error AUTH_TIMEOUT` + Close 4001 (api-gate §4.3). api-gate에만 있던 값을 단일 원천으로 올림, 값 불변 |
 
-— 출처: bible-성경/02/data-ark-법궤.md TBL-018 (board · gravity · placement · heroSkills.understanding_heart · angels.gabriel 행만 — 원문 그대로)
+— 출처: bible-성경/02/data-ark-법궤.md TBL-018 (board · gravity · placement · heroSkills.understanding_heart · angels.gabriel · net 행만 — 원문 그대로)
 
 ### 1. API 전체 목록
 

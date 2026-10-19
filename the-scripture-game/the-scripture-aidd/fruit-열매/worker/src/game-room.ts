@@ -2,7 +2,6 @@
 // TASK-033 | REQ-001 REQ-005 REQ-006 REQ-007 REQ-013 REQ-014 FR-005 FR-006 FR-008 FR-009 FR-021 FR-023 FR-068 NFR-002
 // NFR-003 | ARCH-011 | API-006 API-010(setup) API-011~API-031 | data-ark §8.2 | D-07 D-08 D-10 | architecture §9.7
 import { DurableObject } from "cloudflare:workers";
-import { BotPlayer } from "./bot/bot-player";
 import { rules } from "./content";
 import type { Env } from "./env";
 import type { RoomSetup } from "./lobby/pairing";
@@ -11,8 +10,9 @@ import { ledgerStub } from "./matchmaker";
 import { CLOSE_NORMAL, CLOSE_REASON, ROOM_IN, type WsErrorCode } from "./protocol/messages";
 import { LIMITED_KINDS, SocketRateLimiter, type LimitedKind } from "./protocol/rate-limit";
 import { parseEnvelope, ROOM_ID_PATTERN } from "./protocol/validate";
+import { BotDriver } from "./room/bot-driver";
 import {
-  botTick, freshMemo, onAnswer, onArmor, onClear, onReaction, onReady, onSkill, onState, onTopout, type RoomRuntime,
+  freshMemo, onAnswer, onArmor, onClear, onReaction, onReady, onSkill, onState, onTopout, type RoomRuntime,
   type SlotMemo,
 } from "./room/handlers";
 import {
@@ -43,9 +43,9 @@ export class GameRoom extends DurableObject<Env> {
   private setupData: RoomSetup | null = null;
   private loaded = false;
   private match: MatchState | null = null;
-  private bot: BotPlayer | null = null;
-  private botRunning = false;
-  private botPaused = false;
+  private bot: BotDriver | null = null;
+  /** 이번 라운드 진행 시작(카운트다운 끝) — FR-032 초당 진행 검사의 기준 시각 */
+  private roundActiveAt = 0;
   private finished = false;
   private aborting = false;
   private readonly outbox = new Outbox();
@@ -57,10 +57,11 @@ export class GameRoom extends DurableObject<Env> {
     now: () => Date.now(),
     random: serverRandom,
     randomUint32: () => crypto.getRandomValues(new Uint32Array(1))[0],
-    send: (slot, type, data) => (this.bot?.slot === slot ? this.toBot(type, data) : this.outbox.send(slot, type, data)),
+    send: (slot, type, data) => (this.bot?.bot.slot === slot ? this.bot.deliver(type, data)
+      : this.outbox.send(slot, type, data)),
     broadcast: (type, data) => {
       this.outbox.broadcast(type, data);
-      if (this.bot) this.toBot(type, data);
+      this.bot?.deliver(type, data);
     },
     schedule: (delayMs, fn) => this.schedule(delayMs, fn),
   };
@@ -205,7 +206,7 @@ export class GameRoom extends DurableObject<Env> {
       ctx: this.ctxRoom, match: this.match, setup, outbox: this.outbox,
       memo: (slot) => {
         let memo = self.memos.get(slot);
-        if (!memo) self.memos.set(slot, (memo = freshMemo()));
+        if (!memo) self.memos.set(slot, (memo = freshMemo(self.roundActiveAt)));
         return memo;
       },
       verifyGuest: (token) => ledgerStub(self.env).verifyGuest(token),
@@ -225,48 +226,23 @@ export class GameRoom extends DurableObject<Env> {
   private createMatchState(setup: RoomSetup): MatchState {
     const botSlot = setup.config.slots.find((s) => s.isBot);
     if (botSlot && setup.config.botLevel) {
-      this.bot = new BotPlayer(botSlot.slot, setup.config.botLevel, botSlot.heroId, rules, ARMOR_IDS, serverRandom);
+      this.bot = new BotDriver(botSlot.slot, setup.config.botLevel, botSlot.heroId, ARMOR_IDS, serverRandom, {
+        runtime: () => (this.finished ? null : this.runtime()), schedule: (ms, fn) => this.schedule(ms, fn), rules,
+      });
     }
     return createMatch(setup.config, {
       onRoundStart: (_round, seed, stage) => {
         this.memos.clear();
         const now = Date.now();
+        this.roundActiveAt = now + rules.match.countdownMs;
         // FR-005 봇도 사람과 같은 seed·stage, D-18 낙하 곡선 기준 = 경기 경과 (start.matchElapsedMs와 같은 계산)
         if (this.bot && this.match) {
           this.bot.startRound(seed, stage, now, matchElapsedMs(this.match, now + rules.match.countdownMs));
-          this.startBotLoop();
         }
       },
       onEnd: (end) => void this.finish(end),
-      botAnswers: (item) => (this.bot ? [this.bot.planQuizAnswer(item)] : []),
+      botAnswers: (item) => (this.bot ? [this.bot.bot.planQuizAnswer(item)] : []),
     });
-  }
-
-  /** D-10 봇 틱 — 1000 / net.stateHz ms마다 (API-020 "봇 틱 초당 12회") */
-  private startBotLoop(): void {
-    if (this.botRunning || !this.bot) return;
-    this.botRunning = true;
-    const tick = (): void => {
-      const rt = this.runtime();
-      if (!rt || !this.bot || rt.match.phase === "ended") {
-        this.botRunning = false;
-        return;
-      }
-      this.botPaused = botTick(rt, this.bot, Date.now(), this.botPaused);
-      // botTick이 Top-out으로 경기를 끝냈을 수 있다 (phase는 호출 뒤 다시 읽는다)
-      if (this.isOver()) this.botRunning = false;
-      else this.schedule(1000 / rules.net.stateHz, tick);
-    };
-    this.schedule(1000 / rules.net.stateHz, tick);
-  }
-
-  /** 봇 슬롯으로 가는 판정 결과 → 봇 엔진 (API-021·API-022·API-023 — apply-*.js와 같은 규칙) */
-  private toBot(type: string, data: unknown): void {
-    const bot = this.bot;
-    if (!bot) return;
-    if (type === "attack") bot.onAttack(data as Parameters<BotPlayer["onAttack"]>[0]);
-    else if (type === "garbage") bot.onGarbage(data as Parameters<BotPlayer["onGarbage"]>[0]);
-    else if (type === "effect") bot.onEffect(data as Parameters<BotPlayer["onEffect"]>[0]);
   }
 
   /** devguide §3.3 타이머 콜백마다 try/catch → 경기 무효 (UC-005 E2) */
@@ -310,6 +286,8 @@ export class GameRoom extends DurableObject<Env> {
       log.event("storage_fail", { code: "STORAGE_UNAVAILABLE" });
     }
     this.outbox.closeAll(CLOSE_NORMAL, CLOSE_REASON.matchEnd);
+    // `ready` 전 소켓 — 인증 기한 타이머를 위에서 지웠으므로 여기서 닫는다 (끝난 방에 소켓이 남지 않게)
+    for (const ws of this.ctx.getWebSockets()) if (this.slotOf(ws) === null) this.outbox.fail(ws, "ROOM_NOT_FOUND");
     try {
       await this.ctx.storage.deleteAll();
     } catch {
@@ -326,10 +304,6 @@ export class GameRoom extends DurableObject<Env> {
       recordMatch: (report) => stub.recordMatch(report) as Promise<RecordOutcome>,
       recordPractice: (report) => stub.recordPractice(report) as Promise<PracticeOutcome>,
     };
-  }
-
-  private isOver(): boolean {
-    return this.finished || !this.match || this.match.phase === "ended";
   }
 
   private slotOf(ws: WebSocket): Slot | null {

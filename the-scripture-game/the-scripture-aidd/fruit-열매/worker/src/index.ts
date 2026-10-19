@@ -60,8 +60,9 @@ export async function handleFetch(request: Request, env: Env, _ctx?: ExecutionCo
       const ns = env.MATCHMAKER;
       return await ns.get(ns.idFromName("global")).fetch(request);
     }
-    const roomId = decodeURIComponent((roomMatch as RegExpExecArray)[1]);
-    // API-006 ROOM_NOT_FOUND 404 — UUID v4 형식 오류 (설정 없는 방은 소켓 수립 후 GameRoom이 4004)
+    // API-006 ROOM_NOT_FOUND 404 — UUID v4 형식 오류 (설정 없는 방은 소켓 수립 후 GameRoom이 4004). UUID는 퍼센트 인코딩이
+    // 필요 없으므로 디코딩하지 않는다 (W-02: 잘못된 `%` 시퀀스가 decodeURIComponent 예외 → 500이 되던 경로 제거)
+    const roomId = (roomMatch as RegExpExecArray)[1];
     if (!ROOM_ID_PATTERN.test(roomId)) return error("ROOM_NOT_FOUND");
     const ns = env.GAME_ROOM;
     return await ns.get(ns.idFromName(roomId.toLowerCase())).fetch(request);

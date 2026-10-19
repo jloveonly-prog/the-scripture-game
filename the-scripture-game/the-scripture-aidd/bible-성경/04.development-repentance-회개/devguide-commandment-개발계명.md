@@ -198,6 +198,7 @@ fruit-열매/
 │   │   ├── room/
 │   │   │   ├── angels.ts                    # TASK-015-2 ~170
 │   │   │   ├── armor.ts                     # TASK-015-2 ~170
+│   │   │   ├── bot-driver.ts                # TASK-033 ~90 (W-02 분할)
 │   │   │   ├── effects.ts                   # TASK-013 ~190
 │   │   │   ├── garbage.ts                   # TASK-014 ~170
 │   │   │   ├── handlers.ts                  # TASK-033 ~260
@@ -271,6 +272,7 @@ fruit-열매/
 | L-13 | 포트 사전 점검 스크립트, 실행 안내 문서 | `scripts/check-ports.mjs`, `README.md` | ARCH-017 | UC-021 E1 "해결 방법 출력", data-ark §7 "로컬 초기화 — 문서화" |
 | L-14 | 원장 단위 테스트용 SqlStorage 모사 | `worker/test/helpers/sql-storage-fake.ts` | ARCH-018 | task-wall A-04 — 테스트 전용, 런타임 번들에 포함되지 않음 |
 | L-15 | 로비 흐름을 Matchmaker DO 셸·원장 RPC 파사드에서 분리 (D-02 2026-10-19 — matchmaker.ts 실측 401줄) | `lobby/lobby-flow.ts` | ARCH-010 | task-wall §4.2 "300줄 넘으면 분할" + L-02와 같은 근거(Matchmaker 셸에는 소켓 분기·RPC만). cloudflare:workers 비의존 |
+| L-16 | 봇 구동(틱 루프·봇 줄 삭제 → 공용 applyClear·판정 결과 → 봇 엔진)을 GameRoom DO 셸·수신 핸들러에서 분리 (W-02 2026-10-19 — game-room.ts 실측 357줄) | `room/bot-driver.ts` | ARCH-011, ARCH-013 | task-wall §4.2 "300줄 넘으면 분할" + L-01과 같은 근거(DO 셸에는 소켓·타이머·config만). cloudflare:workers 비의존 |
 
 > 위 14건 모두 **기능 추가가 아니라 책임 분할**이다. 새 화면·새 메시지·새 테이블·새 수치는 0개 (P4-002).
 
@@ -387,11 +389,11 @@ export async function postGuests(request: Request, env: Env): Promise<Response> 
 | 방 판정 `worker/src/room/*` (handlers·outbox 제외) | REQ-001, REQ-003, REQ-006~REQ-012 | ARCH-011 | TASK-013~TASK-018 | 01 | ✅ | ✅ |
 | AI 봇 `worker/src/bot/` + 착지 평가 `client/js/engine/placement.js` (DCL-004) | REQ-005, FR-015, FR-035 | ARCH-013, ARCH-002 | TASK-019 | 01 | ✅ | ✅ |
 | 원장 서비스 `worker/src/services/` | REQ-002, REQ-013~REQ-015 | ARCH-014 | TASK-020-1~TASK-020-3 | 01 | ✅ | ✅ |
-| 프로토콜 `worker/src/protocol/` | REQ-001, REQ-007, NFR-003 | ARCH-015 | TASK-030 | 02 | 🔄 | ⬜ |
-| REST `worker/src/routes/` | REQ-002, REQ-014, REQ-015 | ARCH-009 | TASK-031 | 02 | 🔄 | ⬜ |
-| Matchmaker `worker/src/matchmaker.ts`, `lobby/` | REQ-004~REQ-006 | ARCH-010 | TASK-032 | 02 | 🔄 | ⬜ |
-| GameRoom `worker/src/game-room.ts`, `room/handlers.ts`, `room/outbox.ts` | REQ-001, REQ-005, REQ-007~REQ-011 | ARCH-011 | TASK-033 | 02 | 🔄 | ⬜ |
-| Worker 진입 `worker/src/index.ts` | REQ-016 | ARCH-009 | TASK-034 | 02 | 🔄 | ⬜ |
+| 프로토콜 `worker/src/protocol/` | REQ-001, REQ-007, NFR-003 | ARCH-015 | TASK-030 | 02 | ✅ | ✅ |
+| REST `worker/src/routes/` | REQ-002, REQ-014, REQ-015 | ARCH-009 | TASK-031 | 02 | ✅ | ✅ |
+| Matchmaker `worker/src/matchmaker.ts`, `lobby/` | REQ-004~REQ-006 | ARCH-010 | TASK-032 | 02 | ✅ | ✅ |
+| GameRoom `worker/src/game-room.ts`, `room/handlers.ts`, `room/outbox.ts`, `room/bot-driver.ts` | REQ-001, REQ-005, REQ-007~REQ-011 | ARCH-011 | TASK-033 | 02 | ✅ | ✅ |
+| Worker 진입 `worker/src/index.ts` | REQ-016 | ARCH-009 | TASK-034 | 02 | ✅ | ✅ |
 | 렌더 `client/js/render/`, `client/js/art/` | REQ-013 | ARCH-004 | TASK-040~TASK-045 | 03-A | ⬜ | ⬜ |
 | 오디오 `client/js/audio/` | REQ-013 | ARCH-006 | TASK-050-1, TASK-050-2 | 03-B | ⬜ | ⬜ |
 | 연출 `client/js/fx/` | REQ-011, REQ-013 | ARCH-005 | TASK-051-1~TASK-053 | 03-B | ⬜ | ⬜ |

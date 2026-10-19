@@ -37,6 +37,24 @@ export class BodyError extends Error {
   }
 }
 
+/** 본문을 maxBytes까지만 읽는다 — Content-Length 없는 청크 본문도 상한을 넘는 순간 멈춘다 (메모리 보호) */
+async function readLimited(request: Request, maxBytes: number): Promise<Uint8Array> {
+  const reader = request.body?.getReader();
+  if (!reader) return new Uint8Array(0);
+  const out = new Uint8Array(maxBytes);
+  let size = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) return out.subarray(0, size);
+    if (size + value.byteLength > maxBytes) {
+      await reader.cancel().catch(() => undefined);
+      throw new BodyError("PAYLOAD_TOO_LARGE");
+    }
+    out.set(value, size);
+    size += value.byteLength;
+  }
+}
+
 /**
  * api-gate §2 REST 본문 최대 rules.rateLimit.maxRestBodyBytes(1,024B) — Content-Length와 실제 바이트 둘 다 검사.
  * JSON 객체가 아니면 BAD_REQUEST (API-001 "JSON 파싱 실패·본문 없음").
@@ -44,8 +62,7 @@ export class BodyError extends Error {
 export async function readJson(request: Request, maxBytes: number): Promise<Record<string, unknown>> {
   const declared = Number(request.headers.get("content-length") ?? "0");
   if (Number.isFinite(declared) && declared > maxBytes) throw new BodyError("PAYLOAD_TOO_LARGE");
-  const buffer = await request.arrayBuffer();
-  if (buffer.byteLength > maxBytes) throw new BodyError("PAYLOAD_TOO_LARGE");
+  const buffer = await readLimited(request, maxBytes);
   if (buffer.byteLength === 0) throw new BodyError("BAD_REQUEST");
   let parsed: unknown;
   try {

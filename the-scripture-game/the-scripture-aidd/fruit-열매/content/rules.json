@@ -131,9 +131,21 @@
     "pattern": "^[가-힣A-Za-z0-9_]{2,12}$"
   },
   "bot": {
-    "easy": { "moveIntervalMs": 700, "evalNoise": 0.6, "mistakeRate": 0.25, "quizAccuracy": 0.4, "quizDelayMs": [5000, 9000] },
-    "normal": { "moveIntervalMs": 400, "evalNoise": 0.25, "mistakeRate": 0.1, "quizAccuracy": 0.65, "quizDelayMs": [3500, 7000] },
-    "hard": { "moveIntervalMs": 180, "evalNoise": 0.05, "mistakeRate": 0.02, "quizAccuracy": 0.85, "quizDelayMs": [2000, 5000] }
+    "easy": {
+      "moveIntervalMs": 700, "evalNoise": 0.2, "mistakeRate": 0.1,
+      "lineBias": [0, 0, 0, 0, 0], "biasMaxHeight": 0,
+      "quizAccuracy": 0.4, "quizDelayMs": [5000, 9000]
+    },
+    "normal": {
+      "moveIntervalMs": 400, "evalNoise": 0.1, "mistakeRate": 0.04,
+      "lineBias": [0, -3, 0, 2, 6], "biasMaxHeight": 12,
+      "quizAccuracy": 0.65, "quizDelayMs": [3500, 7000]
+    },
+    "hard": {
+      "moveIntervalMs": 180, "evalNoise": 0.05, "mistakeRate": 0.02,
+      "lineBias": [0, -6, -1, 4, 12], "biasMaxHeight": 12,
+      "quizAccuracy": 0.85, "quizDelayMs": [2000, 5000]
+    }
   },
   "placement": {
     "weights": { "aggregateHeight": -0.510066, "lines": 0.760666, "holes": -0.35663, "bumpiness": -0.184483 }

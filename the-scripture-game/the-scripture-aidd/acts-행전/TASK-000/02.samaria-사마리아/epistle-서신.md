@@ -2,7 +2,7 @@
 
 > ⚠️ **파생 문서(Derived).** 이 서신은 원본이 아니다. 직접 수정 금지 — 원본을 고친 뒤 이 서신을 재생성하라.
 > 원본: `bible-성경/01.requirement-hearing-들음/spec-tablet-명세서.md`, `bible-성경/02.architecture-foundation-기초/api-gate-성문.md`, `bible-성경/02.architecture-foundation-기초/architecture-temple-성전설계.md` (§8 시퀀스·§10 보안), `bible-성경/02.architecture-foundation-기초/data-ark-법궤.md` (§8 휘발 상태)
-> 생성일: 2026-10-19 / 생성 기준: RTM 설계 변경 이력 최종 행 = 2026-10-19 DCL-004 (rtm-covenant-언약추적.md §5 — DCL-001 data-ark §6.1 부록·§7, DCL-002 data-ark TBL-018 `rateLimit`, DCL-003 data-ark TBL-018 `gravity.accelAfterMs`·`ledger.*`, DCL-004 architecture ARCH-002·ARCH-013 착지 평가 위치 + data-ark TBL-018 `placement.weights`) · **재생성 2026-10-19 W-01** (W-00 재생성본은 DCL-003·DCL-004 추가로 무효 — acts-행전 README "서신은 무효가 된다")
+> 생성일: 2026-10-19 / 생성 기준: RTM 설계 변경 이력 최종 행 = 2026-10-19 DCL-006 (rtm-covenant-언약추적.md §5 — DCL-001 data-ark §6.1 부록·§7, DCL-002 data-ark TBL-018 `rateLimit`, DCL-003 data-ark TBL-018 `gravity.accelAfterMs`·`ledger.*`, DCL-004 architecture ARCH-002·ARCH-013 착지 평가 위치 + data-ark TBL-018 `placement.weights`, DCL-005 data-ark TBL-018 `net.joinTimeoutMs`·`net.readyTimeoutMs`, DCL-006 data-ark TBL-018 `bot.*` 난이도 수치·`lineBias`·`biasMaxHeight`) · **재생성 2026-10-19 W-02** (W-01 재생성본은 DCL-005·DCL-006 추가로 무효 — acts-행전 README "서신은 무효가 된다")
 >
 > **규격:** `statute-율법/04.development-repentance-회개/epistle-서신-template.md`
 > **이 지역의 개발 계층:** API 엔드포인트 (성문) — WS 프로토콜 검증·속도 제한, REST 핸들러, Matchmaker·GameRoom Durable Object, Worker 진입 라우터 (task-wall 3단계)
@@ -1469,7 +1469,7 @@ sequenceDiagram
 
 — 출처: bible-성경/02/architecture-temple-성전설계.md §10
 
-### TBL-018: rules.json (규칙 수치 — 콘텐츠) — 발췌: 02 성문이 읽는 행 (속도 제한·진행 검증·원장 페이지·랭킹·초대·닉네임·리액션)
+### TBL-018: rules.json (규칙 수치 — 콘텐츠) — 발췌: 02 성문이 읽는 행 (속도 제한·진행 검증·원장 페이지·랭킹·초대·닉네임·리액션·소켓 기한·봇 난이도)
 
 > **목적:** spec-tablet §4.2 머리말이 Phase 2에 위임한 **모든 수치의 단일 원천**. 서버 판정과 클라이언트 표시가 같은 값을 읽는다 — 화면·코드 하드코딩 금지
 > **연결 REQ:** REQ-001, REQ-005, REQ-007~REQ-013, REQ-015, FR-004, FR-010, FR-019, FR-021~FR-047, FR-062, FR-064, FR-065, FR-070, NFR-003
@@ -1482,8 +1482,13 @@ sequenceDiagram
 | `progressCheck.maxPiecesPerSecond` | 10 | 개/초 | FR-032 "초당 비정상 횟수" |
 | `ledger.tokenCacheSize` / `ledger.leaderboardCacheMs` / `ledger.leaderboardTop` / `ledger.historyPageDefault` / `ledger.historyPageMax` | 1000 / 5000 / 100 / 20 / 50 | 건 / ms / 명 / 건 / 건 | **[추가 2026-10-19 — RTM §5 DCL-003]** 원장 서비스 수치: 토큰 검증 LRU 1,000건(architecture §4 캐시 전략, 이 문서 §5), 랭킹 상위 캐시 5초 TTL(§5), 랭킹 상위 100명(FR-071), 전적 페이지 기본 20·최대 50(api-gate §2 페이징) — 다른 정경 문서에만 있던 값을 단일 원천으로 올림, 값 불변 |
 | `reactions` | `[{"id":"amen","emoji":"🙏","label_ko":"아멘"},{"id":"hallelujah","emoji":"🔥","label_ko":"할렐루야"},{"id":"angel","emoji":"😇","label_ko":"😇"}]` | — | FR-064, C-009 |
+| `net.stateHz` | 12 | 회/초 | FR-006 "초당 10~15회" 안 |
+| `net.joinTimeoutMs` / `net.readyTimeoutMs` | 5000 / 10000 | ms | **[추가 2026-10-19 — RTM §5 DCL-005]** 로비 소켓 연결 후 `join` 기한(API-005)·방 소켓 연결 후 `ready` 기한(API-006) — 넘으면 `error AUTH_TIMEOUT` + Close 4001 (api-gate §4.3). api-gate에만 있던 값을 단일 원천으로 올림, 값 불변 |
+| `bot.easy` | moveIntervalMs 700, ~~evalNoise 0.6, mistakeRate 0.25~~ **evalNoise 0.2, mistakeRate 0.10, lineBias [0, 0, 0, 0, 0], biasMaxHeight 0**, quizAccuracy 0.40, quizDelayMs [5000, 9000] | — | FR-021, FR-022 · **[개정 2026-10-19 — RTM §5 DCL-006]** |
+| `bot.normal` | moveIntervalMs 400, ~~evalNoise 0.25, mistakeRate 0.10~~ **evalNoise 0.1, mistakeRate 0.04, lineBias [0, −3, 0, 2, 6], biasMaxHeight 12**, quizAccuracy 0.65, quizDelayMs [3500, 7000] | — | FR-021, FR-022 · **[개정 2026-10-19 — RTM §5 DCL-006]** |
+| `bot.hard` | moveIntervalMs 180, evalNoise 0.05, mistakeRate 0.02, **lineBias [0, −6, −1, 4, 12], biasMaxHeight 12**, quizAccuracy 0.85, quizDelayMs [2000, 5000] | — | FR-021, FR-022 · **[개정 2026-10-19 — RTM §5 DCL-006]** `lineBias[n]` = n줄 삭제 착지에 더하는 봇 전용 점수 보정(`placement.weights` 점수 단위, 힌트 점수 불변), 가장 높은 열 > `biasMaxHeight`면 보정 0(생존 우선) |
 
-— 출처: bible-성경/02/data-ark-법궤.md TBL-018 (rateLimit · progressCheck · ledger · invite · nickname · reactions 행만 — 원문 그대로)
+— 출처: bible-성경/02/data-ark-법궤.md TBL-018 (rateLimit · progressCheck · ledger · invite · nickname · reactions · net · bot 행만 — 원문 그대로)
 
 ### 8.1 Matchmaker 소켓 첨부 (`ws.serializeAttachment`, 휴면 복원 가능)
 

@@ -4,7 +4,7 @@
 // ARCH-011 | API-011~API-018 API-020 API-025 | data-ark §8.2 | D-07 | W-01 인계(history 16:58:30) `clear` 합성 순서
 // 판정 계산은 room/*·attack.ts만 — 여기는 순서·거부 코드만. 예기치 못한 예외 = 경기 무효(MATCH_ABORTED, devguide §3.3).
 import { computeAttack } from "../attack";
-import type { BotClear, BotPlayer } from "../bot/bot-player";
+import type { BotClear } from "../bot/bot-player";
 import { spirits } from "../content";
 import { log } from "../log";
 import type { RoomSetup } from "../lobby/pairing";
@@ -35,16 +35,19 @@ const ONE_SECOND_MS = 1000;
 
 /** 슬롯별 진행 검사 기억 (라운드마다 초기화 — 엔진·pieceCount가 라운드마다 새로 시작) */
 export interface SlotMemo {
-  /** 직전 `clear`가 주장한 콤보 (−1 = 이번 라운드 삭제 없음) */
+  /** 직전에 통과한 `clear`의 콤보 (−1 = 이번 라운드 삭제 없음) */
   combo: number;
-  /** 직전 `clear`가 테트리스·T-Spin이었는가 (b2b 검사) */
+  /** 직전에 통과한 `clear`가 테트리스·T-Spin이었는가 (b2b 검사) */
   difficult: boolean;
   /** 최근 1초 pieceCount 증가 기록 (FR-032 초당 증가량) */
   pieces: Array<{ at: number; n: number }>;
+  /** pieceCount를 마지막으로 반영한 시각 (처음 = 라운드 진행 시작) */
+  since: number;
 }
 
-export function freshMemo(): SlotMemo {
-  return { combo: -1, difficult: false, pieces: [] };
+/** @param since 라운드 진행 시작 시각 (카운트다운 끝) */
+export function freshMemo(since: number): SlotMemo {
+  return { combo: -1, difficult: false, pieces: [], since };
 }
 
 /** GameRoom(DO 셸)이 핸들러에 주는 방 1개의 실행 환경 */
@@ -100,17 +103,27 @@ export async function onReady(rt: RoomRuntime, ws: SocketLike, data: Record<stri
   }
 }
 
-/** FR-032 ② pieceCount 감소 없음 + 최근 1초 증가량 ≤ progressCheck.maxPiecesPerSecond */
+/**
+ * FR-032 ② pieceCount 감소 없음 + 초당 증가량 ≤ progressCheck.maxPiecesPerSecond. 마지막 반영 뒤 1초 넘게 지났으면
+ * 그 경과 시간 전체에 같은 비율을 적용한다 (W-02: `state`를 보내지 않는 봇·드물게 보내는 클라이언트의 정직한 진행이
+ * "한 번에 10개 초과"로 거부되던 결함 — 봇이 줄을 모아 지우면 모든 clear가 거부됐다).
+ */
 function piecesPossible(rt: RoomRuntime, me: SlotState, memo: SlotMemo, pieceCount: number, now: number): boolean {
   if (pieceCount < me.lastPieceCount) return false;
+  const max = rt.ctx.rules.progressCheck.maxPiecesPerSecond;
+  const jump = pieceCount - me.lastPieceCount;
+  const idle = now - memo.since;
+  if (idle >= ONE_SECOND_MS) return jump <= (max * idle) / ONE_SECOND_MS;
   memo.pieces = memo.pieces.filter((p) => now - p.at < ONE_SECOND_MS);
-  const recent = memo.pieces.reduce((sum, p) => sum + p.n, 0);
-  return recent + (pieceCount - me.lastPieceCount) <= rt.ctx.rules.progressCheck.maxPiecesPerSecond;
+  return memo.pieces.reduce((sum, p) => sum + p.n, 0) + jump <= max;
 }
 
 /** 검사를 통과한 pieceCount 반영 (통계 piecesPlaced·초당 기록) */
 function commitPieces(me: SlotState, memo: SlotMemo, pieceCount: number, now: number): void {
-  if (pieceCount > me.lastPieceCount) memo.pieces.push({ at: now, n: pieceCount - me.lastPieceCount });
+  if (pieceCount > me.lastPieceCount) {
+    memo.pieces.push({ at: now, n: pieceCount - me.lastPieceCount });
+    memo.since = now;
+  }
   notePieceCount(me, pieceCount, now);
 }
 
@@ -141,7 +154,7 @@ export function onState(rt: RoomRuntime, slot: Slot, data: Record<string, unknow
  * API-013 `clear` 판정 (사람·봇 공용 — architecture §9.4). W-01 인계 순서 고정:
  * ① FR-032 검사(진행 중·seq 역행·pieceCount·누적 줄 수·조합) → ② pieceCount 반영 → ③ verifySpecials(D-09)
  * → ④ noteClear → ⑤ 게이지 → ⑥ computeAttack(jericho = 검증된 여리고 수) → ⑦ deliverAttack → ⑧ applySpecials → ⑨ 말씀 대결.
- * 거부되면 상태를 바꾸지 않는다 (직전 clear 주장 기록만 남겨 정직한 다음 clear가 연쇄 거부되지 않게 한다).
+ * 거부되면 상태를 바꾸지 않는다 (seq 순서 기록만 전진 — UC-007 E4 "공격 없음, 진행은 계속").
  * @returns 거부 코드 (통과면 null)
  */
 export function applyClear(rt: RoomRuntime, slot: Slot, c: BotClear, now: number): RejectCode | null {
@@ -153,11 +166,8 @@ export function applyClear(rt: RoomRuntime, slot: Slot, c: BotClear, now: number
   const memo = rt.memo(slot);
   const prev = { combo: memo.combo, difficult: memo.difficult };
   const seqOk = c.seq > me.lastSeq;
-  if (seqOk) {
-    me.lastSeq = c.seq;
-    memo.combo = c.combo;
-    memo.difficult = c.lines === 4 || c.tspin;
-  }
+  // seq는 수신 순서 기록 — 거부돼도 앞으로만 (재전송 차단). 콤보·b2b 기억은 통과한 clear만 (W-02: 거부된 주장으로 부풀리기 차단)
+  if (seqOk) me.lastSeq = c.seq;
   // FR-032 ③ 누적 지운 줄 × 10 > 누적 pieceCount × 4 + 받은 쓰레기 줄 × 9 + 납 블록 칸 → 블록 수보다 많은 줄 삭제
   const cellsCleared = (me.round.linesCleared + c.lines) * rules.board.width;
   const cellsAvailable = c.pieceCount * 4 + me.round.garbageRows * (rules.board.width - 1) + me.round.leadCells;
@@ -169,6 +179,8 @@ export function applyClear(rt: RoomRuntime, slot: Slot, c: BotClear, now: number
   const verdict = verifySpecials(c.specials, m.seed, m.stage, isVersus(m), c.pieceCount, me.claimedSpecials, rules);
   if (!verdict.ok) return "CLEAR_REJECTED";
   commitPieces(me, memo, c.pieceCount, now);
+  memo.combo = c.combo;
+  memo.difficult = c.lines === 4 || c.tspin;
   const streak = noteClear(me, c);
   // FR-033 rules.gauge 충전 (은혜 배율은 addGauge)
   addGauge(me, gaugeForClear(c.lines, c.tspin, rules), rules);
@@ -274,33 +286,4 @@ export function onTopout(rt: RoomRuntime, ws: SocketLike, slot: Slot, data: Reco
   } catch {
     crash(rt, slot);
   }
-}
-
-/**
- * 봇 틱 (API-020 초당 net.stateHz회 — D-10): 진행 중이면 bot.step → 줄 삭제는 사람과 같은 applyClear → 위기 판정 →
- * Top-out은 API-018과 같은 처리. 말씀 대결 정지에서 돌아오면 bot.resume (FR-041). 상대(사람)에게 봇 보드 `opponentState`.
- * @param wasPaused 직전 틱이 정지(quiz) 중이었는가
- * @returns 이번 틱이 정지 중인가
- */
-export function botTick(rt: RoomRuntime, bot: BotPlayer, now: number, wasPaused: boolean): boolean {
-  const m = rt.match;
-  if (m.phase === "quiz") return true;
-  if (m.phase === "active") {
-    if (wasPaused) bot.resume(now);
-    const step = bot.step(now);
-    for (const c of step.clears) {
-      const code = applyClear(rt, bot.slot, c, now);
-      if (code) log.event("reject", { code });
-    }
-    const me = m.slots.get(bot.slot) as SlotState;
-    if (m.phase === "active") checkJesusEvent(rt.ctx, me, true, bot.boardString());
-    if (step.topout && m.phase === "active") handleTopout(rt.ctx, m, bot.slot, false);
-  }
-  const snap = bot.snapshot();
-  const human = opponentOf(m, bot.slot);
-  if (snap && human && (m.phase === "countdown" || m.phase === "active")) {
-    const pending = pendingTotal(m.slots.get(bot.slot) as SlotState);
-    rt.ctx.send(human.slot, ROOM_OUT.opponentState, { ...snap, pending });
-  }
-  return false;
 }
