@@ -636,6 +636,15 @@ CREATE VIEW IF NOT EXISTS leaderboard AS
   FROM profiles;
 ```
 
+**§6.1 부록 — 마이그레이션 단계 기록 표 (재각 2026-10-19 — RTM §5 DCL-001, §7 참조):** 원장 테이블이 아니라 스키마 단계 번호 1개만 담는 단일 행 메타 표다. 개인정보 0(NFR-008 무영향), Supabase(§6.3)에는 만들지 않는다(Supabase CLI가 마이그레이션 이력을 관리).
+
+```sql
+CREATE TABLE IF NOT EXISTS schema_meta (
+  id      INTEGER NOT NULL PRIMARY KEY CHECK (id = 1),
+  version INTEGER NOT NULL CHECK (version >= 0)
+);
+```
+
 ### 6.2 무결성 규칙 요약
 
 | 규칙 | 적용 위치 | 방어 층 |
@@ -667,7 +676,7 @@ CREATE VIEW IF NOT EXISTS leaderboard AS
 
 | 대상 | 전략 |
 |:---|:---|
-| DO SQLite 스키마 | Matchmaker 생성자에서 `ctx.blockConcurrencyWhile()` 안에 `storage/migrations.ts` 실행: `PRAGMA user_version` 확인 → 0이면 §6.1 DDL 실행 후 `user_version = 1`. 이후 변경은 `user_version` 증가 단계로만 추가 (기존 단계 수정 금지) |
+| DO SQLite 스키마 | ~~Matchmaker 생성자에서 `ctx.blockConcurrencyWhile()` 안에 `storage/migrations.ts` 실행: `PRAGMA user_version` 확인 → 0이면 §6.1 DDL 실행 후 `user_version = 1`. 이후 변경은 `user_version` 증가 단계로만 추가 (기존 단계 수정 금지)~~ **[재각 2026-10-19 — RTM §5 DCL-001]** Matchmaker 생성자에서 `ctx.blockConcurrencyWhile()` 안에 `storage/migrations.ts` 실행: ① `CREATE TABLE IF NOT EXISTS schema_meta (id INTEGER NOT NULL PRIMARY KEY CHECK (id = 1), version INTEGER NOT NULL CHECK (version >= 0))` (§6.1 부록) ② `SELECT version FROM schema_meta WHERE id = 1` — 행이 없으면 0 ③ 현재 버전보다 큰 단계마다 `ctx.storage.transactionSync()` 안에서 그 단계 DDL 실행 + `INSERT ... ON CONFLICT(id) DO UPDATE SET version = 단계 번호` (단계 1 = §6.1 DDL). 이후 변경은 단계 번호 증가로만 추가 (기존 단계 수정 금지). 개정 사유: Durable Object SQL API는 PRAGMA를 허용 목록으로 제한하며 `PRAGMA user_version`(읽기·쓰기 모두)이 `not authorized: SQLITE_AUTH`로 거부됨 — wrangler 4.147.0 / workerd 1.20261001.1 실측 (task-wall A-03) |
 | DO 클래스 선언 | `worker/wrangler.toml` `[[migrations]] tag = "v1"`, `new_sqlite_classes = ["Matchmaker", "GameRoom"]` (GameRoom은 SQL 테이블을 만들지 않고 KV `ctx.storage.put`만 사용) |
 | Supabase 스키마 | `supabase/migrations/0001_init.sql`(§6.3)을 운영자가 Supabase CLI로 적용 — 실제 적용은 이번 실행 제외(C-008), 파일만 Phase 4에서 작성 |
 | 시드 데이터 | 원장에는 시드 행 없음(모든 행은 플레이로 생성). 게임 데이터 시드 = `content/*.json` 8종 (Phase 4 작성, 콘텐츠 검사 통과 필수) |

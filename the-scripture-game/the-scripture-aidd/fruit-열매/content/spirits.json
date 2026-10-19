@@ -1,0 +1,181 @@
+[
+  {
+    "id": "unclean_spirit",
+    "name_ko": "더러운 귀신",
+    "name_en": "Unclean Spirit",
+    "tier": 1,
+    "effect": "darken",
+    "category": "vision",
+    "duration_ms": 3000,
+    "params": {
+      "opacity": 0.3
+    },
+    "verse_ref": "Mark 1:23"
+  },
+  {
+    "id": "deaf_dumb_spirit",
+    "name_ko": "귀먹고 말 못하게 하는 귀신",
+    "name_en": "Dumb and Deaf Spirit",
+    "tier": 1,
+    "effect": "mute_hide_next",
+    "category": "sense",
+    "duration_ms": 5000,
+    "params": {},
+    "verse_ref": "Mark 9:25"
+  },
+  {
+    "id": "legion",
+    "name_ko": "군대",
+    "name_en": "Legion",
+    "tier": 2,
+    "effect": "shadow_swarm",
+    "category": "vision",
+    "duration_ms": 4000,
+    "params": {
+      "coverage": 0.4
+    },
+    "verse_ref": "Mark 5:9"
+  },
+  {
+    "id": "lying_spirit",
+    "name_ko": "거짓말하는 영",
+    "name_en": "Lying Spirit",
+    "tier": 2,
+    "effect": "fake_next_ghost",
+    "category": "deception",
+    "duration_ms": 5000,
+    "params": {},
+    "verse_ref": "1 Kings 22:22"
+  },
+  {
+    "id": "divination_spirit",
+    "name_ko": "점치는 귀신",
+    "name_en": "Spirit of Divination",
+    "tier": 2,
+    "effect": "wrong_ghost",
+    "category": "deception",
+    "duration_ms": 5000,
+    "params": {
+      "offset": 2
+    },
+    "verse_ref": "Acts 16:16"
+  },
+  {
+    "id": "beelzebub",
+    "name_ko": "바알세불",
+    "name_en": "Beelzebub",
+    "tier": 3,
+    "effect": "fly_swarm",
+    "category": "vision",
+    "duration_ms": 5000,
+    "params": {
+      "particles": 240
+    },
+    "verse_ref": "Matthew 12:24"
+  },
+  {
+    "id": "prince_of_the_air",
+    "name_ko": "공중 권세 잡은 자",
+    "name_en": "Prince of the Power of the Air",
+    "tier": 3,
+    "effect": "wind",
+    "category": "speed",
+    "duration_ms": 5000,
+    "params": {
+      "gravityMultiplier": 2,
+      "pushEveryMs": 1200
+    },
+    "verse_ref": "Ephesians 2:2"
+  },
+  {
+    "id": "prince_of_persia",
+    "name_ko": "바사 왕국의 군주",
+    "name_en": "Prince of the Kingdom of Persia",
+    "tier": 3,
+    "effect": "seal_angels",
+    "category": "seal",
+    "duration_ms": 21000,
+    "params": {},
+    "verse_ref": "Daniel 10:13"
+  },
+  {
+    "id": "abaddon",
+    "name_ko": "아바돈 / 아볼루온",
+    "name_en": "Abaddon / Apollyon",
+    "tier": 4,
+    "effect": "gnaw_holes",
+    "category": "board",
+    "duration_ms": 0,
+    "params": {
+      "holes": 4
+    },
+    "verse_ref": "Revelation 9:11"
+  },
+  {
+    "id": "jezebel",
+    "name_ko": "이세벨의 영",
+    "name_en": "Spirit of Jezebel",
+    "tier": 4,
+    "effect": "reverse_controls",
+    "category": "control",
+    "duration_ms": 6000,
+    "params": {},
+    "verse_ref": "Revelation 2:20"
+  },
+  {
+    "id": "wickedness",
+    "name_ko": "악 (에바 속의 여인)",
+    "name_en": "Wickedness",
+    "tier": 4,
+    "effect": "lead_row",
+    "category": "board",
+    "duration_ms": 0,
+    "params": {
+      "rows": 1,
+      "linesToClear": 4
+    },
+    "verse_ref": "Zechariah 5:8"
+  },
+  {
+    "id": "babylon",
+    "name_ko": "큰 음녀 바벨론",
+    "name_en": "Babylon the Great",
+    "tier": 5,
+    "effect": "drunken_blur",
+    "category": "vision",
+    "duration_ms": 6000,
+    "params": {
+      "blur": 6,
+      "waveAmplitude": 8
+    },
+    "verse_ref": "Revelation 17:5"
+  },
+  {
+    "id": "satan_angel_of_light",
+    "name_ko": "광명의 천사로 가장한 사탄",
+    "name_en": "Satan as an Angel of Light",
+    "tier": 5,
+    "effect": "false_angel",
+    "category": "deception",
+    "duration_ms": 6000,
+    "params": {
+      "disguiseMs": 1500,
+      "curse": "darken_hide_next",
+      "opacity": 0.5
+    },
+    "verse_ref": "2 Corinthians 11:14"
+  },
+  {
+    "id": "dragon",
+    "name_ko": "루시퍼 / 용 / 옛 뱀 / 사탄",
+    "name_en": "The Great Dragon",
+    "tier": 6,
+    "effect": "blackout",
+    "category": "vision",
+    "duration_ms": 4000,
+    "params": {
+      "garbageMin": 6
+    },
+    "verse_ref": "Revelation 12:9"
+  }
+]

@@ -1,0 +1,161 @@
+{
+  "board": {
+    "width": 10,
+    "height": 20,
+    "dangerRows": 4,
+    "preview": 3,
+    "previewSolomon": 5,
+    "previewGabriel": 7
+  },
+  "net": {
+    "stateHz": 12
+  },
+  "engine": {
+    "lockDelayMs": 500,
+    "dasMs": 150,
+    "arrMs": 40,
+    "softDropMultiplier": 20
+  },
+  "gravity": {
+    "startMs": 1000,
+    "at120sMs": 500,
+    "accelEveryMs": 15000,
+    "accelFactor": 0.85,
+    "minMs": 80
+  },
+  "scoring": {
+    "lines": { "1": 100, "2": 300, "3": 500, "4": 800 },
+    "tspin": { "0": 400, "1": 800, "2": 1200, "3": 1600 },
+    "b2bMultiplier": 1.5,
+    "comboPer": 50,
+    "softDropPerCell": 1,
+    "hardDropPerCell": 2
+  },
+  "attack": {
+    "lines": { "1": 0, "2": 1, "3": 2, "4": 4 },
+    "tspinBonus": { "1": 2, "2": 3, "3": 3 },
+    "comboBonus": [
+      { "from": 1, "bonus": 1 },
+      { "from": 3, "bonus": 2 },
+      { "from": 5, "bonus": 3 }
+    ],
+    "b2bBonus": 1,
+    "jerichoBonus": 1
+  },
+  "spiritTier": {
+    "byLines": { "1": 1, "2": 1, "3": 2 },
+    "tetrisPool": ["prince_of_the_air", "abaddon"],
+    "tierUpTspin": 1,
+    "tierUpComboFrom": 3,
+    "b2bTetrisTiers": [4, 5],
+    "bossConsecutiveB2BTetris": 2
+  },
+  "gauge": {
+    "max": 100,
+    "perLine": 6,
+    "tetrisBonus": 6,
+    "tspinBonus": 6,
+    "quizReward": 50,
+    "manna": 25
+  },
+  "heroSkills": {
+    "sling_stone": { "cost": 50, "cooldownMs": 20000, "blocks": 3 },
+    "understanding_heart": { "cost": 40, "cooldownMs": 20000, "hintMs": 10000 },
+    "upon_this_rock": { "cost": 60, "cooldownMs": 30000, "durationMs": 10000 },
+    "prison_doors_opened": { "cost": 60, "cooldownMs": 25000, "rows": 3 }
+  },
+  "angels": {
+    "michael": { "cost": 70, "cooldownMs": 30000, "families": ["dragon", "satan_angel_of_light"] },
+    "gabriel": { "cost": 40, "cooldownMs": 20000, "pieces": 7 },
+    "cherubim": { "cost": 35, "cooldownMs": 12000, "burnPending": 2 },
+    "seraphim": { "cost": 50, "cooldownMs": 20000 },
+    "ministering_spirits": { "cost": 20, "cooldownMs": 8000, "removeRows": 1 }
+  },
+  "armor": {
+    "spawnChancePerPiece": 0.04,
+    "breastplateReduce": 2
+  },
+  "specials": {
+    "wordIntervalMin": 7,
+    "wordIntervalMax": 12,
+    "jericho": { "base": 0.03, "perCombo": 0.02, "max": 0.12, "radius": 1 },
+    "manna": { "base": 0.02, "crisis": 0.1, "max": 0.1 },
+    "unlockRounds": { "word": 4, "jericho": 5, "manna": 5 },
+    "priority": ["word", "jericho", "manna", "armor"]
+  },
+  "effects": {
+    "maxDurationMs": 6000,
+    "maxConcurrent": 2,
+    "reapplyCooldownMs": 1500,
+    "sealMs": 21000
+  },
+  "garbage": {
+    "delayMs": 1000
+  },
+  "quiz": {
+    "timeLimitMs": 10000,
+    "wrongLockMs": 3000,
+    "autoIntervalMs": 90000,
+    "resumeDelayMs": 2500,
+    "gaugeRewardChance": 0.5
+  },
+  "match": {
+    "roundsToWin": 2,
+    "countdownMs": 3000,
+    "nextRoundDelayMs": 4000
+  },
+  "grace": {
+    "lossStreakRounds": 3,
+    "garbageReduce": 1,
+    "gaugeMultiplier": 1.15
+  },
+  "jesus": {
+    "perMatch": 1,
+    "garbageRemoveRatio": 0.5
+  },
+  "elo": {
+    "base": 1000,
+    "k": 32
+  },
+  "invite": {
+    "length": 6,
+    "alphabet": "ABCDEFGHJKLMNPQRSTUVWXYZ23456789",
+    "ttlMs": 600000
+  },
+  "nickname": {
+    "min": 2,
+    "max": 12,
+    "pattern": "^[가-힣A-Za-z0-9_]{2,12}$"
+  },
+  "bot": {
+    "easy": { "moveIntervalMs": 700, "evalNoise": 0.6, "mistakeRate": 0.25, "quizAccuracy": 0.4, "quizDelayMs": [5000, 9000] },
+    "normal": { "moveIntervalMs": 400, "evalNoise": 0.25, "mistakeRate": 0.1, "quizAccuracy": 0.65, "quizDelayMs": [3500, 7000] },
+    "hard": { "moveIntervalMs": 180, "evalNoise": 0.05, "mistakeRate": 0.02, "quizAccuracy": 0.85, "quizDelayMs": [2000, 5000] }
+  },
+  "rateLimit": {
+    "state": { "tokens": 20, "perMs": 1000 },
+    "clear": { "tokens": 10, "perMs": 1000 },
+    "skill": { "tokens": 5, "perMs": 1000 },
+    "armor": { "tokens": 5, "perMs": 1000 },
+    "answer": { "tokens": 4, "perMs": 1000 },
+    "reaction": { "tokens": 1, "perMs": 2000 },
+    "total": { "tokens": 40, "perMs": 1000 },
+    "maxMessageBytes": 4096
+  },
+  "progressCheck": {
+    "maxPiecesPerSecond": 10
+  },
+  "reactions": [
+    { "id": "amen", "emoji": "🙏", "label_ko": "아멘" },
+    { "id": "hallelujah", "emoji": "🔥", "label_ko": "할렐루야" },
+    { "id": "angel", "emoji": "😇", "label_ko": "😇" }
+  ],
+  "achievements": {
+    "goliath_hunter": { "heroId": "david", "tetrisInMatch": 5, "name_ko": "골리앗 사냥꾼" }
+  },
+  "verseCard": {
+    "jesusEventRef": "John 16:33",
+    "default": "winnerHeroVerse"
+  },
+  "victoryVerse": "2 Timothy 4:7"
+}

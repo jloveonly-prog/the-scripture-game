@@ -371,13 +371,13 @@ export async function postGuests(request: Request, env: Env): Promise<Response> 
 
 | 모듈 (`fruit-열매/`) | 관련 REQ | ARCH | TASK | 지역 | 상태 | 코드 리뷰 |
 |:---|:---|:---|:---|:---|:---:|:---:|
-| 루트 매니페스트·실행 보조 (`package.json`, `.gitignore`, `scripts/`) | REQ-016, REQ-017 | ARCH-017 | TASK-001-1 | 00 | ⬜ | ⬜ |
-| `client/` 설정 (`package.json`, `vite.config.js`) | REQ-016 | ARCH-017 | TASK-001-2 | 00 | ⬜ | ⬜ |
-| `worker/` 설정·공용 (`wrangler.toml`, `tsconfig.json`, `.dev.vars.example`, `env.ts`, `log.ts`) | REQ-016, NFR-004 | ARCH-017, ARCH-009 | TASK-001-3, TASK-001-4 | 00 | ⬜ | ⬜ |
-| 테스트 하네스 (`vitest.config.js`, `playwright.config.js`) | REQ-017 | ARCH-018 | TASK-001-5 | 00 | ⬜ | ⬜ |
-| 원장 `worker/src/storage/`, `supabase/migrations/` | REQ-014, REQ-015, REQ-016 | ARCH-014 | TASK-002~TASK-004 | 00 | ⬜ | ⬜ |
-| 콘텐츠 `content/*.json` 8종 | REQ-003, REQ-007~REQ-012 | ARCH-016 | TASK-005~TASK-008 | 00 | ⬜ | ⬜ |
-| 콘텐츠 색인·검사 (`check-content.mjs`, `content.js`, `content.ts`) | REQ-016, REQ-017 | ARCH-016 | TASK-009 | 00 | ⬜ | ⬜ |
+| 루트 매니페스트·실행 보조 (`package.json`, `.gitignore`, `scripts/`) | REQ-016, REQ-017 | ARCH-017 | TASK-001-1 | 00 | 🔄 | ⬜ |
+| `client/` 설정 (`package.json`, `vite.config.js`) | REQ-016 | ARCH-017 | TASK-001-2 | 00 | 🔄 | ⬜ |
+| `worker/` 설정·공용 (`wrangler.toml`, `tsconfig.json`, `.dev.vars.example`, `env.ts`, `log.ts`) | REQ-016, NFR-004 | ARCH-017, ARCH-009 | TASK-001-3, TASK-001-4 | 00 | 🔄 | ⬜ |
+| 테스트 하네스 (`vitest.config.js`, `playwright.config.js`) | REQ-017 | ARCH-018 | TASK-001-5 | 00 | 🔄 | ⬜ |
+| 원장 `worker/src/storage/`, `supabase/migrations/` | REQ-014, REQ-015, REQ-016 | ARCH-014 | TASK-002~TASK-004 | 00 | 🔄 | ⬜ |
+| 콘텐츠 `content/*.json` 8종 | REQ-003, REQ-007~REQ-012 | ARCH-016 | TASK-005~TASK-008 | 00 | 🔄 | ⬜ |
+| 콘텐츠 색인·검사 (`check-content.mjs`, `content.js`, `content.ts`) | REQ-016, REQ-017 | ARCH-016 | TASK-009 | 00 | 🔄 | ⬜ |
 | 엔진 `client/js/engine/` | REQ-001, REQ-009, REQ-012 | ARCH-002 | TASK-010-1~TASK-010-4 | 01 | ⬜ | ⬜ |
 | 클라이언트 보드 효과 `client/js/game/apply-*.js`, `board-codec.js` | REQ-003, REQ-007~REQ-010 | ARCH-003 | TASK-011 | 01 | ⬜ | ⬜ |
 | 공격 판정 `worker/src/attack.ts` | REQ-007 | ARCH-012 | TASK-012 | 01 | ⬜ | ⬜ |

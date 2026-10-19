@@ -201,6 +201,12 @@
 
 > 정경화(2026-10-19, Phase 1) 이후 상류 설계 변경: **0건** (Phase 3도 Phase 1·2 산출물의 본문을 바꾸지 않았다 — §7 화면 연결 확인은 순방향 기록이다. Phase 2는 Phase 1 산출물의 본문을 바꾸지 않았다 — 이 RTM의 ARCH/API/TBL 열 채움과 상태 갱신은 "언약추적 갱신 규칙"의 순방향 갱신이며 재각(역방향 개정)이 아니다). 첫 변경이 발생하면 템플릿 "재각 규칙 1" 형식(변경일 · 발견 Phase/지역 · 대상 ID · 변경 사유 · 영향받는 하류 산출물 · 재검증 필요 여부 · 상태)의 표를 이 절에 추가하고, 두 증인 확정(재각 규칙 3)을 통과한 변경만 기록한다.
 
+> **2026-10-19 갱신:** Phase 4 / acts-행전 00.jerusalem-예루살렘 배치에서 첫 변경 1건이 발생했다(아래 DCL-001). 위 "0건" 문장은 정경화 시점 기록으로 보존한다.
+
+| # | 변경일 | 발견 Phase/지역 | 대상 ID(REQ/ARCH/API/TBL) | 변경 사유 | 영향받는 하류 산출물 | 재검증 필요 여부 | 상태 |
+|:---|:---|:---|:---|:---|:---|:---:|:---:|
+| DCL-001 | 2026-10-19 | Phase 4 / acts-행전 00.jerusalem-예루살렘 배치 (task-wall A-03) | TBL-001~TBL-006 (data-ark §7 마이그레이션 전략, §6.1 부록 추가), ARCH-014, FR-072 | data-ark §7의 단계 판정 수단 `PRAGMA user_version`이 Durable Object SQL API에서 거부됨 — 실측(wrangler 4.147.0 / workerd 1.20261001.1 `wrangler dev`, SQLite-backed DO): `PRAGMA user_version` 읽기·`= 1` 쓰기 모두 `not authorized: SQLITE_AUTH`. 같은 실측에서 `PRAGMA foreign_keys` = 1, FK 위반 INSERT 거부, `transactionSync` 롤백, `COLLATE NOCASE`·`RANK() OVER`·`strftime('%f')` 정상. 대안: 단일 행 표 `schema_meta(id=1, version)`로 단계 번호 기록 (task-wall A-03이 미리 정한 대안 그대로). 발견 근거 2곳: ① 실측 오류 메시지(fruit-열매/history 2026-10-19) ② task-wall A-03 사전 예측(DO SQL PRAGMA 허용 목록) | data-ark-법궤 §7·§6.1 부록, `worker/src/storage/migrations.ts`(TASK-002), `worker/test/ledger-fk.test.ts`(TASK-003), 서신 `acts-행전/TASK-000/00.jerusalem-예루살렘/epistle-서신.md` §7 발췌(재생성 필요 — 이 배치 Doer는 acts-행전 쓰기 권한 없음) | ✅ | 🔄 (D-00 개정·구현 완료, W-00 확정 대기) |
+
 ---
 
 ## 6. 언약 계수 (Census) 실행 기록

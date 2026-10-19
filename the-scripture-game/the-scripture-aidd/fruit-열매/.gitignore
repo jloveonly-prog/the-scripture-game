@@ -1,0 +1,8 @@
+# TASK-001-1 | C-013 NFR-004 | ARCH-017 — 커밋·공개 제외 규칙만
+node_modules/
+dist/
+.wrangler/
+.dev.vars
+test-results/
+playwright-report/
+**/backup/

@@ -1,0 +1,64 @@
+[
+  {
+    "id": "belt_of_truth",
+    "name_ko": "진리의 허리띠",
+    "name_en": "Belt of Truth",
+    "effect_ko": "조작 반전·미혹 무효",
+    "action": "nullify",
+    "nullifies": [
+      "control",
+      "deception"
+    ],
+    "verse_ref": "Ephesians 6:14"
+  },
+  {
+    "id": "breastplate_of_righteousness",
+    "name_ko": "의의 흉배",
+    "name_en": "Breastplate of Righteousness",
+    "effect_ko": "쓰레기 줄 1회 경감",
+    "action": "reduce_next",
+    "nullifies": null,
+    "verse_ref": "Ephesians 6:14"
+  },
+  {
+    "id": "gospel_shoes",
+    "name_ko": "평안의 복음의 신",
+    "name_en": "Shoes of the Gospel of Peace",
+    "effect_ko": "낙하 속도 증가 무효",
+    "action": "nullify",
+    "nullifies": [
+      "speed"
+    ],
+    "verse_ref": "Ephesians 6:15"
+  },
+  {
+    "id": "shield_of_faith",
+    "name_ko": "믿음의 방패",
+    "name_en": "Shield of Faith",
+    "effect_ko": "다음 공격 1회 완전 차단",
+    "action": "block_next",
+    "nullifies": null,
+    "verse_ref": "Ephesians 6:16"
+  },
+  {
+    "id": "helmet_of_salvation",
+    "name_ko": "구원의 투구",
+    "name_en": "Helmet of Salvation",
+    "effect_ko": "암전·시야 방해 무효",
+    "action": "nullify",
+    "nullifies": [
+      "vision",
+      "sense"
+    ],
+    "verse_ref": "Ephesians 6:17"
+  },
+  {
+    "id": "sword_of_the_spirit",
+    "name_ko": "성령의 검",
+    "name_en": "Sword of the Spirit",
+    "effect_ko": "받은 공격 1회를 상대에게 되돌림",
+    "action": "reflect",
+    "nullifies": null,
+    "verse_ref": "Ephesians 6:17"
+  }
+]

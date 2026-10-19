@@ -1,0 +1,18 @@
+{
+  "name": "@swt/worker",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cloudflare Worker + Durable Objects (TASK-001-3 | REQ-016 FR-072 FR-073 C-005 | ARCH-017)",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --port 8787 --ip 127.0.0.1"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.117.2"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "5.20261004.1",
+    "typescript": "7.0.2",
+    "wrangler": "4.147.0"
+  }
+}

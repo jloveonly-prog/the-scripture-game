@@ -1,0 +1,46 @@
+[
+  {
+    "id": "david",
+    "name_ko": "다윗",
+    "name_en": "David",
+    "skill_id": "sling_stone",
+    "skill_name_ko": "물맷돌",
+    "skill_effect_ko": "상대 보드에서 가장 높은 열의 꼭대기 블록 3개를 파괴",
+    "passive_ko": null,
+    "verse_ref": "1 Samuel 17:49",
+    "emblem": "sling"
+  },
+  {
+    "id": "solomon",
+    "name_ko": "솔로몬",
+    "name_en": "Solomon",
+    "skill_id": "understanding_heart",
+    "skill_name_ko": "지혜로운 마음",
+    "skill_effect_ko": "최적 착지 위치 힌트 10초",
+    "passive_ko": "다음 블록 5개 미리보기",
+    "verse_ref": "1 Kings 3:9",
+    "emblem": "crown"
+  },
+  {
+    "id": "peter",
+    "name_ko": "베드로",
+    "name_en": "Peter",
+    "skill_id": "upon_this_rock",
+    "skill_name_ko": "이 반석 위에",
+    "skill_effect_ko": "10초 동안 쓰레기 줄 상승 무효",
+    "passive_ko": null,
+    "verse_ref": "Matthew 16:18",
+    "emblem": "rock_key"
+  },
+  {
+    "id": "paul",
+    "name_ko": "바울",
+    "name_en": "Paul",
+    "skill_id": "prison_doors_opened",
+    "skill_name_ko": "옥문이 열리다",
+    "skill_effect_ko": "지진 연출과 함께 맨 아래 쓰레기 줄 3줄 삭제",
+    "passive_ko": null,
+    "verse_ref": "Acts 16:26",
+    "emblem": "broken_chain"
+  }
+]

@@ -1,0 +1,23 @@
+# wrangler.toml — Worker 진입·compatibility_date·DO 바인딩 2종·마이그레이션 v1·ALLOWED_ORIGINS 선언만
+# TASK-001-3 | REQ-016 FR-072 FR-073 NFR-004 C-004 | ARCH-017 | D-01 D-05 | data-ark §7
+name = "spiritual-warfare-tetris"
+main = "src/index.ts"
+compatibility_date = "2026-10-01"
+
+# ARCH-010 Matchmaker (전역 1개 — 원장 SQLite 호스팅), ARCH-011 GameRoom (방 1개당 1개)
+[[durable_objects.bindings]]
+name = "MATCHMAKER"
+class_name = "Matchmaker"
+
+[[durable_objects.bindings]]
+name = "GAME_ROOM"
+class_name = "GameRoom"
+
+# data-ark §7: SQLite-backed Durable Object 클래스 선언 (로컬은 .wrangler/state/ 에 영속)
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Matchmaker", "GameRoom"]
+
+# architecture §10 제7계명: Origin 허용 목록. Supabase 키는 여기에 절대 쓰지 않는다 (.dev.vars만 — NFR-004)
+[vars]
+ALLOWED_ORIGINS = "http://localhost:5173,http://127.0.0.1:5173"

@@ -20,7 +20,7 @@
 |:--|:---|:---|:---|
 | A-01 | **GameRoom(ARCH-011) 한 컴포넌트에 FR 약 30건** — 다른 ARCH의 3~6배. architecture §5.3은 `room/` 7파일로만 예고 | D-07(보드=클라, 판정=서버), D-08, D-09, D-10이 모두 GameRoom 안에서 만난다 — 의도된 집중 | 책임별 13파일로 나눔: DO 셸(`game-room.ts`)·수신 핸들러(`room/handlers.ts`)·송신(`room/outbox.ts`) = 02.사마리아, 판정 논리 10파일(`player-state`·`effects`·`garbage`·`hero-skills`·`jesus`·`angels`·`armor`·`specials`·`quiz`·`match-flow`·`results`) = 01.유대. 판정 모듈은 `cloudflare:workers`를 import하지 않고 `RoomContext`(send·now·schedule·rules·content)를 주입받는다 → Node Vitest로 시험 가능 |
 | A-02 | **엔진만 workspace 경계를 넘는다** — `worker/`(TS)가 `client/js/engine/`(JS)를 상대 경로 import | D-12(엔진 이중 구현 금지), D-02(공용 패키지 폴더 없음) | 엔진 9파일은 DOM·Pixi·`window`·타이머·JSON import 금지, **rules는 인자로 주입**(TASK-010). `worker/tsconfig.json` `allowJs`. 순수성은 `client/test/engine-purity.test.js`(Node 환경)로 강제. 서버 import 경로는 `worker/src/** → ../../client/js/engine/index.js`(깊이에 맞춘 상대 경로) 단방향 |
-| A-03 | **DO SQLite `PRAGMA user_version`** — data-ark §7 마이그레이션 단계 판정. Durable Object SQL API는 PRAGMA를 허용 목록으로 제한하므로 `user_version`이 거부될 가능성이 있다 (이 계획 단계에서는 패키지 설치 금지로 실측 불가) | data-ark §7 원문 유지 (미검증 상태로 설계를 바꾸지 않는다 — 제3계명) | TASK-002 Doer가 첫 `wrangler dev` 기동 때 실측한다. 거부(`not authorized`)되면 **두 번째 돌판 규칙**: RTM §5 설계 변경 이력에 행 추가 → data-ark §7을 "단일 행 표 `schema_meta(version)`" 방식으로 개정 → Witness 확정 후 구현. 실측·결과는 `fruit-열매/history/`에 기록 |
+| A-03 | **DO SQLite `PRAGMA user_version`** — data-ark §7 마이그레이션 단계 판정. Durable Object SQL API는 PRAGMA를 허용 목록으로 제한하므로 `user_version`이 거부될 가능성이 있다 (이 계획 단계에서는 패키지 설치 금지로 실측 불가) | data-ark §7 원문 유지 (미검증 상태로 설계를 바꾸지 않는다 — 제3계명) | TASK-002 Doer가 첫 `wrangler dev` 기동 때 실측한다. 거부(`not authorized`)되면 **두 번째 돌판 규칙**: RTM §5 설계 변경 이력에 행 추가 → data-ark §7을 "단일 행 표 `schema_meta(version)`" 방식으로 개정 → Witness 확정 후 구현. 실측·결과는 `fruit-열매/history/`에 기록 **[실측 결과 2026-10-19 D-00]** `PRAGMA user_version` 읽기·쓰기 모두 `not authorized: SQLITE_AUTH` → 두 번째 돌판 절차 수행: RTM §5 DCL-001 행 추가, data-ark §7 재각 + §6.1 부록 `schema_meta(id=1, version)`, migrations.ts는 개정 spec대로 구현 (W-00 확정 대기) |
 | A-04 | **원장 FK 단위 테스트(data-ark §6.2 "Phase 4 첫 원장 단위 테스트")를 Node Vitest에서** — workerd 밖에는 `ctx.storage.sql`이 없다 | D-05(어댑터 인터페이스), architecture §3 Node ≥ 22.12 | `sqlite-adapter.ts`는 SqlStorage 부분 집합(`exec(...).toArray()/one()`, `transactionSync`)만 쓴다. 테스트 전용 `worker/test/helpers/sql-storage-fake.ts`가 Node 22 내장 `node:sqlite`로 같은 부분 집합을 모사 (런타임 의존 추가 0) |
 | A-05 | **E2E(FR-077) 결정성** — 시드는 서버 무작위인데 "A가 테트리스를 지우면"을 실제 입력으로 만들어야 함. 방어 검증(B의 베드로 스킬)도 게이지 60이 필요 | 별도 테스트 훅은 정경에 없음 (P4-002 — 만들지 않는다) | Phase 5에서 Playwright가 `start` 프레임(API-019 `seed`)을 WebSocket 이벤트로 읽고, Node에서 같은 엔진(`engine/index.js`)·봇 배치 평가(`worker/src/bot/placement.ts`)로 입력 순서를 계획한다. 이를 위해 Phase 4는 **엔진과 `placement.ts`가 Node에서 import 가능**해야 한다(TASK-010·TASK-019 완료 조건). 운영 코드에 테스트 전용 분기 0 |
 | A-06 | **두 의존성만 "최신"이 아니다** — @playwright/test 1.56.1, tone 15.1.22 | D-17(설치된 chromium-1194 정합), §3(tone `next` 채널 제외) | 위반 아님 — 버전 고정표 그대로(devguide §1.2). `PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers` 안내는 README(TASK-070) |
@@ -83,20 +83,20 @@
 
 | TASK-ID | 성벽 구간 | 지역 | 설명 | 연결 REQ | 연결 API/TBL/SCR | 생성 파일 | 파일 책임 | 예상 줄수 | 선행 | 규모 | 상태 | Doer | Witness | 짝 검증 결과 |
 |:---|:---|:---|:---|:---|:---|:---|:---|:---:|:---|:---:|:---:|:---:|:---:|:---:|
-| TASK-001 | 프로젝트 스캐폴딩 (전체) | 00.예루살렘 | npm workspaces 모노레포 골격·매니페스트·실행/테스트 명령 등록 — 서브 태스크 5개의 합 | REQ-016, REQ-017 | ARCH-017, ARCH-018 | — (서브 태스크 합 — L 분할표) | — | — | — | L | ⬜ | D-00 | W-00 | ⬜ |
-| TASK-001-1 | 루트 매니페스트 | 00.예루살렘 | workspaces·scripts(dev/predev/test/test:e2e/check:content)·버전 고정·포트 사전 점검 | REQ-016, FR-073, NFR-007, C-005, C-012, C-013 | ARCH-017 | `package.json`<br>`.gitignore`<br>`scripts/check-ports.mjs` | 설정·실행 보조만 | 40 · 20 · 60 | — | S | ⬜ | D-00 | W-00 | ⬜ |
-| TASK-001-2 | client 워크스페이스 | 00.예루살렘 | Vite 8 프로젝트 매니페스트·프록시(/api, /ws ws:true)·strictPort·fs.allow | REQ-016, FR-073, NFR-007, C-005 | ARCH-017, D-03 | `client/package.json`<br>`client/vite.config.js` | 설정만 | 30 · 40 | TASK-001-1 | S | ⬜ | D-00 | W-00 | ⬜ |
-| TASK-001-3 | worker 워크스페이스 | 00.예루살렘 | wrangler 4.147.0 매니페스트·DO 바인딩·마이그레이션 v1 선언·TS 설정·키 이름 예시 | REQ-016, FR-072, FR-073, NFR-004, NFR-007, C-004, C-005 | ARCH-017, D-01, D-05 | `worker/package.json`<br>`worker/wrangler.toml`<br>`worker/tsconfig.json`<br>`worker/.dev.vars.example` | 설정만 | 25 · 30 · 25 · 6 | TASK-001-1 | M | ⬜ | D-00 | W-00 | ⬜ |
-| TASK-001-4 | Worker 공용 타입·로그 | 00.예루살렘 | Env 바인딩 타입, 구조화 JSON 1줄 로그(guestId 앞 8자만) | REQ-016, NFR-003, NFR-004, NFR-008 | ARCH-009, ARCH-014, architecture §10 제1·8계명 | `worker/src/env.ts`<br>`worker/src/log.ts` | 공용 유틸만 | 30 · 50 | TASK-001-3 | S | ⬜ | D-00 | W-00 | ⬜ |
-| TASK-001-5 | 테스트 하네스 설정 | 00.예루살렘 | Vitest projects 3종(client·worker·content) + Playwright 설정 — `npm test` 한 줄 등록의 실행 대상 | REQ-017, FR-075, FR-077 | ARCH-018, D-17 | `vitest.config.js`<br>`playwright.config.js` | 설정만 | 35 · 35 | TASK-001-1 | S | ⬜ | D-00 | W-00 | ⬜ |
-| TASK-002 | 원장 스키마·마이그레이션 | 00.예루살렘 | DO SQLite DDL v1 실행기 + Supabase Postgres 스키마(RLS·함수) | REQ-014~REQ-016, FR-067, FR-068, FR-070, FR-072, NFR-008 | TBL-001~TBL-006, data-ark §6.1·§6.3·§7 | `worker/src/storage/migrations.ts`<br>`supabase/migrations/0001_init.sql` | 데이터/DB만 | 120 · 190 | TASK-001-4 | S | ⬜ | D-00 | W-00 | ⬜ |
-| TASK-003 | StorageAdapter + SQLite 구현 | 00.예루살렘 | 저장 인터페이스와 DO SQLite 구현, Node 원장 단위 테스트(FK·CHECK 거부) | REQ-014~REQ-016, FR-012, FR-067~FR-072 | TBL-001~TBL-006, data-ark §5·§6.2, D-05 | `worker/src/storage/adapter.ts`<br>`worker/src/storage/sqlite-adapter.ts`<br>`worker/test/helpers/sql-storage-fake.ts`<br>`worker/test/ledger-fk.test.ts` | 데이터/DB만 | 110 · 240 · 70 · 90 | TASK-002, TASK-001-5 | M | ⬜ | D-00 | W-00 | ⬜ |
-| TASK-004 | Supabase 어댑터·저장소 선택 | 00.예루살렘 | 환경변수 2개가 모두 있을 때만 Supabase 구현 생성, 아니면 SQLite | REQ-016, FR-072, NFR-004, C-004 | TBL-001~TBL-006, data-ark §6.3, D-05 | `worker/src/storage/supabase-adapter.ts`<br>`worker/src/storage/select-storage.ts` | 데이터/DB만 | 200 · 40 | TASK-003 | S | ⬜ | D-00 | W-00 | ⬜ |
-| TASK-005 | 콘텐츠 — 캐릭터·상성 JSON (실데이터 전량) | 00.예루살렘 | 위인 4·천사 5·악한 영 14·전신갑주 6·상성표 14행을 data-ark 확정표 그대로 **완전한 실데이터**로 작성 | REQ-003, REQ-007~REQ-009, FR-013~FR-017, FR-026~FR-030, FR-035, FR-037, FR-038, FR-074, C-010, C-011 | TBL-011~TBL-015, CODE-003·006·007·010·011 | `content/heroes.json`<br>`content/angels.json`<br>`content/spirits.json`<br>`content/armor.json`<br>`content/counters.json` | 콘텐츠 데이터만 | 60 · 50 · 200 · 60 · 75 | TASK-006 | M | ⬜ | D-00 | W-00 | ⬜ |
-| TASK-006 | 콘텐츠 — verses.json (KJV 원문 그대로) | 00.예루살렘 | 필수 31구절 + 퀴즈 해설 구절 전부, `{ref, kjv, ko, ref_ko}`, 한 원소 = 한 줄 | REQ-011, FR-043, FR-074, C-003, C-010 | TBL-016 | `content/verses.json` | 콘텐츠 데이터만 | 90 | TASK-001-1 | S | ⬜ | D-00 | W-00 | ⬜ |
-| TASK-007 | 콘텐츠 — quiz.json (≥60문항 실데이터) | 00.예루살렘 | 4지선다 66문항 권장(유형 3×22, 난이도 3×22), 근거 구절은 verses.json 안에서만, 한 원소 = 한 줄 | REQ-011, FR-041, FR-043, C-003 | TBL-017, CODE-012 | `content/quiz.json` | 콘텐츠 데이터만 | 75 | TASK-006 | S | ⬜ | D-00 | W-00 | ⬜ |
-| TASK-008 | 콘텐츠 — rules.json (수치 단일 원천) | 00.예루살렘 | data-ark §3.18 표의 모든 키·값을 그대로 (화면·코드 하드코딩 금지의 원천) | REQ-001, REQ-005, REQ-007, REQ-008, REQ-010, REQ-012, REQ-013, REQ-015, FR-004, FR-010, FR-019, FR-031, FR-062, FR-064, FR-065, FR-070, NFR-003, C-001 | TBL-018 | `content/rules.json` | 콘텐츠 데이터만 | 210 | TASK-001-1 | S | ⬜ | D-00 | W-00 | ⬜ |
-| TASK-009 | 콘텐츠 색인·검사 | 00.예루살렘 | 클라이언트·서버 단일 import 지점 + 콘텐츠 검사 스크립트(FR-076) | REQ-016, REQ-017, FR-038, FR-074, FR-076, C-010 | TBL-011~TBL-018, data-ark §6.2 콘텐츠 무결성, D-15 | `content/check-content.mjs`<br>`client/js/content.js`<br>`worker/src/content.ts` | 콘텐츠 접근만 | 150 · 70 · 90 | TASK-005, TASK-006, TASK-007, TASK-008, TASK-001-2, TASK-001-3 | S | ⬜ | D-00 | W-00 | ⬜ |
+| TASK-001 | 프로젝트 스캐폴딩 (전체) | 00.예루살렘 | npm workspaces 모노레포 골격·매니페스트·실행/테스트 명령 등록 — 서브 태스크 5개의 합 | REQ-016, REQ-017 | ARCH-017, ARCH-018 | — (서브 태스크 합 — L 분할표) | — | — | — | L | 🔄 | D-00 | W-00 | ⬜ |
+| TASK-001-1 | 루트 매니페스트 | 00.예루살렘 | workspaces·scripts(dev/predev/test/test:e2e/check:content)·버전 고정·포트 사전 점검 | REQ-016, FR-073, NFR-007, C-005, C-012, C-013 | ARCH-017 | `package.json`<br>`.gitignore`<br>`scripts/check-ports.mjs` | 설정·실행 보조만 | 40 · 20 · 60 | — | S | 🔄 | D-00 | W-00 | ⬜ |
+| TASK-001-2 | client 워크스페이스 | 00.예루살렘 | Vite 8 프로젝트 매니페스트·프록시(/api, /ws ws:true)·strictPort·fs.allow | REQ-016, FR-073, NFR-007, C-005 | ARCH-017, D-03 | `client/package.json`<br>`client/vite.config.js` | 설정만 | 30 · 40 | TASK-001-1 | S | 🔄 | D-00 | W-00 | ⬜ |
+| TASK-001-3 | worker 워크스페이스 | 00.예루살렘 | wrangler 4.147.0 매니페스트·DO 바인딩·마이그레이션 v1 선언·TS 설정·키 이름 예시 | REQ-016, FR-072, FR-073, NFR-004, NFR-007, C-004, C-005 | ARCH-017, D-01, D-05 | `worker/package.json`<br>`worker/wrangler.toml`<br>`worker/tsconfig.json`<br>`worker/.dev.vars.example` | 설정만 | 25 · 30 · 25 · 6 | TASK-001-1 | M | 🔄 | D-00 | W-00 | ⬜ |
+| TASK-001-4 | Worker 공용 타입·로그 | 00.예루살렘 | Env 바인딩 타입, 구조화 JSON 1줄 로그(guestId 앞 8자만) | REQ-016, NFR-003, NFR-004, NFR-008 | ARCH-009, ARCH-014, architecture §10 제1·8계명 | `worker/src/env.ts`<br>`worker/src/log.ts` | 공용 유틸만 | 30 · 50 | TASK-001-3 | S | 🔄 | D-00 | W-00 | ⬜ |
+| TASK-001-5 | 테스트 하네스 설정 | 00.예루살렘 | Vitest projects 3종(client·worker·content) + Playwright 설정 — `npm test` 한 줄 등록의 실행 대상 | REQ-017, FR-075, FR-077 | ARCH-018, D-17 | `vitest.config.js`<br>`playwright.config.js` | 설정만 | 35 · 35 | TASK-001-1 | S | 🔄 | D-00 | W-00 | ⬜ |
+| TASK-002 | 원장 스키마·마이그레이션 | 00.예루살렘 | DO SQLite DDL v1 실행기 + Supabase Postgres 스키마(RLS·함수) | REQ-014~REQ-016, FR-067, FR-068, FR-070, FR-072, NFR-008 | TBL-001~TBL-006, data-ark §6.1·§6.3·§7 | `worker/src/storage/migrations.ts`<br>`supabase/migrations/0001_init.sql` | 데이터/DB만 | 120 · 190 | TASK-001-4 | S | 🔄 | D-00 | W-00 | ⬜ |
+| TASK-003 | StorageAdapter + SQLite 구현 | 00.예루살렘 | 저장 인터페이스와 DO SQLite 구현, Node 원장 단위 테스트(FK·CHECK 거부) | REQ-014~REQ-016, FR-012, FR-067~FR-072 | TBL-001~TBL-006, data-ark §5·§6.2, D-05 | `worker/src/storage/adapter.ts`<br>`worker/src/storage/sqlite-adapter.ts`<br>`worker/test/helpers/sql-storage-fake.ts`<br>`worker/test/ledger-fk.test.ts` | 데이터/DB만 | 110 · 240 · 70 · 90 | TASK-002, TASK-001-5 | M | 🔄 | D-00 | W-00 | ⬜ |
+| TASK-004 | Supabase 어댑터·저장소 선택 | 00.예루살렘 | 환경변수 2개가 모두 있을 때만 Supabase 구현 생성, 아니면 SQLite | REQ-016, FR-072, NFR-004, C-004 | TBL-001~TBL-006, data-ark §6.3, D-05 | `worker/src/storage/supabase-adapter.ts`<br>`worker/src/storage/select-storage.ts` | 데이터/DB만 | 200 · 40 | TASK-003 | S | 🔄 | D-00 | W-00 | ⬜ |
+| TASK-005 | 콘텐츠 — 캐릭터·상성 JSON (실데이터 전량) | 00.예루살렘 | 위인 4·천사 5·악한 영 14·전신갑주 6·상성표 14행을 data-ark 확정표 그대로 **완전한 실데이터**로 작성 | REQ-003, REQ-007~REQ-009, FR-013~FR-017, FR-026~FR-030, FR-035, FR-037, FR-038, FR-074, C-010, C-011 | TBL-011~TBL-015, CODE-003·006·007·010·011 | `content/heroes.json`<br>`content/angels.json`<br>`content/spirits.json`<br>`content/armor.json`<br>`content/counters.json` | 콘텐츠 데이터만 | 60 · 50 · 200 · 60 · 75 | TASK-006 | M | 🔄 | D-00 | W-00 | ⬜ |
+| TASK-006 | 콘텐츠 — verses.json (KJV 원문 그대로) | 00.예루살렘 | 필수 31구절 + 퀴즈 해설 구절 전부, `{ref, kjv, ko, ref_ko}`, 한 원소 = 한 줄 | REQ-011, FR-043, FR-074, C-003, C-010 | TBL-016 | `content/verses.json` | 콘텐츠 데이터만 | 90 | TASK-001-1 | S | 🔄 | D-00 | W-00 | ⬜ |
+| TASK-007 | 콘텐츠 — quiz.json (≥60문항 실데이터) | 00.예루살렘 | 4지선다 66문항 권장(유형 3×22, 난이도 3×22), 근거 구절은 verses.json 안에서만, 한 원소 = 한 줄 | REQ-011, FR-041, FR-043, C-003 | TBL-017, CODE-012 | `content/quiz.json` | 콘텐츠 데이터만 | 75 | TASK-006 | S | 🔄 | D-00 | W-00 | ⬜ |
+| TASK-008 | 콘텐츠 — rules.json (수치 단일 원천) | 00.예루살렘 | data-ark §3.18 표의 모든 키·값을 그대로 (화면·코드 하드코딩 금지의 원천) | REQ-001, REQ-005, REQ-007, REQ-008, REQ-010, REQ-012, REQ-013, REQ-015, FR-004, FR-010, FR-019, FR-031, FR-062, FR-064, FR-065, FR-070, NFR-003, C-001 | TBL-018 | `content/rules.json` | 콘텐츠 데이터만 | 210 | TASK-001-1 | S | 🔄 | D-00 | W-00 | ⬜ |
+| TASK-009 | 콘텐츠 색인·검사 | 00.예루살렘 | 클라이언트·서버 단일 import 지점 + 콘텐츠 검사 스크립트(FR-076) | REQ-016, REQ-017, FR-038, FR-074, FR-076, C-010 | TBL-011~TBL-018, data-ark §6.2 콘텐츠 무결성, D-15 | `content/check-content.mjs`<br>`client/js/content.js`<br>`worker/src/content.ts` | 콘텐츠 접근만 | 150 · 70 · 90 | TASK-005, TASK-006, TASK-007, TASK-008, TASK-001-2, TASK-001-3 | S | 🔄 | D-00 | W-00 | ⬜ |
 
 > **콘텐츠 태스크(TASK-005~TASK-008) 특별 계명 — "실데이터 전량, 자리표시 0":** heroes 4 · angels 5 · spirits 14 · armor 6 · counters 14행 · verses(필수 31구절 + 퀴즈 해설 구절 전부) · quiz ≥ 60문항(권장 66: `person`·`event`·`verse_blank` 각 22, 난이도 1·2·3 각 22, 보기 4개 중복 없음, `answer` 0~3, `verse_ref`는 verses.json 안) · rules.json(data-ark §3.18의 **모든** 키). 수치·id·효과 문장은 data-ark 확정표와 spec-tablet FR 문장을 **그대로** 옮긴다. "예시 몇 개만", "나머지 생략", 빈 문자열, 작업 미완 표식 금지 — `check-content.mjs`(TASK-009)가 통과해야 ✅.
 > **verses.json 필수 31구절:** 1 Samuel 17:49 · 1 Kings 3:9 · Matthew 16:18 · Acts 16:26 (위인) / Jude 1:9 · Luke 1:19 · Genesis 3:24 · Isaiah 6:6 · Hebrews 1:14 (천사) / Mark 1:23 · Mark 9:25 · Mark 5:9 · 1 Kings 22:22 · Acts 16:16 · Matthew 12:24 · Ephesians 2:2 · Daniel 10:13 · Revelation 9:11 · Revelation 2:20 · Zechariah 5:8 · Revelation 17:5 · 2 Corinthians 11:14 · Revelation 12:9 (악한 영) / Ephesians 6:14 · Ephesians 6:15 · Ephesians 6:16 · Ephesians 6:17 (갑주) / John 16:33 · John 1:5 (예수님 이벤트) · 2 Timothy 4:7 (승리 — `victoryVerse`) · Ephesians 6:12 (입장 화면). `ref`는 영어 책 이름 + 장:절(예 `Jude 1:9`), `ref_ko`는 한국어 책 이름(예 `유다서 1:9`).
@@ -215,7 +215,7 @@
 | 28 | `content/quiz.json` | TASK-007 | 말씀 대결 문항(id·type·difficulty·question_ko·choices 4·answer·verse_ref)만 | 75 |
 | 29 | `content/rules.json` | TASK-008 | board·net·engine·gravity·scoring·attack·spiritTier·gauge·heroSkills·angels·armor·specials·effects·garbage·quiz·match·grace·jesus·elo·invite·nickname·bot·rateLimit·progressCheck·reactions·achievements·verseCard·victoryVerse 수치만 | 210 |
 | 30 | `content/check-content.mjs` | TASK-009 | 콘텐츠 무결성 검사(verse_ref 존재·3필드·quiz 분포·counters 14종·rules 키 일치)·실패 시 exit 1만 | 150 |
-| 31 | `client/js/content.js` | TASK-009 | content JSON 8종 import + id 색인(Map) 제공만 — 클라이언트 단일 import 지점 | 70 |
+| 31 | `client/js/content.js` | TASK-009 | content JSON 7종 import(quiz.json 제외 — 정답 `answer`는 서버만 사용, 문제는 API-026 `quiz`로 수신: TBL-017·FR-032. D-00 2026-10-19 갱신) + id 색인(Map) 제공만 — 클라이언트 단일 import 지점 | 70 |
 | 32 | `worker/src/content.ts` | TASK-009 | content JSON 8종 import + 타입 + id 색인 제공만 — 서버 단일 import 지점 | 90 |
 
 ### 3.2 01.judaea-유대 (34개)
@@ -392,12 +392,12 @@
 
 | TASK-ID | 서브 태스크 | 설명 | 생성 파일 | 상태 |
 |:---|:---|:---|:---|:---:|
-| TASK-001 | 전체: 프로젝트 스캐폴딩 | npm workspaces 모노레포 골격·매니페스트·실행/테스트 명령 등록 — 서브 태스크 5개의 합 | — | ⬜ |
-| TASK-001-1 | 루트 매니페스트 | workspaces·scripts(dev/predev/test/test:e2e/check:content)·버전 고정·포트 사전 점검 | `package.json` · `.gitignore` · `scripts/check-ports.mjs` | ⬜ |
-| TASK-001-2 | client 워크스페이스 | Vite 8 프로젝트 매니페스트·프록시(/api, /ws ws:true)·strictPort·fs.allow | `client/package.json` · `client/vite.config.js` | ⬜ |
-| TASK-001-3 | worker 워크스페이스 | wrangler 4.147.0 매니페스트·DO 바인딩·마이그레이션 v1 선언·TS 설정·키 이름 예시 | `worker/package.json` · `worker/wrangler.toml` · `worker/tsconfig.json` · `worker/.dev.vars.example` | ⬜ |
-| TASK-001-4 | Worker 공용 타입·로그 | Env 바인딩 타입, 구조화 JSON 1줄 로그(guestId 앞 8자만) | `worker/src/env.ts` · `worker/src/log.ts` | ⬜ |
-| TASK-001-5 | 테스트 하네스 설정 | Vitest projects 3종(client·worker·content) + Playwright 설정 — `npm test` 한 줄 등록의 실행 대상 | `vitest.config.js` · `playwright.config.js` | ⬜ |
+| TASK-001 | 전체: 프로젝트 스캐폴딩 | npm workspaces 모노레포 골격·매니페스트·실행/테스트 명령 등록 — 서브 태스크 5개의 합 | — | 🔄 |
+| TASK-001-1 | 루트 매니페스트 | workspaces·scripts(dev/predev/test/test:e2e/check:content)·버전 고정·포트 사전 점검 | `package.json` · `.gitignore` · `scripts/check-ports.mjs` | 🔄 |
+| TASK-001-2 | client 워크스페이스 | Vite 8 프로젝트 매니페스트·프록시(/api, /ws ws:true)·strictPort·fs.allow | `client/package.json` · `client/vite.config.js` | 🔄 |
+| TASK-001-3 | worker 워크스페이스 | wrangler 4.147.0 매니페스트·DO 바인딩·마이그레이션 v1 선언·TS 설정·키 이름 예시 | `worker/package.json` · `worker/wrangler.toml` · `worker/tsconfig.json` · `worker/.dev.vars.example` | 🔄 |
+| TASK-001-4 | Worker 공용 타입·로그 | Env 바인딩 타입, 구조화 JSON 1줄 로그(guestId 앞 8자만) | `worker/src/env.ts` · `worker/src/log.ts` | 🔄 |
+| TASK-001-5 | 테스트 하네스 설정 | Vitest projects 3종(client·worker·content) + Playwright 설정 — `npm test` 한 줄 등록의 실행 대상 | `vitest.config.js` · `playwright.config.js` | 🔄 |
 
 ### TASK-010 서브 태스크 (L 규모 분할)
 
@@ -687,18 +687,18 @@ graph LR
 
 | 지역 · 그룹 | 태스크 행 (상위 L 포함) | 실행 단위 (생성 파일 보유) | 생성 파일 | ⬜ | 🔄 | 🔁 | ✅ | ❌ | Doer / Witness |
 |:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---|
-| 00.예루살렘 | 14 | 13 | 32 | 14 | 0 | 0 | 0 | 0 | D-00 / W-00 |
+| 00.예루살렘 | 14 | 13 | 32 | 0 | 14 | 0 | 0 | 0 | D-00 / W-00 |
 | 01.유대 | 20 | 17 | 34 | 20 | 0 | 0 | 0 | 0 | D-01 / W-01 |
 | 02.사마리아 | 5 | 5 | 14 | 5 | 0 | 0 | 0 | 0 | D-02 / W-02 |
 | 03.땅끝 — 03-A 렌더 코어 | 9 | 8 | 16 | 9 | 0 | 0 | 0 | 0 | D-03A / W-03A |
 | 03.땅끝 — 03-B 오디오·타격감 | 8 | 6 | 15 | 8 | 0 | 0 | 0 | 0 | D-03B / W-03B |
 | 03.땅끝 — 03-C 화면·HUD·네트워크 | 16 | 12 | 29 | 16 | 0 | 0 | 0 | 0 | D-03C / W-03C |
 | 03.땅끝 — 03-D 봉인·실행 | 3 | 3 | 3 | 3 | 0 | 0 | 0 | 0 | D-03D / W-03D |
-| **합계** | **75** | **64** | **143** | **75** | 0 | 0 | 0 | 0 | — |
+| **합계** | **75** | **64** | **143** | **61** | 14 | 0 | 0 | 0 | — |
 
 | 항목 | 값 |
 |:---|:---|
-| 현재 지역 | 00.jerusalem-예루살렘 착수 대기 (서신 `acts-행전/TASK-000/00.jerusalem-예루살렘/epistle-서신.md` 준비 완료) |
+| 현재 지역 | 00.jerusalem-예루살렘 — D-00 구현 완료(2026-10-19), 14행 🔄 = W-00 짝 검증 대기 (✅는 Witness 판정 후). A-03 실측 → RTM §5 DCL-001 (W-00 확정 대기). 서신 §7 발췌는 DCL-001 반영 재생성 필요 |
 | 즉시 정화 루프 기록 위치 | `fruit-열매/history/YYYY-MM-DD.md` (Witness 발견 → Doer 수정, 지역 안 2회 초과 시 SKILL-05 회개 루프) |
 | RTM 태스크 연결 | `rtm-covenant-언약추적.md` §8 (116 ID → TASK-ID) — 코드 모듈 열은 TASK-072에서 채움 |
 

@@ -1,0 +1,114 @@
+[
+  {
+    "spirit_id": "unclean_spirit",
+    "counters": [
+      {"kind": "armor", "id": "helmet_of_salvation"},
+      {"kind": "angel", "id": "seraphim"},
+      {"kind": "armor", "id": "shield_of_faith"}
+    ]
+  },
+  {
+    "spirit_id": "deaf_dumb_spirit",
+    "counters": [
+      {"kind": "armor", "id": "helmet_of_salvation"},
+      {"kind": "angel", "id": "seraphim"},
+      {"kind": "armor", "id": "shield_of_faith"}
+    ]
+  },
+  {
+    "spirit_id": "legion",
+    "counters": [
+      {"kind": "armor", "id": "helmet_of_salvation"},
+      {"kind": "angel", "id": "cherubim"},
+      {"kind": "angel", "id": "seraphim"},
+      {"kind": "armor", "id": "shield_of_faith"}
+    ]
+  },
+  {
+    "spirit_id": "lying_spirit",
+    "counters": [
+      {"kind": "armor", "id": "belt_of_truth"},
+      {"kind": "angel", "id": "seraphim"},
+      {"kind": "armor", "id": "shield_of_faith"}
+    ]
+  },
+  {
+    "spirit_id": "divination_spirit",
+    "counters": [
+      {"kind": "armor", "id": "belt_of_truth"},
+      {"kind": "angel", "id": "seraphim"},
+      {"kind": "armor", "id": "shield_of_faith"}
+    ]
+  },
+  {
+    "spirit_id": "beelzebub",
+    "counters": [
+      {"kind": "armor", "id": "helmet_of_salvation"},
+      {"kind": "angel", "id": "seraphim"},
+      {"kind": "armor", "id": "shield_of_faith"}
+    ]
+  },
+  {
+    "spirit_id": "prince_of_the_air",
+    "counters": [
+      {"kind": "armor", "id": "gospel_shoes"},
+      {"kind": "angel", "id": "seraphim"},
+      {"kind": "armor", "id": "shield_of_faith"}
+    ]
+  },
+  {
+    "spirit_id": "prince_of_persia",
+    "counters": [
+      {"kind": "armor", "id": "shield_of_faith"},
+      {"kind": "armor", "id": "sword_of_the_spirit"}
+    ]
+  },
+  {
+    "spirit_id": "abaddon",
+    "counters": [
+      {"kind": "armor", "id": "shield_of_faith"},
+      {"kind": "armor", "id": "sword_of_the_spirit"}
+    ]
+  },
+  {
+    "spirit_id": "jezebel",
+    "counters": [
+      {"kind": "armor", "id": "belt_of_truth"},
+      {"kind": "angel", "id": "seraphim"},
+      {"kind": "armor", "id": "shield_of_faith"}
+    ]
+  },
+  {
+    "spirit_id": "wickedness",
+    "counters": [
+      {"kind": "angel", "id": "seraphim"},
+      {"kind": "armor", "id": "shield_of_faith"},
+      {"kind": "armor", "id": "sword_of_the_spirit"}
+    ]
+  },
+  {
+    "spirit_id": "babylon",
+    "counters": [
+      {"kind": "armor", "id": "helmet_of_salvation"},
+      {"kind": "angel", "id": "seraphim"},
+      {"kind": "armor", "id": "shield_of_faith"}
+    ]
+  },
+  {
+    "spirit_id": "satan_angel_of_light",
+    "counters": [
+      {"kind": "angel", "id": "michael"},
+      {"kind": "armor", "id": "belt_of_truth"},
+      {"kind": "angel", "id": "seraphim"},
+      {"kind": "armor", "id": "shield_of_faith"}
+    ]
+  },
+  {
+    "spirit_id": "dragon",
+    "counters": [
+      {"kind": "angel", "id": "michael"},
+      {"kind": "armor", "id": "helmet_of_salvation"},
+      {"kind": "armor", "id": "shield_of_faith"}
+    ]
+  }
+]

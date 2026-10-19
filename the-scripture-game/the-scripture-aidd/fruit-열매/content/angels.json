@@ -1,0 +1,42 @@
+[
+  {
+    "id": "michael",
+    "name_ko": "미가엘",
+    "name_en": "Michael the Archangel",
+    "effect_ko": "최상위 공격 — 용·사탄 계열 1회 완전 상쇄",
+    "verse_ref": "Jude 1:9",
+    "visual": "wings_light"
+  },
+  {
+    "id": "gabriel",
+    "name_ko": "가브리엘",
+    "name_en": "Gabriel",
+    "effect_ko": "다음 7개 블록 순서 공개 + 착지 힌트",
+    "verse_ref": "Luke 1:19",
+    "visual": "herald_light"
+  },
+  {
+    "id": "cherubim",
+    "name_ko": "그룹",
+    "name_en": "Cherubims",
+    "effect_ko": "들어오는 쓰레기 줄 2줄 태움",
+    "verse_ref": "Genesis 3:24",
+    "visual": "four_faces_wheels"
+  },
+  {
+    "id": "seraphim",
+    "name_ko": "스랍",
+    "name_en": "Seraphims",
+    "effect_ko": "걸린 저주 효과 — 반전, 납 블록 등 모두 해제",
+    "verse_ref": "Isaiah 6:6",
+    "visual": "six_wings"
+  },
+  {
+    "id": "ministering_spirits",
+    "name_ko": "섬기는 영들",
+    "name_en": "Ministering Spirits",
+    "effect_ko": "쓰레기 줄 1줄 제거",
+    "verse_ref": "Hebrews 1:14",
+    "visual": "small_lights"
+  }
+]

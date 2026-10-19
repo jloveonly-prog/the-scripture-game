@@ -1,0 +1,26 @@
+{
+  "name": "spiritual-warfare-tetris",
+  "version": "0.1.0",
+  "private": true,
+  "description": "KJV 영적 전쟁 테트리스 — 실시간 2인 대전 (TASK-001-1 | REQ-016 REQ-017 | ARCH-017)",
+  "type": "module",
+  "workspaces": [
+    "client",
+    "worker"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "predev": "node scripts/check-ports.mjs",
+    "dev": "concurrently -k -n client,worker \"npm run dev -w client\" \"npm run dev -w worker\"",
+    "test": "vitest run",
+    "check:content": "node content/check-content.mjs",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1",
+    "concurrently": "10.0.5",
+    "vitest": "5.0.3"
+  }
+}
