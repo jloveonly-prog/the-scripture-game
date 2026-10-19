@@ -66,7 +66,7 @@
 
 **`worker/wrangler.toml` 고정 항목:** `name = "spiritual-warfare-tetris"` · `main = "src/index.ts"` · `compatibility_date = "2026-10-01"`(workerd 1.20261001.1이 지원하는 최신 날짜 이하) · `[[durable_objects.bindings]]` `MATCHMAKER`→`Matchmaker`, `GAME_ROOM`→`GameRoom` · `[[migrations]] tag = "v1"`, `new_sqlite_classes = ["Matchmaker", "GameRoom"]` (data-ark §7) · `[vars] ALLOWED_ORIGINS = "http://localhost:5173,http://127.0.0.1:5173"` (architecture §10 제7계명). Supabase 키는 `[vars]`에 절대 쓰지 않는다(`.dev.vars`만).
 
-**`client/vite.config.js` 고정 항목:** `server.port 5173`, `strictPort: true`, `server.proxy` `'/api' → http://127.0.0.1:8787`, `'/ws' → { target: 'ws://127.0.0.1:8787', ws: true }`, `server.fs.allow: ['..']`(content/ 상대 import — architecture §5.2).
+**`client/vite.config.js` 고정 항목:** `server.port 5173`, `strictPort: true`, `server.proxy` `'/api' → http://127.0.0.1:8787`, `'/ws' → { target: 'ws://127.0.0.1:8787', ws: true }`, `server.fs.allow: ['..']`(content/ 상대 import — architecture §5.2). **[추가 2026-10-19 — RTM §5 DCL-011]** `server.fs.deny`: Vite 기본 6개(`.env`·`.env.*`·`*.{crt,pem,key,p12,pfx,cer,der}`·`.npmrc`·`.yarnrc.yml`·`**/.git/**` — 배열 지정 시 기본값이 대체되므로 다시 적음) + `**/.dev.vars`(봉인 제2계명·NFR-004) · `**/.wrangler/**`(로컬 원장 — 제1·7계명) · `**/content/quiz.json`(정답은 서버만 — api-gate §5). `allow: ['..']`는 그대로.
 
 **실행 환경 변수:** `PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers` (D-17). `WRANGLER_SEND_METRICS=false`는 필요 시 README에 안내만(키 아님).
 
@@ -387,7 +387,7 @@ export async function postGuests(request: Request, env: Env): Promise<Response> 
 
 ## 4. 모듈별 개발 현황
 
-> 상태는 task-wall §2의 원본을 요약한 것이다(불일치 시 task-wall이 맞다). TASK-072가 Phase 4 마감 때 이 표와 RTM 코드 모듈 열을 갱신한다.
+> 상태는 task-wall §2의 원본을 요약한 것이다(불일치 시 task-wall이 맞다). TASK-072가 Phase 4 마감 때 이 표와 RTM 코드 모듈 열을 갱신한다. **[TASK-072 갱신 2026-10-19 D-03D]** task-wall §2·§7과 대조 — 00~03-B ✅, 03-C 🔄(W-03C 대기), 03-D 🔄(W-03D 대기). RTM §1 코드 모듈 116/116 채움. 생성 파일 실측 151개 = task-wall §3 계획 151개(계획 밖 파일 0, 누락 0 — `package-lock.json`·`.gitkeep` 제외).
 
 | 모듈 (`fruit-열매/`) | 관련 REQ | ARCH | TASK | 지역 | 상태 | 코드 리뷰 |
 |:---|:---|:---|:---|:---|:---:|:---:|
@@ -417,8 +417,8 @@ export async function postGuests(request: Request, env: Env): Promise<Response> 
 | 입력 `client/js/input/` | REQ-001 | ARCH-007 | TASK-063 | 03-C | 🔄 | ⬜ |
 | 화면 9개 `client/js/screens/` | REQ-001~REQ-006, REQ-013~REQ-015 | ARCH-001 | TASK-064-1, TASK-064-2, TASK-066, TASK-067-1, TASK-067-2 | 03-C | 🔄 | ⬜ |
 | 컨트롤러 `client/js/game/local-player.js`, `server-events.js` | REQ-001, REQ-007~REQ-012 | ARCH-003 | TASK-065 | 03-C | 🔄 | ⬜ |
-| 실행 안내 `README.md` | REQ-016, REQ-017 | ARCH-017 | TASK-070 | 03-D | ⬜ | ⬜ |
-| 봉인 점검·마감 검증 (`bible-성경/04/security-seal-봉인.md`, `sync-fruit-열매검증.md`) | NFR-003, NFR-004, NFR-008, C-008 | — | TASK-071, TASK-072 | 03-D | ⬜ | ⬜ |
+| 실행 안내 `README.md` | REQ-016, REQ-017 | ARCH-017 | TASK-070 | 03-D | 🔄 | ⬜ |
+| 봉인 점검·마감 검증 (`bible-성경/04/security-seal-봉인.md`, `sync-fruit-열매검증.md`) | NFR-003, NFR-004, NFR-008, C-008 | — | TASK-071, TASK-072 | 03-D | 🔄 | ⬜ |
 
 ---
 

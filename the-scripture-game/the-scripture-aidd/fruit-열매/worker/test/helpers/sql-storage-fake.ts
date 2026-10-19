@@ -14,7 +14,8 @@ class FakeCursor<T> implements SqlCursorLike<T> {
   }
   one(): T {
     if (this.rows.length !== 1) {
-      throw new Error(`Expected exactly one result from SQL query, but got ${this.rows.length === 0 ? "no" : "more than one"} results.`);
+      const got = this.rows.length === 0 ? "no" : "more than one";
+      throw new Error(`Expected exactly one result from SQL query, but got ${got} results.`);
     }
     return this.rows[0];
   }

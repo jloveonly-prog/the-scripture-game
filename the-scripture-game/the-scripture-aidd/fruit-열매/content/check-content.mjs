@@ -12,7 +12,8 @@ const SPIRIT_IDS = [
   "prince_of_persia", "abaddon", "jezebel", "wickedness", "babylon", "satan_angel_of_light", "dragon",
 ];
 const ARMOR_IDS = [
-  "belt_of_truth", "breastplate_of_righteousness", "gospel_shoes", "shield_of_faith", "helmet_of_salvation", "sword_of_the_spirit",
+  "belt_of_truth", "breastplate_of_righteousness", "gospel_shoes", "shield_of_faith", "helmet_of_salvation",
+  "sword_of_the_spirit",
 ];
 const CATEGORIES = ["vision", "sense", "deception", "control", "speed", "seal", "board"];
 const ARMOR_ACTIONS = ["nullify", "reduce_next", "block_next", "reflect"];
@@ -33,37 +34,47 @@ const RULE_KEYS = [
   "board.width", "board.height", "board.dangerRows", "board.preview", "board.previewSolomon", "board.previewGabriel",
   "net.stateHz", "net.joinTimeoutMs", "net.readyTimeoutMs",
   "engine.lockDelayMs", "engine.dasMs", "engine.arrMs", "engine.softDropMultiplier",
-  "gravity.startMs", "gravity.at120sMs", "gravity.accelAfterMs", "gravity.accelEveryMs", "gravity.accelFactor", "gravity.minMs",
-  "scoring.lines", "scoring.tspin", "scoring.b2bMultiplier", "scoring.comboPer", "scoring.softDropPerCell", "scoring.hardDropPerCell",
+  "gravity.startMs", "gravity.at120sMs", "gravity.accelAfterMs", "gravity.accelEveryMs", "gravity.accelFactor",
+  "gravity.minMs",
+  "scoring.lines", "scoring.tspin", "scoring.b2bMultiplier", "scoring.comboPer", "scoring.softDropPerCell",
+  "scoring.hardDropPerCell",
   "attack.lines", "attack.tspinBonus", "attack.comboBonus", "attack.b2bBonus", "attack.jerichoBonus",
   "spiritTier.byLines", "spiritTier.tetrisPool", "spiritTier.tierUpTspin", "spiritTier.tierUpComboFrom",
   "spiritTier.b2bTetrisTiers", "spiritTier.bossConsecutiveB2BTetris",
   "gauge.max", "gauge.perLine", "gauge.tetrisBonus", "gauge.tspinBonus", "gauge.quizReward", "gauge.manna",
-  "heroSkills.sling_stone", "heroSkills.understanding_heart", "heroSkills.upon_this_rock", "heroSkills.prison_doors_opened",
+  "heroSkills.sling_stone", "heroSkills.understanding_heart", "heroSkills.upon_this_rock",
+  "heroSkills.prison_doors_opened",
   "angels.michael", "angels.gabriel", "angels.cherubim", "angels.seraphim", "angels.ministering_spirits",
   "armor.spawnChancePerPiece", "armor.breastplateReduce",
-  "specials.wordIntervalMin", "specials.wordIntervalMax", "specials.jericho", "specials.manna", "specials.unlockRounds", "specials.priority",
+  "specials.wordIntervalMin", "specials.wordIntervalMax", "specials.jericho", "specials.manna", "specials.unlockRounds",
+  "specials.priority",
   "effects.maxDurationMs", "effects.maxConcurrent", "effects.reapplyCooldownMs", "effects.sealMs", "garbage.delayMs",
   "quiz.timeLimitMs", "quiz.wrongLockMs", "quiz.autoIntervalMs", "quiz.resumeDelayMs", "quiz.gaugeRewardChance",
   "match.roundsToWin", "match.countdownMs", "match.nextRoundDelayMs",
-  "grace.lossStreakRounds", "grace.garbageReduce", "grace.gaugeMultiplier", "jesus.perMatch", "jesus.garbageRemoveRatio",
-  "elo.base", "elo.k", "invite.length", "invite.alphabet", "invite.ttlMs", "nickname.min", "nickname.max", "nickname.pattern",
+  "grace.lossStreakRounds", "grace.garbageReduce", "grace.gaugeMultiplier", "jesus.perMatch",
+  "jesus.garbageRemoveRatio",
+  "elo.base", "elo.k", "invite.length", "invite.alphabet", "invite.ttlMs", "nickname.min", "nickname.max",
+  "nickname.pattern",
   "bot.easy", "bot.normal", "bot.hard",
   // 착지 평가 가중치 — 솔로몬·가브리엘 힌트·봇 공용 (data-ark TBL-018 추가 2026-10-19 — RTM §5 DCL-004)
-  "placement.weights.aggregateHeight", "placement.weights.lines", "placement.weights.holes", "placement.weights.bumpiness",
+  "placement.weights.aggregateHeight", "placement.weights.lines", "placement.weights.holes",
+  "placement.weights.bumpiness",
   // rateLimit 하위 키 전부 (data-ark TBL-018 재각 2026-10-19 — RTM §5 DCL-002)
   "rateLimit.state", "rateLimit.clear", "rateLimit.skill", "rateLimit.armor", "rateLimit.answer", "rateLimit.reaction",
-  "rateLimit.total", "rateLimit.maxMessageBytes", "rateLimit.totalViolationMs", "rateLimit.guestCreate", "rateLimit.maxRestBodyBytes",
+  "rateLimit.total", "rateLimit.maxMessageBytes", "rateLimit.totalViolationMs", "rateLimit.guestCreate",
+  "rateLimit.maxRestBodyBytes",
   "progressCheck.maxPiecesPerSecond", "reactions",
   // 원장 서비스 수치 + 가속 시작 시점 (data-ark TBL-018 추가 2026-10-19 — RTM §5 DCL-003)
-  "ledger.tokenCacheSize", "ledger.leaderboardCacheMs", "ledger.leaderboardTop", "ledger.historyPageDefault", "ledger.historyPageMax",
+  "ledger.tokenCacheSize", "ledger.leaderboardCacheMs", "ledger.leaderboardTop", "ledger.historyPageDefault",
+  "ledger.historyPageMax",
   "achievements.goliath_hunter", "verseCard", "victoryVerse",
 ];
 // C-010: KJV 본문에 근거 없는 존재 (req.md §3.4 주석)
 const FORBIDDEN_NAMES = [/lilith/i, /릴리스/, /리릴/];
 
 const nonEmpty = (v) => typeof v === "string" && v.trim().length > 0;
-const getPath = (obj, path) => path.split(".").reduce((o, k) => (o !== null && typeof o === "object" ? o[k] : undefined), obj);
+const getPath = (obj, path) => path.split(".").reduce((o, k) =>
+  (o !== null && typeof o === "object" ? o[k] : undefined), obj);
 const sameSet = (a, b) => a.length === b.length && [...a].sort().join("|") === [...b].sort().join("|");
 
 /** content 폴더를 읽어 위반 목록을 돌려준다 (빈 배열 = 통과). */
@@ -91,8 +102,10 @@ export function checkContent(dir) {
   // TBL-016 verses — ref·kjv·ko·ref_ko 비어 있지 않음, ref 유일·형식
   const refs = new Set();
   for (const v of c.verses) {
-    for (const f of ["ref", "kjv", "ko", "ref_ko"]) if (!nonEmpty(v[f])) errors.push(`verses: ${v.ref ?? "?"} ${f} 비어 있음`);
-    if (!/^[1-3]? ?[A-Z][a-z]+(?: [a-z]+)* \d+:\d+(?:-\d+)?$/.test(v.ref ?? "")) errors.push(`verses: ref 형식 오류 "${v.ref}"`);
+    for (const f of ["ref", "kjv", "ko", "ref_ko"]) if (!nonEmpty(v[f]))
+      errors.push(`verses: ${v.ref ?? "?"} ${f} 비어 있음`);
+    if (!/^[1-3]? ?[A-Z][a-z]+(?: [a-z]+)* \d+:\d+(?:-\d+)?$/.test(v.ref ?? ""))
+      errors.push(`verses: ref 형식 오류 "${v.ref}"`);
     if (refs.has(v.ref)) errors.push(`verses: ref 중복 "${v.ref}"`);
     refs.add(v.ref);
   }
@@ -117,7 +130,8 @@ export function checkContent(dir) {
   }
   checkIds("angels", c.angels, ANGEL_IDS);
   for (const a of c.angels) {
-    for (const f of ["name_ko", "name_en", "effect_ko", "visual"]) if (!nonEmpty(a[f])) errors.push(`angels.${a.id}: ${f} 비어 있음`);
+    for (const f of ["name_ko", "name_en", "effect_ko", "visual"]) if (!nonEmpty(a[f]))
+      errors.push(`angels.${a.id}: ${f} 비어 있음`);
     needRef(`angels.${a.id}`, a.verse_ref);
   }
   checkIds("spirits", c.spirits, SPIRIT_IDS);
@@ -126,7 +140,8 @@ export function checkContent(dir) {
     for (const f of ["name_ko", "name_en", "effect"]) if (!nonEmpty(s[f])) errors.push(`spirits.${s.id}: ${f} 비어 있음`);
     if (!Number.isInteger(s.tier) || s.tier < 1 || s.tier > 6) errors.push(`spirits.${s.id}: tier 1~6 아님`);
     if (!CATEGORIES.includes(s.category)) errors.push(`spirits.${s.id}: category "${s.category}" 미정의 (CODE-007)`);
-    if (s.params === null || typeof s.params !== "object" || Array.isArray(s.params)) errors.push(`spirits.${s.id}: params 객체 아님`);
+    if (s.params === null || typeof s.params !== "object" || Array.isArray(s.params))
+      errors.push(`spirits.${s.id}: params 객체 아님`);
     // FR-031 시간형 ≤ effects.maxDurationMs, 봉인 = effects.sealMs, 보드 상태형 = 0 (spec-tablet §9.7 K4)
     const limit = s.category === "seal" ? effects.sealMs : s.category === "board" ? 0 : effects.maxDurationMs;
     if (!Number.isInteger(s.duration_ms) || s.duration_ms < 0 || s.duration_ms > limit) {
@@ -171,20 +186,27 @@ export function checkContent(dir) {
     if (!nonEmpty(q.question_ko)) errors.push(`quiz.${q.id}: question_ko 비어 있음`);
     if (q.type === "verse_blank" && !String(q.question_ko).includes("_____")) errors.push(`quiz.${q.id}: 빈칸 표기 없음`);
     const choices = Array.isArray(q.choices) ? q.choices : [];
-    if (choices.length !== 4 || !choices.every(nonEmpty) || new Set(choices).size !== 4) errors.push(`quiz.${q.id}: 보기 4개·중복 없음 위반`);
+    if (choices.length !== 4 || !choices.every(nonEmpty) || new Set(choices).size !== 4)
+      errors.push(`quiz.${q.id}: 보기 4개·중복 없음 위반`);
     if (!Number.isInteger(q.answer) || q.answer < 0 || q.answer > 3) errors.push(`quiz.${q.id}: answer 0~3 아님`);
     needRef(`quiz.${q.id}`, q.verse_ref);
   }
-  for (const [t, n] of Object.entries(byType)) if (n < QUIZ_MIN_PER_GROUP) errors.push(`quiz: 유형 ${t} ${n}문항 < ${QUIZ_MIN_PER_GROUP}`);
-  for (const [d, n] of Object.entries(byDiff)) if (n < QUIZ_MIN_PER_GROUP) errors.push(`quiz: 난이도 ${d} ${n}문항 < ${QUIZ_MIN_PER_GROUP}`);
+  for (const [t, n] of Object.entries(byType)) if (n < QUIZ_MIN_PER_GROUP)
+    errors.push(`quiz: 유형 ${t} ${n}문항 < ${QUIZ_MIN_PER_GROUP}`);
+  for (const [d, n] of Object.entries(byDiff)) if (n < QUIZ_MIN_PER_GROUP)
+    errors.push(`quiz: 난이도 ${d} ${n}문항 < ${QUIZ_MIN_PER_GROUP}`);
 
   // TBL-018 rules — 모든 키 존재, heroes/angels id와 rules 키 일치, 콘텐츠 참조 존재
   for (const key of RULE_KEYS) if (getPath(c.rules, key) === undefined) errors.push(`rules: 키 누락 "${key}"`);
-  if (!sameSet(Object.keys(c.rules.heroSkills ?? {}), c.heroes.map((h) => h.skill_id))) errors.push("rules.heroSkills 키 ≠ heroes.skill_id");
+  if (!sameSet(Object.keys(c.rules.heroSkills ?? {}), c.heroes.map((h) => h.skill_id)))
+    errors.push("rules.heroSkills 키 ≠ heroes.skill_id");
   if (!sameSet(Object.keys(c.rules.angels ?? {}), c.angels.map((a) => a.id))) errors.push("rules.angels 키 ≠ angels id");
-  for (const id of c.rules.spiritTier?.tetrisPool ?? []) if (!SPIRIT_IDS.includes(id)) errors.push(`rules.spiritTier.tetrisPool: "${id}" 미정의`);
-  for (const id of c.rules.angels?.michael?.families ?? []) if (!SPIRIT_IDS.includes(id)) errors.push(`rules.angels.michael.families: "${id}" 미정의`);
-  if (!HERO_IDS.includes(c.rules.achievements?.goliath_hunter?.heroId)) errors.push("rules.achievements.goliath_hunter.heroId 미정의");
+  for (const id of c.rules.spiritTier?.tetrisPool ?? []) if (!SPIRIT_IDS.includes(id))
+    errors.push(`rules.spiritTier.tetrisPool: "${id}" 미정의`);
+  for (const id of c.rules.angels?.michael?.families ?? []) if (!SPIRIT_IDS.includes(id))
+    errors.push(`rules.angels.michael.families: "${id}" 미정의`);
+  if (!HERO_IDS.includes(c.rules.achievements?.goliath_hunter?.heroId))
+    errors.push("rules.achievements.goliath_hunter.heroId 미정의");
   needRef("rules.victoryVerse", c.rules.victoryVerse);
   needRef("rules.verseCard.jesusEventRef", c.rules.verseCard?.jesusEventRef);
 
@@ -204,7 +226,8 @@ if (process.argv[1] && resolve(process.argv[1]) === self) {
       for (const e of errors) console.error(`  - ${e}`);
       process.exit(1);
     }
-    console.log("[check-content] ✅ 통과 — heroes 4 · angels 5 · spirits 14 · armor 6 · counters 14 · verses·quiz·rules 무결성");
+    console.log(
+      "[check-content] ✅ 통과 — heroes 4 · angels 5 · spirits 14 · armor 6 · counters 14 · verses·quiz·rules 무결성");
   } catch (err) {
     console.error("[check-content] 검사 중 오류:", err && err.message ? err.message : err);
     process.exit(1);

@@ -80,7 +80,8 @@ export class SupabaseStorageAdapter implements StorageAdapter {
   // FR-012 닉네임 사전 조회 — idx_profiles_nickname(lower) 대소문자 무시
   nicknameExists(nickname: string): Promise<boolean> {
     return this.run("nicknameExists", async () => {
-      const { data, error } = await this.db.from("profiles").select("id").ilike("nickname", escapeLike(nickname)).limit(1);
+      const { data, error } = await this.db.from("profiles").select("id")
+        .ilike("nickname", escapeLike(nickname)).limit(1);
       if (error) throw fail("nicknameExists", error);
       return (data ?? []).length > 0;
     });
@@ -108,7 +109,8 @@ export class SupabaseStorageAdapter implements StorageAdapter {
   // NFR-003 토큰 해시 조회 (idx_profiles_token_hash)
   findProfileByTokenHash(tokenHash: string): Promise<ProfileRow | null> {
     return this.run("findProfileByTokenHash", async () => {
-      const { data, error } = await this.db.from("profiles").select(PROFILE_COLUMNS).eq("token_hash", tokenHash).maybeSingle();
+      const { data, error } = await this.db.from("profiles").select(PROFILE_COLUMNS)
+        .eq("token_hash", tokenHash).maybeSingle();
       if (error) throw fail("findProfileByTokenHash", error);
       return data ? toProfile(data as Json) : null;
     });
@@ -182,7 +184,8 @@ export class SupabaseStorageAdapter implements StorageAdapter {
     return this.run("recordPractice", async () => {
       const progress = await this.db
         .from("player_progress")
-        .upsert({ ...progressPayload(input.progress), updated_at: new Date().toISOString() }, { onConflict: "guest_id" });
+        .upsert({ ...progressPayload(input.progress), updated_at: new Date().toISOString() },
+          { onConflict: "guest_id" });
       if (progress.error) throw fail("recordPractice", progress.error);
       if (input.achievements.length === 0) return { newAchievements: [] };
       const rows = input.achievements.map((a) => ({ guest_id: a.guestId, achievement_id: a.achievementId }));
@@ -278,9 +281,11 @@ export class SupabaseStorageAdapter implements StorageAdapter {
       if (profile.error) throw fail("getRank", profile.error);
       if (!profile.data) return null;
       const me = profile.data as Json;
-      const higher = await this.db.from("profiles").select("id", { count: "exact", head: true }).gt("rating", Number(me.rating));
+      const higher = await this.db.from("profiles").select("id", { count: "exact", head: true })
+        .gt("rating", Number(me.rating));
       if (higher.error) throw fail("getRank", higher.error);
-      return { guestId: String(me.id), nickname: String(me.nickname), rating: Number(me.rating), rank: (higher.count ?? 0) + 1 };
+      return { guestId: String(me.id), nickname: String(me.nickname), rating: Number(me.rating),
+        rank: (higher.count ?? 0) + 1 };
     });
   }
 }

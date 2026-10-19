@@ -1,5 +1,6 @@
 -- 0001_init.sql — Postgres 5테이블·인덱스·leaderboard 뷰·RLS 전면 거부·create_guest·record_match 함수 정의만
--- TASK-002 | REQ-014 REQ-015 REQ-016 FR-012 FR-067 FR-068 FR-070 FR-072 NFR-004 NFR-008 | TBL-001~TBL-006 | data-ark §6.1·§6.3·§7 | ARCH-014
+-- TASK-002 | REQ-014 REQ-015 REQ-016 FR-012 FR-067 FR-068 FR-070 FR-072 NFR-004 NFR-008 | TBL-001~TBL-006
+-- data-ark §6.1·§6.3·§7 | ARCH-014
 -- 적용: 운영자가 Supabase CLI로 적용 (이번 실행은 파일 작성만 — data-ark §7, C-008).
 -- 접근 통제(봉인 제7계명): 5테이블 RLS 사용 + 정책 없음 = anon·authenticated 전면 거부. service role(Worker 전용)만 접근.
 -- 함수는 SECURITY DEFINER가 아니다 — 호출자(service role) 권한으로 실행된다 (data-ark §6.3).
@@ -118,11 +119,13 @@ begin
 end;
 $$;
 
--- FR-068 경기 1건 원자 기록 — matches 1 + match_players 2 + profiles 레이팅 ≤2 + player_progress ≤2 + achievements ≤2 (data-ark §5)
+-- FR-068 경기 1건 원자 기록 — matches 1 + match_players 2 + profiles 레이팅 ≤2 + player_progress ≤2
+--          + achievements ≤2 (data-ark §5)
 -- payload: {match_id, mode, bot_level, winner_slot, end_reason, rounds_played, duration_ms, verse_ref,
---           players:[{slot, guest_id, is_bot, hero_id, rounds_won, rating_before, rating_after, max_combo, lines_cleared,
---                     attack_sent, tetris_count, pieces_placed, quiz_correct, quiz_answered}] (2개),
---           progress:[{guest_id, rounds_played, consecutive_round_losses, last_max_combo, last_attack_per_min, last_quiz_rate}],
+--           players:[{slot, guest_id, is_bot, hero_id, rounds_won, rating_before, rating_after, max_combo,
+--                     lines_cleared, attack_sent, tetris_count, pieces_placed, quiz_correct, quiz_answered}] (2개),
+--           progress:[{guest_id, rounds_played, consecutive_round_losses, last_max_combo, last_attack_per_min,
+--                      last_quiz_rate}],
 --           achievements:[{guest_id, achievement_id}]}
 -- 반환: {created_at, new_achievements:[{guest_id, achievement_id}]} — 이번에 처음 달성한 업적만
 create or replace function public.record_match(payload jsonb)
@@ -180,7 +183,8 @@ begin
 
   for v_item in select value from jsonb_array_elements(coalesce(payload -> 'progress', '[]'::jsonb)) loop
     insert into public.player_progress (
-      guest_id, rounds_played, consecutive_round_losses, last_max_combo, last_attack_per_min, last_quiz_rate, updated_at)
+      guest_id, rounds_played, consecutive_round_losses, last_max_combo, last_attack_per_min, last_quiz_rate,
+      updated_at)
     values (
       (v_item ->> 'guest_id')::uuid,
       (v_item ->> 'rounds_played')::integer,

@@ -56,7 +56,8 @@ export class SqliteStorageAdapter implements StorageAdapter {
   // FR-012 닉네임 사전 조회 (COLLATE NOCASE 인덱스)
   nicknameExists(nickname: string): Promise<boolean> {
     return this.run("nicknameExists", () => {
-      const rows = this.storage.sql.exec("SELECT 1 AS found FROM profiles WHERE nickname = ? COLLATE NOCASE LIMIT 1", nickname);
+      const rows = this.storage.sql.exec(
+        "SELECT 1 AS found FROM profiles WHERE nickname = ? COLLATE NOCASE LIMIT 1", nickname);
       return rows.toArray().length > 0;
     });
   }
@@ -88,7 +89,8 @@ export class SqliteStorageAdapter implements StorageAdapter {
   // NFR-003 토큰 해시 조회 (idx_profiles_token_hash)
   findProfileByTokenHash(tokenHash: string): Promise<ProfileRow | null> {
     return this.run("findProfileByTokenHash", () => {
-      const rows = this.storage.sql.exec(`SELECT ${PROFILE_COLUMNS} FROM profiles WHERE token_hash = ?`, tokenHash).toArray();
+      const rows = this.storage.sql.exec(`SELECT ${PROFILE_COLUMNS} FROM profiles WHERE token_hash = ?`, tokenHash)
+        .toArray();
       return rows.length === 0 ? null : toProfile(rows[0]);
     });
   }
@@ -115,7 +117,8 @@ export class SqliteStorageAdapter implements StorageAdapter {
   private writeProgress(update: ProgressUpdate): void {
     this.storage.sql.exec(
       `INSERT INTO player_progress
-         (guest_id, rounds_played, consecutive_round_losses, last_max_combo, last_attack_per_min, last_quiz_rate, updated_at)
+         (guest_id, rounds_played, consecutive_round_losses, last_max_combo, last_attack_per_min, last_quiz_rate,
+          updated_at)
        VALUES (?, ?, ?, ?, ?, ?, ${NOW_SQL})
        ON CONFLICT (guest_id) DO UPDATE SET
          rounds_played = excluded.rounds_played,
@@ -164,7 +167,8 @@ export class SqliteStorageAdapter implements StorageAdapter {
           .one();
         for (const p of input.players) {
           this.storage.sql.exec(
-            `INSERT INTO match_players (match_id, slot, guest_id, is_bot, hero_id, rounds_won, rating_before, rating_after,
+            `INSERT INTO match_players (match_id, slot, guest_id, is_bot, hero_id, rounds_won, rating_before,
+               rating_after,
                max_combo, lines_cleared, attack_sent, tetris_count, pieces_placed, quiz_correct, quiz_answered)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             input.matchId, p.slot, p.guestId, p.isBot ? 1 : 0, p.heroId, p.roundsWon, p.ratingBefore, p.ratingAfter,

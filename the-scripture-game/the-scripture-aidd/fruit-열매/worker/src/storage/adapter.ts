@@ -1,5 +1,6 @@
 // adapter.ts — StorageAdapter 인터페이스·행 타입(ISO-8601 UTC 문자열 반환 규약) 정의만
-// TASK-003 | REQ-014 REQ-015 REQ-016 FR-012 FR-067~FR-072 NFR-008 | TBL-001~TBL-006 | data-ark §1·§5·§6.2 | ARCH-014 | D-05
+// TASK-003 | REQ-014 REQ-015 REQ-016 FR-012 FR-067~FR-072 NFR-008 | TBL-001~TBL-006 | data-ark §1·§5·§6.2
+// ARCH-014 | D-05
 //
 // 규약 (architecture D-05, devguide §3.1):
 //  - 두 구현(DO SQLite / Supabase)은 같은 입력에 같은 결과·정렬을 돌려준다.
@@ -87,7 +88,10 @@ export interface AchievementGrant {
   achievementId: AchievementId;
 }
 
-/** FR-068 경기 1건 기록 입력 — 트랜잭션 1회: matches 1 + match_players 2 + profiles 레이팅 ≤2 + player_progress ≤2 + achievements ≤2 (data-ark §5) */
+/**
+ * FR-068 경기 1건 기록 입력 — 트랜잭션 1회: matches 1 + match_players 2 + profiles 레이팅 ≤2 + player_progress ≤2
+ * + achievements ≤2 (data-ark §5)
+ */
 export interface MatchRecordInput {
   /** GameRoom roomId (UUID) */
   matchId: string;

@@ -1,5 +1,6 @@
 // migrations.ts — §6.1 DDL 문자열 + 단계 실행기만 (A-03 실측 결과: user_version 대신 schema_meta 단일 행 표 — RTM §5 DCL-001)
-// TASK-002 | REQ-014 REQ-015 REQ-016 FR-067 FR-068 FR-070 FR-072 NFR-008 | TBL-001~TBL-006 | data-ark §6.1·§6.1 부록·§7 | ARCH-014
+// TASK-002 | REQ-014 REQ-015 REQ-016 FR-067 FR-068 FR-070 FR-072 NFR-008 | TBL-001~TBL-006
+// data-ark §6.1·§6.1 부록·§7 | ARCH-014
 
 /** DO SqlStorage가 받는 바인딩 값 (`ctx.storage.sql.exec(query, ...bindings)`) */
 export type SqlValue = string | number | null;
@@ -149,7 +150,8 @@ export function runMigrations(storage: DurableStorageLike, steps: readonly Migra
       storage.transactionSync(() => {
         for (const statement of step.statements) storage.sql.exec(statement);
         storage.sql.exec(
-          "INSERT INTO schema_meta (id, version) VALUES (1, ?) ON CONFLICT (id) DO UPDATE SET version = excluded.version",
+          "INSERT INTO schema_meta (id, version) VALUES (1, ?)"
+            + " ON CONFLICT (id) DO UPDATE SET version = excluded.version",
           step.version,
         );
       });
