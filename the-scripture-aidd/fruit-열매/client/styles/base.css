@@ -1,0 +1,134 @@
+/* TASK-061 · FR-048 · FR-050 · NFR-005 · design-vision §2.1~§2.6·§4.2·§6 — 디자인 토큰·공통 컴포넌트 (폰트는 @fontsource 번들 — 외부 요청 0건) */
+
+:root {
+  /* §2.1 배경·면·선 */
+  --bg-abyss: #07080F; --bg-night: #0E1020; --bg-panel: #161A2E; --bg-panel-raised: #1F2440;
+  --board-well: #0A0C18; --board-grid: #1C2138; --line-subtle: #2C3254; --line-strong: #6E78AC;
+  --sky-glow: #22305E; --cloud: #2A2F4A; --hit-tint: #8B1E2D;
+  /* §2.2 글자·빛·상태 */
+  --text-primary: #F5F0E1; --text-secondary: #B9B4CC; --text-muted: #9591AE;
+  --light-gold: #F2C14E; --light-gold-bright: #FFE08A; --light-white: #FFFFFF; --text-on-gold: #1A1405;
+  --danger: #FF6B78; --warning: #FFB547; --correct: #7BE3A5; --info: #7CC4FF; --seal: #B49BFF; --grace: #FFF4D6;
+  --danger-button: #B3263A;
+  /* §2.3 블록 */
+  --block-blue-sky: #4FB3FF; --block-gold: #F4C430; --block-purple: #A35CF0; --block-silver: #C7D0DC;
+  --block-scarlet: #E5404F; --block-blue-deep: #3B5FE0; --block-scarlet-light: #F27A45;
+  /* §2.5 글꼴 */
+  --font-ko: 'Noto Serif KR', serif; --font-en: 'Cinzel', serif;
+  --fs-display: 4rem; --fs-h1: 2.5rem; --fs-h2: 1.75rem; --fs-h3: 1.375rem; --fs-body: 1rem; --fs-small: 0.875rem; --fs-micro: 0.75rem;
+  --fs-verse-en: 1.125rem; --fs-verse-ko: 1rem; --fs-verse-ref: 0.875rem; --fs-num: 1.25rem; --fs-code: 3rem;
+  /* §2.6 간격·모서리·깊이 */
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-5: 24px; --sp-6: 32px; --sp-7: 48px; --sp-8: 64px;
+  --r-sm: 4px; --r-md: 8px; --r-lg: 12px; --r-pill: 999px;
+  --glow-sm: 0 0 8px rgba(242, 193, 78, 0.45);
+  --glow-md: 0 0 16px rgba(242, 193, 78, 0.55), 0 0 2px #FFE08A;
+  --glow-white: 0 0 24px rgba(255, 255, 255, 0.6);
+  --touch-min: 44px; --btn-lg: 52px; --btn-md: 44px; --keycap: 56px;
+  /* §2.8 모션 */
+  --dur-instant: 60ms; --dur-fast: 120ms; --dur-base: 200ms; --dur-screen: 280ms; --dur-screen-out: 160ms; --dur-slow: 600ms; --dur-epic: 1200ms;
+  --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1); --ease-in: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  --ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1); --ease-impact: cubic-bezier(0.16, 1, 0.3, 1); --ease-breath: cubic-bezier(0.37, 0, 0.63, 1);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { font-size: 100%; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; min-height: 100vh; min-height: 100dvh; background: var(--bg-abyss); color: var(--text-primary);
+  font-family: var(--font-ko); font-size: var(--fs-body); line-height: 1.6; overflow-x: hidden;
+}
+#app { position: relative; min-height: 100vh; min-height: 100dvh; }
+h1, h2, h3, p { margin: 0; }
+h1 { font-size: var(--fs-h1); line-height: 1.2; font-weight: 700; }
+h2 { font-size: var(--fs-h2); line-height: 1.25; font-weight: 700; }
+h3 { font-size: var(--fs-h3); line-height: 1.3; font-weight: 700; }
+[lang="en"] { font-family: var(--font-en); }
+[hidden] { display: none !important; }
+.num { font-family: var(--font-en); font-weight: 700; font-variant-numeric: tabular-nums; }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* §6.2 2.4.7 포커스 표시 */
+:focus { outline: none; }
+:focus-visible { outline: 3px solid var(--light-gold-bright); outline-offset: 2px; box-shadow: var(--glow-sm); }
+
+/* §2.6 패널 */
+.panel {
+  background: rgba(22, 26, 46, 0.88); border: 1px solid var(--line-subtle); border-radius: var(--r-lg);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06); padding: var(--sp-5);
+}
+
+/* §4.2 버튼 */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2);
+  min-height: var(--btn-md); min-width: var(--touch-min); padding: 0 var(--sp-5); border-radius: var(--r-md);
+  font: 700 var(--fs-body) / 1 var(--font-ko); cursor: pointer; border: 1px solid transparent;
+  transition: transform var(--dur-fast) var(--ease-out), background-color var(--dur-fast), box-shadow var(--dur-fast);
+}
+.btn:active:not(:disabled) { transform: scale(0.97); }
+.btn--lg { min-height: var(--btn-lg); font-size: 1.125rem; }
+.btn--primary { background: var(--light-gold); color: var(--text-on-gold); }
+.btn--primary:hover:not(:disabled) { background: var(--light-gold-bright); box-shadow: var(--glow-md); }
+.btn--secondary { background: transparent; border-color: var(--light-gold); color: var(--light-gold); }
+.btn--secondary:hover:not(:disabled) { box-shadow: var(--glow-sm); }
+.btn--cancel { background: transparent; border-color: var(--line-strong); color: var(--text-primary); }
+.btn--ghost { background: transparent; color: var(--text-primary); border-color: transparent; padding: 0 var(--sp-3); }
+.btn--ghost:hover { color: var(--light-gold); }
+.btn:disabled, .btn[aria-disabled="true"] { background: var(--line-subtle); color: var(--text-muted); border-color: transparent; cursor: not-allowed; box-shadow: none; }
+.btn--secondary:disabled { background: transparent; border-color: var(--line-subtle); }
+.icon { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+/* §4.2 입력 칸 */
+.label { display: block; font-weight: 700; margin-bottom: var(--sp-2); }
+.input, .code-input {
+  width: 100%; min-height: var(--btn-md); padding: 0 var(--sp-4); border-radius: var(--r-md); border: 1px solid var(--line-strong);
+  background: var(--bg-night); color: var(--text-primary); font: 400 var(--fs-body) var(--font-ko);
+}
+.input::placeholder { color: var(--text-muted); }
+.input:focus, .code-input:focus { border: 2px solid var(--light-gold); outline: none; }
+.input.is-error { border: 2px solid var(--danger); }
+.help { color: var(--text-secondary); font-size: var(--fs-small); }
+.notice { color: var(--text-secondary); font-size: var(--fs-small); }
+.error-text { color: var(--danger); font-size: var(--fs-small); min-height: 1.5em; }
+.error-state, .empty-state, .loading { display: flex; flex-direction: column; align-items: center; gap: var(--sp-3); padding: var(--sp-6) var(--sp-4); text-align: center; color: var(--text-secondary); }
+
+/* 빛 고리 (로딩) */
+.ring { display: inline-block; width: 40px; height: 40px; border-radius: 50%; border: 3px solid rgba(242, 193, 78, 0.25); border-top-color: var(--light-gold); box-shadow: var(--glow-sm); animation: ring-spin 1s linear infinite; }
+.ring--sm { width: 16px; height: 16px; border-width: 2px; }
+.ring--lg { width: 72px; height: 72px; }
+@keyframes ring-spin { to { transform: rotate(360deg); } }
+
+/* §2.5 구절 표기 순서 (C-003) */
+.verse { margin: 0; display: flex; flex-direction: column; gap: var(--sp-2); }
+.verse__en { font: 400 var(--fs-verse-en) / 1.6 var(--font-en); letter-spacing: 0.02em; }
+.verse__ko { font: 400 var(--fs-verse-ko) / 1.7 var(--font-ko); color: var(--text-secondary); }
+.verse__ref { font: 700 var(--fs-verse-ref) var(--font-en); color: var(--light-gold); font-style: normal; text-align: right; }
+
+/* 배지·칩·엠블럼 */
+.badge { display: inline-block; min-width: 2.5em; padding: 0 var(--sp-2); border-radius: var(--r-sm); border: 1px solid var(--line-strong); text-align: center; font-weight: 700; }
+.badge--win { border-color: var(--light-gold); color: var(--light-gold); }
+.badge--loss { border-color: var(--text-muted); color: var(--text-muted); }
+.chip { display: inline-flex; align-items: center; gap: var(--sp-1); padding: 2px var(--sp-3); border-radius: var(--r-pill); background: var(--bg-panel-raised); font-size: var(--fs-small); }
+.emblem { display: inline-flex; width: var(--emblem-size, 64px); height: var(--emblem-size, 64px); vertical-align: middle; flex: none; }
+.emblem canvas { width: 100%; height: 100%; }
+
+/* SCR-009 토글·세그먼트·슬라이더 (§4.2) */
+.switch { display: inline-flex; align-items: center; gap: var(--sp-2); min-height: var(--touch-min); padding: 0 var(--sp-3); border-radius: var(--r-pill); border: 1px solid var(--line-strong); background: transparent; color: var(--text-secondary); font: inherit; cursor: pointer; }
+.switch__thumb { width: 36px; height: 20px; border-radius: var(--r-pill); background: var(--line-subtle); position: relative; }
+.switch__thumb::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--text-muted); transition: transform var(--dur-fast) var(--ease-out); }
+.switch[aria-checked="true"] .switch__thumb { background: var(--light-gold); }
+.switch[aria-checked="true"] .switch__thumb::after { transform: translateX(16px); background: var(--text-on-gold); }
+.switch[aria-checked="true"] .switch__on, .switch[aria-checked="false"] .switch__off { color: var(--text-primary); font-weight: 700; }
+.segment { display: inline-flex; border: 1px solid var(--line-strong); border-radius: var(--r-md); overflow: hidden; }
+.segment__item { min-height: var(--touch-min); padding: 0 var(--sp-4); background: transparent; color: var(--text-secondary); border: 0; font: inherit; cursor: pointer; }
+.segment__item[aria-checked="true"] { background: var(--light-gold); color: var(--text-on-gold); font-weight: 700; }
+.slider { width: 100%; min-height: var(--touch-min); accent-color: var(--light-gold); }
+
+/* §6.2 2.2.2 / §2.8 움직임 줄이기 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; }
+  .ring { animation: ring-spin 4s linear infinite !important; }
+}
+@media (max-width: 767px) {
+  :root { --fs-display: 2.25rem; --fs-h1: 1.75rem; --fs-h2: 1.375rem; --fs-h3: 1.125rem; --fs-verse-en: 0.9375rem; --fs-verse-ko: 0.875rem; --keycap: 48px; --fs-code: 2.5rem; }
+}
+@media (min-width: 768px) and (max-width: 1023px) { :root { --fs-display: 3rem; } }

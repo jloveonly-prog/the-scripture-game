@@ -1,0 +1,86 @@
+/* TASK-061 · FR-041 · FR-064 · C-009 · design-vision §3.6·§4.1·§4.2·§4.9·§4.10 — 오버레이·모달·토스트·말씀 대결 패널·배너·리액션 말풍선 */
+
+.overlay-host { position: fixed; inset: 0; z-index: 20; pointer-events: none; }
+.battle__overlay { z-index: 10; pointer-events: none; }
+.battle__overlay > * { pointer-events: auto; }
+
+/* HUD-18 토스트 — 하단 오른쪽, 동시 2개, 아래에서 8px 200ms */
+.toast-region { position: absolute; right: var(--sp-4); bottom: 96px; display: flex; flex-direction: column; align-items: flex-end; gap: var(--sp-2); }
+.toast {
+  max-width: min(360px, calc(100vw - 32px)); padding: var(--sp-2) var(--sp-4); border-radius: var(--r-pill);
+  background: var(--bg-panel-raised); border: 1px solid var(--info); color: var(--text-primary); font-size: var(--fs-small);
+  animation: toast-in var(--dur-base) var(--ease-out);
+}
+@keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* §4.1 오버레이 열기: 배경 rgba(7,8,15,0.6) 200ms + 패널 0.96→1.0 */
+.modal-backdrop { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(7, 8, 15, 0.6); animation: fade-in var(--dur-base) var(--ease-out); pointer-events: auto; }
+.modal {
+  width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 32px); overflow-y: auto; display: flex; flex-direction: column; gap: var(--sp-3);
+  padding: var(--sp-5); border-radius: var(--r-lg); background: var(--bg-panel-raised); border: 1px solid var(--line-subtle);
+  animation: modal-in var(--dur-base) var(--ease-out);
+}
+.modal .screen-title { font-size: var(--fs-h2); }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes modal-in { from { transform: scale(0.96); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* SCR-005 상태 문장·배너 (EVT-48·51, §3.6 d·h·i) */
+.battle__status { position: absolute; left: 50%; top: 45%; transform: translate(-50%, -50%); padding: var(--sp-3) var(--sp-5); border-radius: var(--r-lg); background: rgba(7, 8, 15, 0.75); font-size: var(--fs-h3); font-weight: 700; }
+.banner {
+  position: absolute; left: 50%; top: 40%; transform: translate(-50%, -50%); padding: var(--sp-5) var(--sp-7); text-align: center;
+  border-radius: var(--r-lg); background: rgba(22, 26, 46, 0.92); border: 1px solid var(--light-gold); box-shadow: var(--glow-md);
+  animation: modal-in var(--dur-base) var(--ease-pop);
+}
+.banner__title { font: 700 var(--fs-h2) var(--font-ko); color: var(--light-gold); }
+.banner__line { font-size: var(--fs-h3); margin-top: var(--sp-2); }
+
+/* §3.6 e 말씀 대결 패널 (ARCH-022) */
+.quiz-host { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+.quiz {
+  pointer-events: auto; width: min(720px, calc(100vw - 32px)); max-height: calc(100vh - 32px); overflow-y: auto; display: flex; flex-direction: column; gap: var(--sp-4);
+  padding: var(--sp-5); border-radius: var(--r-lg); background: rgba(22, 26, 46, 0.96); border: 1px solid var(--light-gold); box-shadow: var(--glow-md);
+  animation: modal-in 350ms var(--ease-out);
+}
+.quiz__head { display: flex; align-items: center; gap: var(--sp-3); }
+.quiz__title { font-size: var(--fs-h3); color: var(--light-gold); flex: none; }
+.quiz__timer { flex: 1; height: 8px; border-radius: var(--r-pill); background: var(--line-subtle); overflow: hidden; }
+.quiz__timer-fill { display: block; height: 100%; background: var(--light-gold); transform-origin: left; }
+.quiz__timer-text { font: 700 var(--fs-small) var(--font-en); font-variant-numeric: tabular-nums; min-width: 3.5em; text-align: right; }
+.quiz__question { font-size: 1.375rem; line-height: 1.5; }
+.quiz__choices { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
+.quiz__choice {
+  display: flex; align-items: center; gap: var(--sp-3); min-height: var(--btn-lg); padding: var(--sp-3) var(--sp-4); text-align: left; cursor: pointer;
+  border-radius: var(--r-md); border: 1px solid var(--line-strong); background: var(--bg-night); color: var(--text-primary); font: 400 var(--fs-body) var(--font-ko);
+}
+.quiz__choice:hover:not(:disabled) { border-color: var(--light-gold); }
+.quiz__choice:disabled { cursor: default; opacity: 0.75; }
+.quiz__choice.is-wrong { border: 2px solid var(--danger); }
+.quiz__choice.is-correct { border: 2px solid var(--correct); opacity: 1; }
+.quiz__num { font: 700 var(--fs-body) var(--font-en); color: var(--light-gold); min-width: 1.2em; }
+.quiz__choice.is-correct .quiz__num { color: var(--correct); }
+.quiz__choice.is-wrong .quiz__num { color: var(--danger); }
+.quiz__status { color: var(--warning); min-height: 1.5em; }
+.quiz__result { display: flex; flex-direction: column; gap: var(--sp-3); }
+.quiz__outcome { font-size: var(--fs-h3); font-weight: 700; color: var(--light-gold); }
+.quiz__outcome--nearMiss { font: 700 3.5rem var(--font-en); color: var(--block-scarlet-light); animation: pulse 600ms var(--ease-breath) infinite alternate; }
+.quiz__explain { color: var(--text-secondary); }
+.quiz__resume { font-weight: 700; text-align: center; }
+
+/* EVT-46 리액션 말풍선 0→1 160ms, 20px 떠오름, 1200ms 유지, 300ms 페이드 */
+.reaction-bubble {
+  position: absolute; left: 0; top: 0; transform: translate(-50%, -100%); font-size: 2rem; padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--r-pill); background: rgba(22, 26, 46, 0.9); border: 1px solid var(--light-gold);
+  animation: bubble 1660ms var(--ease-pop) forwards;
+}
+@keyframes bubble {
+  0% { transform: translate(-50%, -100%) scale(0); opacity: 1; }
+  10% { transform: translate(-50%, -100%) scale(1); }
+  82% { transform: translate(-50%, calc(-100% - 20px)); opacity: 1; }
+  100% { transform: translate(-50%, calc(-100% - 20px)); opacity: 0; }
+}
+
+@media (max-width: 767px) {
+  .quiz__choices { grid-template-columns: 1fr; }
+  .toast-region { left: var(--sp-4); right: var(--sp-4); bottom: 80px; align-items: stretch; }
+  .quiz__outcome--nearMiss { font-size: 2.5rem; }
+}
