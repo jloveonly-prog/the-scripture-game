@@ -20,6 +20,8 @@ const NEAR_MISS_OPPONENT_HEIGHT = BOARD_ROWS - 1;
 /** 한 프레임 dt 상한 (탭 전환 후 복귀 시 순간 이동 방지) · DOM HUD 갱신 간격 */
 const MAX_FRAME_DT_MS = 100;
 const HUD_DOM_INTERVAL_MS = 100;
+/** EVT-42 "(n.n초)" 표시 갱신 간격 (소수 1자리) */
+const TOAST_TICK_MS = 100;
 const clock = () => Date.now();
 
 // FR-001~011 전투 컨트롤러 생성 (devguide §7.8)
@@ -288,9 +290,27 @@ export function createBattleController({ room, joined, scene, ui, keyTarget, tou
       if (!err || !MY_ERROR_REFS.has(err.ref)) return;
       if ((err.ref === 'skill' || err.ref === 'armor') && lastKeyId) ui.keycapRejected(lastKeyId, err.code);
       const message = ERRORS[err.code]?.message;
-      if (message) ui.showToast(message, { key: err.code, untilMs: Number.isInteger(err.retryAfterMs) ? clock() + err.retryAfterMs : undefined });
+      if (!message) return;
+      // EVT-42 "(n.n초)" 남은 시간 갱신 · EVT-43 "(n초)" — design-vision §4.10 (여호수아 조정)
+      const remainMs = Number.isInteger(err.retryAfterMs) ? err.retryAfterMs : err.code === 'ANGEL_SEALED' ? Math.max(0, (status.sealedMs ?? 0) - (clock() - statusAt)) : 0;
+      if ((err.code === 'COOLDOWN' || err.code === 'ANGEL_SEALED') && remainMs > 0) countdownToast(err.code, message, clock() + remainMs);
+      else ui.showToast(message, { key: err.code, untilMs: Number.isInteger(err.retryAfterMs) ? clock() + err.retryAfterMs : undefined });
     },
   };
+
+  // EVT-42·43 남은 시간 토스트 — 같은 key로 문구를 TOAST_TICK_MS마다 갱신 (toast는 key 병합)
+  let toastTimer = null;
+  function countdownToast(key, message, untilLocal) {
+    clearInterval(toastTimer);
+    const show = () => {
+      const left = untilLocal - clock();
+      if (left <= 0 || disposed) { clearInterval(toastTimer); toastTimer = null; return; }
+      const text = key === 'COOLDOWN' ? `${message} (${(left / 1000).toFixed(1)}초)` : `${message} (${Math.ceil(left / 1000)}초)`;
+      ui.showToast(text, { key, untilMs: untilLocal });
+    };
+    show();
+    toastTimer = setInterval(show, TOAST_TICK_MS);
+  }
 
   // FR-006 state 12Hz 스냅샷 (null = 건너뜀)
   function getSnapshot() {
@@ -326,6 +346,7 @@ export function createBattleController({ room, joined, scene, ui, keyTarget, tou
       if (disposed) return;
       disposed = true;
       if (rafId !== null) cancelAnimationFrame(rafId);
+      clearInterval(toastTimer);
       offs.forEach((off) => { if (typeof off === 'function') off(); });
       keyboard.dispose();
       touch?.dispose();

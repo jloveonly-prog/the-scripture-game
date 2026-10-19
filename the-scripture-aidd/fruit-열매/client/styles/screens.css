@@ -107,7 +107,7 @@
 .screen--battle { max-width: none; padding: 0; height: 100vh; height: 100dvh; overflow: hidden; animation: none; }
 .battle__stage, .battle__fx, .battle__hud, .battle__overlay { position: absolute; inset: 0; }
 .battle__stage canvas { display: block; }
-.battle__hud { pointer-events: none; }
+.battle__hud, .battle__fx { pointer-events: none; }
 .battle__hud button, .battle__hud .touch-surface { pointer-events: auto; }
 .battle.is-quiz .battle__stage { filter: saturate(0.5) brightness(0.7); transition: filter var(--dur-base); }
 .scorebar { position: absolute; top: 0; left: 0; right: 0; height: 56px; display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); padding: 0 var(--sp-4); background: rgba(7, 8, 15, 0.6); }
@@ -116,7 +116,8 @@
 .scorebar__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 12em; }
 .scorebar__wins { color: var(--light-gold); letter-spacing: 0.1em; }
 .scorebar__center { color: var(--text-secondary); }
-.grace { color: var(--grace); opacity: 0.55; }
+.grace { color: var(--grace); opacity: 0; transition: opacity 1000ms ease; } /* HUD-15·EVT-52 불투명도 0→0.55 1000ms */
+.grace.is-on { opacity: 0.55; }
 .garbage-meter { position: absolute; width: 12px; border: 1px solid var(--line-strong); border-radius: var(--r-sm); background: var(--board-well); overflow: visible; }
 .garbage-meter__fill { position: absolute; inset: 0; background: var(--danger); transform-origin: bottom; transform: scaleY(0); transition: transform 300ms var(--ease-out); }
 .garbage-meter.is-pulse .garbage-meter__fill { animation: pulse 800ms var(--ease-breath) infinite alternate; }

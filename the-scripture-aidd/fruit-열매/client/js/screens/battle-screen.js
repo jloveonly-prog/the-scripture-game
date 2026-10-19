@@ -64,7 +64,7 @@ export function mountBattleScreen(host, ctx) {
   const n = {}; // HUD 노드
   const side = (key) => el('div', { class: `scorebar__side scorebar__side--${key}` }, [
     n[`${key}Emblem`] = el('span', { class: 'scorebar__emblem' }), n[`${key}Name`] = el('span', { class: 'scorebar__name' }),
-    key === 'me' ? (n.grace = el('span', { class: 'grace', text: '✧', hidden: true, attrs: { 'aria-label': '은혜' } })) : null,
+    key === 'me' ? (n.grace = el('span', { class: 'grace', text: '✧', attrs: { 'aria-label': '은혜', 'aria-hidden': 'true' } })) : null,
     n[`${key}Wins`] = el('span', { class: 'scorebar__wins', attrs: { 'aria-label': '라운드 승수' } }),
   ]);
   const pauseButton = el('button', { class: 'keycap keycap--pause', text: 'Ⅱ Esc', attrs: { type: 'button', tabindex: '-1', 'aria-label': '일시 메뉴' }, on: { click: () => ui.openPauseMenu() } });
@@ -134,7 +134,7 @@ export function mountBattleScreen(host, ctx) {
       setText(n.meWins, practice ? '' : winDots(score[mySlot - 1]));
       setText(n.oppWins, practice || !state.opponent ? '' : winDots(score[2 - mySlot]));
       setText(n.center, practice ? `플레이 시간 ${formatClock(state.elapsedMs)}` : `ROUND ${state.round} · ${formatClock(state.elapsedMs)}`);
-      n.grace.hidden = !me.grace;
+      if (n.grace.classList.contains('is-on') !== Boolean(me.grace)) { n.grace.classList.toggle('is-on', Boolean(me.grace)); n.grace.setAttribute('aria-hidden', me.grace ? 'false' : 'true'); }
       const pending = Math.max(0, me.pendingGarbage ?? 0);
       n.meterFill.style.transform = `scaleY(${Math.min(pending, METER_CELLS) / METER_CELLS})`;
       n.meter.classList.toggle('is-pulse', pending >= METER_PULSE_ROWS);
@@ -302,8 +302,10 @@ export function mountBattleScreen(host, ctx) {
     pauseRelease?.();
     const go = () => { if (!disposed) ctx.navigate('result'); };
     if (data.reason === 'disconnect' && data.winnerSlot === mySlot) {
-      showBanner('상대가 나갔습니다 — 승리', null, BANNER_MS);
-      fx?.emitFx([{ evt: 'EVT-51' }]);
+      // EVT-51 배너·후속 EVT-49는 feedback-sync가 1회 실행 (design-vision EVT-51 "배너 1500ms → EVT-49") — 연출 모듈이 없을 때만 DOM 배너
+      if (fx) { fx.emitFx([{ evt: 'EVT-51' }]); session.matchEnd.winFxPlayed = true; }
+      else showBanner('상대가 나갔습니다 — 승리', null, BANNER_MS);
+      ctx.announce('상대가 나갔습니다 — 승리');
       timers.push(setTimeout(go, BANNER_MS));
     } else go();
   }

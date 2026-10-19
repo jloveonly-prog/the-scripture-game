@@ -1,5 +1,6 @@
 // TASK-040-3 · FR-013 · FR-014~017 · C-007 · D-25 — 위인 엠블럼 4종(물맷돌·심장·반석·사슬) 코드 그리기 + DOM용 캔버스 + 스킬 발동 엠블럼 연출 (design-vision §2.10·§4.8).
 // 이미지 파일 0개 — PixiJS Graphics 경로만. 기준 128×128 (지름 120 메달), 비율 축소. DOM 캔버스는 공유 렌더러 1개로 추출 후 복사본을 돌려준다.
+import 'pixi.js/unsafe-eval'; // CSP script-src 'self' — 메뉴 화면은 pixi-app보다 먼저 렌더러를 만든다 (여호수아 스모크, devguide §3.3-7)
 import { Container, Graphics, Rectangle, autoDetectRenderer } from 'pixi.js';
 import { gsap } from 'gsap';
 import { heroesById } from '../content/content-loader.js';

@@ -138,7 +138,7 @@ export class GameRoom extends DurableObject<Env> implements GameRoomRpc {
       this.timers.clear();
       this.timers.schedule('joinTimeout', Date.now() + TIMING.ROOM_JOIN_TIMEOUT_MS);
     } catch (err) {
-      log('room-init-failed', { error: err instanceof Error ? err.message : 'unknown' });
+      log('room-init-failed', { error: errName(err) }); // 봉인 제1계명 — 메시지 본문은 남기지 않는다
       throw err instanceof Error ? err : new Error('INIT_FAILED');
     }
   }
@@ -201,7 +201,9 @@ export class GameRoom extends DurableObject<Env> implements GameRoomRpc {
       const parsed = parseClientFrame('room', message);
       if (!parsed.ok) {
         // api-gate API-203: state 스키마 위반은 조용히 버린다
-        if (parsed.ref !== 'state') ws.send(encodeErrorMessage(parsed.code, parsed.ref));
+        // api-gate API-209: reaction 스키마 위반은 INVALID_REACTION (표시 없음) — validate는 INVALID_MESSAGE만 돌려주므로 여기서 사상 (여호수아 조정)
+        if (parsed.ref === 'reaction') ws.send(encodeErrorMessage('INVALID_REACTION', parsed.ref));
+        else if (parsed.ref !== 'state') ws.send(encodeErrorMessage(parsed.code, parsed.ref));
         return;
       }
       ref = parsed.type;

@@ -44,6 +44,8 @@ export function startRound(ctx: RoomContext, now: number): void {
   deps.timers.cancel('joinTimeout');
   for (const p of room.players) {
     resetPlayerForRound(p, startAt, !p.isBot && isGraceActive(p.lossStreak));
+    // 봇은 라운드마다 새 BotPlayer(seq 1부터 — devguide §7.4)를 만든다 → 봇의 "소켓 seq"도 라운드마다 새로 시작 (R-02 오거부 방지 — 여호수아 통합 조정)
+    if (p.isBot) p.progress.lastSeq = 0;
     p.specials = createSpecialsLedger(room.seed, room.mode, room.stage);
   }
   const bot = room.players.find((p) => p.isBot);

@@ -1,7 +1,7 @@
 // TASK-030-2 · FR-072 · NFR-004 · D-05 · TBL-001~004 · TBL-006 — Supabase 모드 Store 구현 (Worker 전용 service role, supabase-js 동적 import)
 // 키는 Env로만 받고 어떤 응답·로그에도 싣지 않는다 (봉인 제1·2계명). 경기 기록은 Postgres 함수 record_match 1회 = 1트랜잭션 (data-ark §7.3).
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { LIMITS } from '../../../client/js/net/protocol.js';
+import { LIMITS, PATTERNS } from '../../../client/js/net/protocol.js';
 import { StoreError } from './store';
 import type {
   BotLevel, EndReason, HeroId, LeaderboardRow, MatchListItem, MatchMode, PersonalRecord, PlayerSnapshot, Profile,
@@ -144,6 +144,7 @@ export class SupabaseStore implements Store {
 
   // FR-069 · API-003 내 전적 최신순 페이지
   async listMatches(guestId: string, page: number, size: number): Promise<{ items: MatchListItem[]; totalCount: number }> {
+    if (!PATTERNS.UUID_V4.test(guestId)) return fail('listMatches'); // PostgREST .or() 필터 문자열에 넣기 전 형식 검사 (주입 방지)
     return this.run('listMatches', async (db) => {
       const from = (page - 1) * size;
       const { data, error, count } = await db.from('matches')
@@ -167,14 +168,17 @@ export class SupabaseStore implements Store {
 
   // FR-071 · API-004 내 순위 (100위 밖 포함)
   async getRank(guestId: string): Promise<{ rank: number; nickname: string; rating: number } | null> {
+    if (!PATTERNS.UUID_V4.test(guestId)) return null;
     return this.run('getRank', async (db) => {
       const me = await db.from('profiles').select('nickname, rating, created_at').eq('id', guestId).maybeSingle();
       if (me.error) return fail('getRank');
       if (!me.data) return null;
       const r = me.data as Row;
       const rating = Number(r.rating);
+      const createdAt = iso(r.created_at); // .or() 필터에 넣는 값은 정규화한 수·ISO 시각만 (주입 방지)
+      if (!Number.isFinite(rating)) return fail('getRank');
       const { count, error } = await db.from('profiles').select('id', { count: 'exact', head: true })
-        .or(`rating.gt.${rating},and(rating.eq.${rating},created_at.lt."${String(r.created_at)}")`);
+        .or(`rating.gt.${rating},and(rating.eq.${rating},created_at.lt."${createdAt}")`);
       if (error) return fail('getRank');
       return { rank: 1 + (count ?? 0), nickname: String(r.nickname), rating };
     });

@@ -57,8 +57,31 @@ describe('state 중계 (R-14, FR-006)', () => {
   it('garbageIn 증가분만큼 대기 쓰레기 장부 감소 (D-16)', async () => {
     const { ctx } = makeRoom();
     ctx.room.players[0].pendingGarbage = 3;
+    ctx.room.players[0].progress.garbageSent = 3; // 서버가 실제로 보낸 3줄
     await routeMessage(ctx, 1, 'state', { seq: 1, board: EMPTY, active: null, score: 0, garbageIn: 2 }, 3100);
     expect(ctx.room.players[0].pendingGarbage).toBe(1);
+  });
+
+  it('R-04 상한: 보낸 적 없는 쓰레기만큼 부풀린 garbageIn은 버리고 대기 장부도 줄이지 않는다 (여호수아 통합)', async () => {
+    const { ctx } = makeRoom();
+    ctx.room.players[0].pendingGarbage = 3;
+    ctx.room.players[0].progress.garbageSent = 3;
+    await routeMessage(ctx, 1, 'state', { seq: 1, board: EMPTY, active: null, score: 0, garbageIn: 1000 }, 3100);
+    expect(ctx.room.players[0].pendingGarbage).toBe(3);
+    expect(ctx.room.players[0].progress.garbageIn).toBe(0);
+  });
+});
+
+describe('말씀 대결 정지 중 도착한 clear (여호수아 통합)', () => {
+  it('공격은 없지만 진행 장부는 갱신 → 다음 연속 clear의 콤보가 R-06으로 오거부되지 않는다', async () => {
+    const { ctx, of } = makeRoom();
+    ctx.room.phase = 'quiz';
+    await routeMessage(ctx, 1, 'clear', { seq: 1, lines: 1, combo: 0, b2b: false, tspin: false, pieceCount: 5, specials: [] }, 3500);
+    expect(of('attack', 2)).toHaveLength(0);
+    expect(ctx.room.players[0].progress.lastClearPieceCount).toBe(5);
+    ctx.room.phase = 'playing';
+    await routeMessage(ctx, 1, 'clear', { seq: 2, lines: 1, combo: 1, b2b: false, tspin: false, pieceCount: 6, specials: [] }, 9000);
+    expect(ctx.deps.log).not.toHaveBeenCalledWith('clear-rejected', expect.anything());
   });
 });
 

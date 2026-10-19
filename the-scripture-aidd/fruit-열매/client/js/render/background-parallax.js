@@ -1,6 +1,7 @@
 // TASK-040-2 · FR-048 · FR-061 · NFR-001 · WCAG 2.2.2 — 4층 시차 배경(남흑 하늘·하늘의 빛·구름·빛 입자) + 피격 색조·콤보 배경 빛.
 // 메뉴 화면 공통 배경은 mountBackground(host)로 부팅 시 1회 (devguide §7.9). 대전 장면은 이 배경이 있으면 그 위에 투명하게 겹친다.
 // prefers-reduced-motion: reduce 이면 정지 화면(입자 0, 구름 정지) — design-vision §6.2.
+import 'pixi.js/unsafe-eval'; // CSP script-src 'self' — 메뉴 화면은 pixi-app보다 먼저 렌더러를 만든다 (여호수아 스모크, devguide §3.3-7)
 import { Application, Container, Graphics, Sprite, Texture } from 'pixi.js';
 import { gsap } from 'gsap';
 import { COLORS, toCss } from './piece-skin.js';

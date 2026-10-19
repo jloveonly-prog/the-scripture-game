@@ -1306,7 +1306,7 @@
 
 | 항목 | 규격 |
 |:---|:---|
-| XSS (localStorage 토큰 보호) | 닉네임·문항 등 모든 동적 텍스트는 `textContent`로만 삽입 (`innerHTML` 금지), `index.html`에 CSP 메타: `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'` |
+| XSS (localStorage 토큰 보호) | 닉네임·문항 등 모든 동적 텍스트는 `textContent`로만 삽입 (`innerHTML` 금지), `index.html`에 CSP 메타: `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; worker-src 'self' blob:` |
 | 비밀 | 클라이언트 번들에 비밀 0개 — 빌드 산출물에서 `SUPABASE`·`service_role` 문자열 검사 (NFR-004 측정) |
 | 외부 리소스 | 폰트·그래픽·사운드 외부 요청 0건 (NFR-005) |
 

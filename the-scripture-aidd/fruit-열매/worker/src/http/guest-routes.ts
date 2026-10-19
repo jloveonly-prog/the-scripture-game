@@ -1,5 +1,6 @@
 // TASK-033-2 · REQ-002 · FR-012 · NFR-003 · NFR-008 · UC-001 — API-001 게스트 입장(POST /api/guest)·API-002 토큰 복원(GET /api/guest/me)
 // + 조회 API 공통 Bearer 인증(토큰당 30회/분). 요청 본문 개인정보는 닉네임 1개뿐 (봉인 제4계명).
+import { LIMITS } from '../../../client/js/net/protocol.js';
 import { hashToken, generateToken, isTokenFormat } from '../auth/token';
 import { normalizeNickname } from '../auth/nickname';
 import { StoreError } from '../store/store';
@@ -44,9 +45,13 @@ export async function postGuest(request: Request, deps: HttpDeps): Promise<Respo
   try {
     const source = request.headers.get('CF-Connecting-IP') ?? LOOPBACK; // 메모리 카운터 키로만 사용, 저장·로그 없음 (api-gate §5.3)
     if (!deps.limits.guestCreate.hit(source, deps.now())) return jsonError('RATE_LIMITED');
+    // 본문 크기 상한 (닉네임 1개 — api-gate 표에 413이 없으므로 INVALID_BODY 400, 상한은 기존 LIMITS.MAX_FRAME_BYTES 재사용 — 여호수아 조정)
+    if (Number(request.headers.get('Content-Length') ?? 0) > LIMITS.MAX_FRAME_BYTES) return jsonError('INVALID_BODY');
     let body: unknown;
     try {
-      body = JSON.parse(await request.text());
+      const text = await request.text();
+      if (new TextEncoder().encode(text).length > LIMITS.MAX_FRAME_BYTES) return jsonError('INVALID_BODY');
+      body = JSON.parse(text);
     } catch {
       return jsonError('INVALID_BODY');
     }

@@ -75,6 +75,12 @@ describe('API-001 POST /api/guest', () => {
     }
   });
 
+  it('400 INVALID_BODY — 본문 4096바이트 초과는 파싱 전에 거부 (여호수아 통합)', async () => {
+    const res = await handleFetch(post({ nickname: 'a'.repeat(5000) }), ctx.env);
+    expect(res.status).toBe(400);
+    expect((await res.json()).error.code).toBe('INVALID_BODY');
+  });
+
   it('400 INVALID_NICKNAME — 길이·문자 규칙', async () => {
     for (const nickname of ['a', 'abcdefghijklm', '공 백', '   ']) {
       const res = await handleFetch(post({ nickname }), ctx.env);

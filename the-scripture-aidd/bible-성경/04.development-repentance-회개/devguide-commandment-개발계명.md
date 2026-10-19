@@ -141,7 +141,7 @@ fruit-열매/
 4. **새 의존성 금지** — `package.json`은 기반 소유. 스키마 검증·병렬 실행·DOM 테스트 라이브러리 등 추가 불가 (C-005).
 5. **NICE-TO-HAVE 구현 금지** — N-01 키 재설정, N-02 재접속 복귀, N-03 튜토리얼, N-04 옵션 저장, N-05 퀴즈 중복 방지, N-06 저장 모드 표시 (D-34).
 6. **설계 밖 화면·메시지·필드 금지** — api-gate §1의 메시지·필드, screen-vision 9화면, design-vision EVT-01~54 밖의 것은 만들지 않는다. 필요하면 모세에게 경계 분쟁으로 보고 (Spec-First).
-7. **CSP 준수** — `index.html` CSP(`script-src 'self'`, `worker-src` 미지정 → `'self'`)를 바꾸지 않는다: PixiJS는 `import 'pixi.js/unsafe-eval'`(eval 없이 셰이더 동기화 함수를 쓰게 하는 Pixi v8 공식 모듈)을 `render/pixi-app.js`에서 1회 import, canvas-confetti는 `useWorker: false`, Tone.js는 AudioWorklet(Blob URL)이 필요한 노드를 쓰지 않는다.
+7. **CSP 준수** — `index.html` CSP(`script-src 'self'`, `worker-src 'self' blob:`)를 바꾸지 않는다 — `worker-src`의 `blob:`은 Tone.js 컨텍스트 시계 Worker용 (모세 승인 2026-10-20, RTM §5): PixiJS는 `import 'pixi.js/unsafe-eval'`(eval 없이 셰이더 동기화 함수를 쓰게 하는 Pixi v8 공식 모듈)을 `render/pixi-app.js`에서 1회 import, canvas-confetti는 `useWorker: false`, Tone.js는 AudioWorklet(Blob URL)이 필요한 노드를 쓰지 않는다.
 
 ### 3.4 계층 분리 결정 (SKILL-04 "계층 분리 원칙" — 근거와 함께 기록)
 
@@ -185,33 +185,33 @@ fruit-열매/
 
 | 모듈 (경로) | 소유 지파 | 관련 REQ / ARCH | TASK | 상태 | 코드 리뷰 |
 |:---|:---|:---|:---|:---:|:---:|
-| 작업공간·동시 기동 (`package.json`, `scripts/dev.mjs`, 테스트 설정) | 기반 | REQ-016, REQ-017 / ARCH-019·020 | TASK-001 | 🔄 | ⬜ 레위 대기 |
-| 클라이언트 골격 (`client/index.html`, `vite.config.js`) | 기반 | REQ-016, NFR-004·005 / ARCH-001·019 | TASK-002 | 🔄 | ⬜ |
-| 워커 골격 (`wrangler.toml`, `tsconfig.json`, `env.ts`) | 기반 | REQ-016, FR-072 / ARCH-009·019·021 | TASK-003 | 🔄 | ⬜ |
-| 공용 동형 모듈 (`protocol.js`, `rng.js`, `pieces.js`, `encode.js`, `danger.js`) | 기반 | REQ-001, FR-008, NFR-003 / ARCH-002·007·017 | TASK-004 | 🔄 | ⬜ |
-| 저장 인터페이스 (`store/store.ts`) | 기반 | REQ-014~016 / ARCH-015 | TASK-005 | 🔄 | ⬜ |
-| 공용 콘텐츠·로더 (`content/*.json` 7종, `content.ts`, `content-loader.js`) | 기반 | FR-074 / ARCH-018 | TASK-006 | 🔄 | ⬜ |
-| 엔진 (`client/js/engine/*` 7개) | 유다 | REQ-001, REQ-012 / ARCH-002 | TASK-010 | ⬜ | ⬜ |
-| 전투 클라이언트 (`client/js/battle/*`) | 유다 | REQ-001, REQ-007~010 / ARCH-003 | TASK-011 | ⬜ | ⬜ |
-| AI 봇 (`worker/src/room/bot/*`) | 유다 | REQ-005 / ARCH-014 | TASK-012 | ⬜ | ⬜ |
-| 공격·방해·진행 판정 (`attack.ts`, `room/interference.ts`, `room/progress-guard.ts`) | 에브라임 | REQ-007 / ARCH-012 | TASK-020 | ⬜ | ⬜ |
-| 게이지·스킬·천사·갑주·예수님·특수 칸 (`room/*`) | 에브라임 | REQ-003, REQ-008~010, REQ-012 / ARCH-012 | TASK-021 | ⬜ | ⬜ |
-| 말씀 대결 (`room/quiz-duel.ts`, `room/representative-verse.ts`) | 에브라임 | REQ-011 / ARCH-013 | TASK-022 | ⬜ | ⬜ |
-| GameRoom (`game-room.ts`, `room/room-state·timers·round-flow·message-router`) | 에브라임 | REQ-001, REQ-006 / ARCH-011 | TASK-023 | ⬜ | ⬜ |
-| 저장소 어댑터 (`store/*`, `supabase/`) | 베냐민 | REQ-014~016 / ARCH-015 | TASK-030 | ⬜ | ⬜ |
-| 결과·레이팅 (`elo.ts`, `results/*`) | 베냐민 | REQ-013~015 / ARCH-016 | TASK-031 | ⬜ | ⬜ |
-| 인증·메시지 검증 (`auth/*`, `protocol/*`) | 베냐민 | REQ-002, NFR-003 / ARCH-017·021 | TASK-032 | ⬜ | ⬜ |
-| HTTP 성문 (`index.ts`, `http/*`) | 베냐민 | REQ-002, REQ-014, REQ-015 / ARCH-009 | TASK-033 | ⬜ | ⬜ |
-| Matchmaker (`matchmaker.ts`, `matchmaking/*`) | 베냐민 | REQ-004~006 / ARCH-010 | TASK-034 | ⬜ | ⬜ |
-| 렌더 (`client/js/render/*`) | 납달리 | REQ-013, REQ-003, REQ-010 / ARCH-004 | TASK-040 | ⬜ | ⬜ |
-| 연출 (`client/js/fx/*`) | 납달리 | REQ-013 / ARCH-005 | TASK-041 | ⬜ | ⬜ |
-| 오디오 (`client/js/audio/*`) | 스불론 | REQ-013 / ARCH-006 | TASK-050 | ⬜ | ⬜ |
-| 네트워크·게스트 세션 (`net/*`, `auth/*`) | 므낫세 | REQ-001, REQ-002, REQ-004 / ARCH-007·008 | TASK-060 | ⬜ | ⬜ |
-| 앱 셸·스타일 (`main.js`, `styles/*`) | 므낫세 | FR-078, FR-048, FR-050 / ARCH-001 | TASK-061 | ⬜ | ⬜ |
-| 메뉴 화면 7개 (`screens/*`) | 므낫세 | REQ-002~006, REQ-013~015 / ARCH-001 | TASK-062 | ⬜ | ⬜ |
-| 대전·결과 화면 + 경기 UI (`battle-screen`, `result-screen`, `ui/*`) | 므낫세 | REQ-001, REQ-011, REQ-013 / ARCH-001·022 | TASK-063 | ⬜ | ⬜ |
-| E2E (`tests/e2e/battle-two-browsers.spec.js`) | 므낫세 | REQ-017, FR-077, NFR-002 / ARCH-020 | TASK-064 | ⬜ | ⬜ |
-| 말씀 콘텐츠·검사 (`verses.json`, `quiz.json`, `check-content.mjs`) | 잇사갈 | REQ-011, FR-043, FR-076, C-003 / ARCH-018·020 | TASK-070 | ⬜ | ⬜ |
+| 작업공간·동시 기동 (`package.json`, `scripts/dev.mjs`, 테스트 설정) | 기반 | REQ-016, REQ-017 / ARCH-019·020 | TASK-001 | ✅ | ✅ 레위 |
+| 클라이언트 골격 (`client/index.html`, `vite.config.js`) | 기반 | REQ-016, NFR-004·005 / ARCH-001·019 | TASK-002 | ✅ | ✅ 레위 |
+| 워커 골격 (`wrangler.toml`, `tsconfig.json`, `env.ts`) | 기반 | REQ-016, FR-072 / ARCH-009·019·021 | TASK-003 | ✅ | ✅ 레위 |
+| 공용 동형 모듈 (`protocol.js`, `rng.js`, `pieces.js`, `encode.js`, `danger.js`) | 기반 | REQ-001, FR-008, NFR-003 / ARCH-002·007·017 | TASK-004 | ✅ | ✅ 레위 |
+| 저장 인터페이스 (`store/store.ts`) | 기반 | REQ-014~016 / ARCH-015 | TASK-005 | ✅ | ✅ 레위 |
+| 공용 콘텐츠·로더 (`content/*.json` 7종, `content.ts`, `content-loader.js`) | 기반 | FR-074 / ARCH-018 | TASK-006 | ✅ | ✅ 레위 |
+| 엔진 (`client/js/engine/*` 7개) | 유다 | REQ-001, REQ-012 / ARCH-002 | TASK-010 | ✅ | ✅ 레위 |
+| 전투 클라이언트 (`client/js/battle/*`) | 유다 | REQ-001, REQ-007~010 / ARCH-003 | TASK-011 | ✅ | ✅ 레위 |
+| AI 봇 (`worker/src/room/bot/*`) | 유다 | REQ-005 / ARCH-014 | TASK-012 | ✅ | ✅ 레위 |
+| 공격·방해·진행 판정 (`attack.ts`, `room/interference.ts`, `room/progress-guard.ts`) | 에브라임 | REQ-007 / ARCH-012 | TASK-020 | ✅ | ✅ 레위 |
+| 게이지·스킬·천사·갑주·예수님·특수 칸 (`room/*`) | 에브라임 | REQ-003, REQ-008~010, REQ-012 / ARCH-012 | TASK-021 | ✅ | ✅ 레위 |
+| 말씀 대결 (`room/quiz-duel.ts`, `room/representative-verse.ts`) | 에브라임 | REQ-011 / ARCH-013 | TASK-022 | ✅ | ✅ 레위 |
+| GameRoom (`game-room.ts`, `room/room-state·timers·round-flow·message-router`) | 에브라임 | REQ-001, REQ-006 / ARCH-011 | TASK-023 | ✅ | ✅ 레위 |
+| 저장소 어댑터 (`store/*`, `supabase/`) | 베냐민 | REQ-014~016 / ARCH-015 | TASK-030 | ✅ | ✅ 레위 |
+| 결과·레이팅 (`elo.ts`, `results/*`) | 베냐민 | REQ-013~015 / ARCH-016 | TASK-031 | ✅ | ✅ 레위 |
+| 인증·메시지 검증 (`auth/*`, `protocol/*`) | 베냐민 | REQ-002, NFR-003 / ARCH-017·021 | TASK-032 | ✅ | ✅ 레위 |
+| HTTP 성문 (`index.ts`, `http/*`) | 베냐민 | REQ-002, REQ-014, REQ-015 / ARCH-009 | TASK-033 | ✅ | ✅ 레위 |
+| Matchmaker (`matchmaker.ts`, `matchmaking/*`) | 베냐민 | REQ-004~006 / ARCH-010 | TASK-034 | ✅ | ✅ 레위 |
+| 렌더 (`client/js/render/*`) | 납달리 | REQ-013, REQ-003, REQ-010 / ARCH-004 | TASK-040 | ✅ | ✅ 레위 |
+| 연출 (`client/js/fx/*`) | 납달리 | REQ-013 / ARCH-005 | TASK-041 | ✅ | ✅ 레위 |
+| 오디오 (`client/js/audio/*`) | 스불론 | REQ-013 / ARCH-006 | TASK-050 | ✅ | ✅ 레위 |
+| 네트워크·게스트 세션 (`net/*`, `auth/*`) | 므낫세 | REQ-001, REQ-002, REQ-004 / ARCH-007·008 | TASK-060 | ✅ | ✅ 레위 |
+| 앱 셸·스타일 (`main.js`, `styles/*`) | 므낫세 | FR-078, FR-048, FR-050 / ARCH-001 | TASK-061 | ✅ | ✅ 레위 |
+| 메뉴 화면 7개 (`screens/*`) | 므낫세 | REQ-002~006, REQ-013~015 / ARCH-001 | TASK-062 | ✅ | ✅ 레위 |
+| 대전·결과 화면 + 경기 UI (`battle-screen`, `result-screen`, `ui/*`) | 므낫세 | REQ-001, REQ-011, REQ-013 / ARCH-001·022 | TASK-063 | ✅ | ✅ 레위 |
+| E2E (`tests/e2e/battle-two-browsers.spec.js`) | 므낫세 | REQ-017, FR-077, NFR-002 / ARCH-020 | TASK-064 | ✅ | ✅ 레위 |
+| 말씀 콘텐츠·검사 (`verses.json`, `quiz.json`, `check-content.mjs`) | 잇사갈 | REQ-011, FR-043, FR-076, C-003 / ARCH-018·020 | TASK-070 | ✅ | ✅ 레위 |
 
 ---
 
@@ -433,7 +433,7 @@ export async function createBattleScene({ stageHost, overlayHost, mode, mySlot, 
 BattleScene = {
   renderMyBoard(state: BoardRenderState),       // 컨트롤러가 매 프레임 호출
   renderOpponentBoard(state: { grid, active } | null),
-  updateHud(hud: HudState),                     // Pixi 측 HUD: 홀드·다음 블록 모양·게이지 막대·갑주 문장·은혜 ✧ (D4-15)
+  updateHud(hud: HudState),                     // Pixi 측 HUD: 홀드·다음 블록 모양·게이지 막대·갑주 문장 (D4-15 — 은혜 ✧는 DOM HUD-15)
   layout() → { cellSize, myBoard, opponentBoard, lane, hold, next }, // 각 값 {x,y,width,height} CSS px (stageHost 기준, design-vision §5.2)
   onLayout(cb) → off,                           // 크기 변경 시 — battle-screen이 DOM HUD 위치를 맞춘다
   destroy(),
@@ -542,10 +542,14 @@ export function duckMusic(db) → release()               // 말씀 대결 −6d
 | D4-12 | npm workspaces 실패 | 단일 package.json 루트로 재각 (architecture §15 R1, RTM §5) | FR-073 문장 불변 |
 | D4-13 | 줄 수 예산 조정 | `store/store.ts` 80 → ~185 (도메인 타입 포함, 단일 책임), `screens/battle-screen.js` 180 → ~260 (BattleUiPort 구현 포함), `fx/feedback-sync.js` 150 → ~220 (EVT 큐 표 포함). 모두 300 이하 | SKILL-04 줄 수 가이드 |
 | D4-14 | `playerStatus.wards` 키 | §7.12 — API-256 예시 키에 deception·control·speed 정수 추가 (허리띠·신의 범주 무효) | armor.json action, OQ #8 |
-| D4-15 | HUD의 Pixi/DOM 분담 | Pixi(`hud-view.js`) = 홀드·다음 블록 모양·게이지 막대·갑주 문장·은혜 ✧ / DOM(`battle-screen.js`) = 수치·키캡·칩·배너·토스트·라이브 영역 | design-vision §1 렌더링 분담 |
+| D4-15 | HUD의 Pixi/DOM 분담 | Pixi(`hud-view.js`) = 홀드·다음 블록 모양·게이지 막대·갑주 문장 / DOM(`battle-screen.js`) = 수치·키캡·칩·배너·토스트·라이브 영역·**은혜 ✧(HUD-15, 내 닉네임 오른쪽)** — 2026-10-20 TASK-090 개정: ✧는 design-vision §3.5 HUD-15 "내 닉네임 오른쪽" 문자대로 DOM으로 이동 | design-vision §1 렌더링 분담, §3.5 HUD-15 |
 | D4-16 | EVT 발신자 | §7.9 표 — 엔진·서버 판정 결과는 유다, 말씀 대결·경기 결과 화면은 므낫세. 효과음 큐 맵 실행은 `feedback-sync` | FR-061, design-vision §2.9 |
 | D4-17 | `seq` 부여 위치 | `room-client.js`가 state·clear·topout 공유 카운터로 자동 부여 | api-gate §2.6 seq, R-02 |
 | D4-18 | 지파 수·이름 | 7지파(유다·에브라임·베냐민·납달리·스불론·므낫세·잇사갈) + 레위(QA) + 여호수아(통합) | ORCH-01, task-wall 부록 |
+| D4-19 | 300줄 초과 파일 5개 (통합 실측) | `fx/feedback-sync.js` 410, `battle/battle-controller.js` 357, `matchmaker.ts` 350, `screens/battle-screen.js` 326, `engine/game.js` 323 — 분할하지 않고 단일 책임 근거를 task-wall §2.6에 기록 (500줄 상한 이내). D4-13 예산 갱신 | SKILL-04 줄 수 가이드, TASK-090 |
+| D4-20 | 이탈 승리 연출 실행 위치 | EVT-51은 대전 화면이 1회 emit → `feedback-sync`가 배너 1500ms 뒤 EVT-49를 1회 실행. 결과 화면은 이 경우 EVT-49를 다시 보내지 않는다 | design-vision EVT-51 "배너 1500ms → EVT-49", TASK-090 |
+| D4-21 | reaction 스키마 위반 오류 코드 | `parseClientFrame`(§7.5)은 INVALID_MESSAGE만 돌려주고, GameRoom 셸이 ref `reaction`이면 INVALID_REACTION으로 사상해 보낸다 (클라이언트 표시 없음) | api-gate API-209 E1, TASK-090 |
+| D4-22 | 봇 장부 seq·garbageIn 상한 | 봇은 라운드마다 새 BotPlayer(seq 1부터)이므로 라운드 시작 시 봇 장부 lastSeq=0. 모든 플레이어 `state.garbageIn`은 서버가 그 라운드에 실제 보낸 쓰레기 누계(`garbageSent`) 이하만 인정 (R-04 우회 방지) | §7.4, api-gate R-02·R-04, 레위 감사, TASK-090 |
 
 ---
 

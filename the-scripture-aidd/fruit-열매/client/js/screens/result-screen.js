@@ -91,8 +91,9 @@ export function mountResultScreen(host, ctx) {
   host.append(el('div', { class: 'result__grid' }, [left, right]), el('footer', { class: 'action-bar' }, [lobby]));
   if (!won && !practice) host.classList.add('is-defeat');
 
-  // EVT-49 경기 승리(이탈 승리 포함 — EVT-51 배너는 대전 화면) / EVT-50 패배 / 연습 연출 없음
-  if (!practice) {
+  // EVT-49 경기 승리 / EVT-50 패배 / 연습 연출 없음. 이탈 승리는 대전 화면의 EVT-51이 1500ms 뒤 EVT-49를 이미 1회 실행했다 (중복 팡파르 방지 — 여호수아 조정)
+  const leaveWin = won && data.reason === 'disconnect' && session.matchEnd.winFxPlayed === true;
+  if (!practice && !leaveWin) {
     ctx.load('feedback').then((fx) => fx?.emitFx([{ evt: won ? 'EVT-49' : 'EVT-50' }])).catch((err) => console.error('[result] fx', err));
   }
   ctx.announce(`${resultTitle(data, mySlot)}. ${scoreParts.join(', ')}${rating ? `. ${rating}` : ''}`, { assertive: true });

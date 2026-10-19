@@ -1,6 +1,6 @@
 // TASK-020-4 · FR-075 · FR-032 · R-02~R-07 — 불가능한 진행 거부 검사.
 import { describe, expect, it } from 'vitest';
-import { checkClear, checkState, checkTopout, createProgressLedger, type ClearReport } from '../../../worker/src/room/progress-guard.ts';
+import { checkClear, checkState, checkTopout, createProgressLedger, noteGarbageSent, type ClearReport } from '../../../worker/src/room/progress-guard.ts';
 
 const report = (over: Partial<ClearReport>): ClearReport => ({ seq: 1, lines: 1, combo: 0, b2b: false, tspin: false, pieceCount: 5, ...over });
 
@@ -22,6 +22,7 @@ describe('checkClear', () => {
     expect(checkClear(l, report({ lines: 4, pieceCount: 9 }), 100)).toMatchObject({ rule: 'R-04' });
     expect(checkClear(l, report({ lines: 4, pieceCount: 10 }), 100).ok).toBe(true);
     const g = createProgressLedger(0);
+    noteGarbageSent(g, 2);
     expect(checkState(g, 1, 2).ok).toBe(true);
     expect(checkClear(g, report({ seq: 2, lines: 2, pieceCount: 1 }), 100).ok).toBe(true); // 20 ≤ 4 + 18
   });
@@ -64,10 +65,20 @@ describe('checkClear', () => {
 describe('checkState · checkTopout', () => {
   it('state: seq 역행·garbageIn 역행은 조용히 버리고, 통과하면 garbageIn 증가분을 돌려준다', () => {
     const l = createProgressLedger(0);
+    noteGarbageSent(l, 4);
     expect(checkState(l, 1, 0)).toEqual({ ok: true, garbageDelta: 0 });
     expect(checkState(l, 2, 3)).toEqual({ ok: true, garbageDelta: 3 });
     expect(checkState(l, 2, 4)).toEqual({ ok: false });
     expect(checkState(l, 3, 1)).toEqual({ ok: false });
+  });
+
+  it('R-04 상한: 서버가 보낸 쓰레기 누계보다 큰 garbageIn은 버린다 (부풀린 garbageIn으로 칸 보존 우회 금지)', () => {
+    const l = createProgressLedger(0);
+    expect(checkState(l, 1, 1)).toEqual({ ok: false });
+    noteGarbageSent(l, 3);
+    expect(checkState(l, 2, 4)).toEqual({ ok: false });
+    expect(checkState(l, 3, 3)).toEqual({ ok: true, garbageDelta: 3 });
+    expect(checkClear(l, report({ seq: 4, lines: 3, pieceCount: 0 }), 100)).toMatchObject({ rule: 'R-04' }); // 30 > 0 + 27
   });
 
   it('topout: seq 역행 → SEQ_REJECTED, pieceCount < 직전 clear → PROGRESS_REJECTED', () => {

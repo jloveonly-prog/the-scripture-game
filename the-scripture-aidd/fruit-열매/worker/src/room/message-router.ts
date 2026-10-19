@@ -9,7 +9,7 @@ import { addFaith, faithGainForClear } from './faith';
 import { performHeroSkill } from './hero-skills';
 import { clearCategories, expireEffects, noteLinesCleared, tryApplySpirit, type ActiveEffect } from './interference';
 import { buildJesusAction, JESUS_EFFECT_MS, JESUS_VERSE_REF, jesusClearedCategories, shouldTriggerJesus } from './jesus-event';
-import { checkClear, checkState, checkTopout } from './progress-guard';
+import { checkClear, checkState, checkTopout, noteGarbageSent } from './progress-guard';
 import { startQuiz, submitQuizAnswer } from './quiz-duel';
 import { usageKey } from './representative-verse';
 import {
@@ -82,6 +82,7 @@ function receiveAttack(
     } else spiritId = null;
   }
   target.pendingGarbage += def.garbage;
+  noteGarbageSent(target.progress, def.garbage); // R-04 garbageIn 상한
   ctx.room.attackSeq += 1;
   const attack = { attackId: ctx.room.attackSeq, fromSlot: from.slot, spiritId, garbage: def.garbage, holeColumn: atk.holeColumn, duration, params, reflected };
   if (target.isBot) ctx.room.bot?.receiveAttack({ garbage: def.garbage, holeColumn: atk.holeColumn, spiritId, duration, params });
@@ -99,8 +100,12 @@ function receiveAttack(
 // FR-004·FR-024~026·FR-031~033·FR-036·FR-044~046 API-204 clear 처리 순서 ①~⑧
 async function handleClear(ctx: RoomContext, p: PlayerState, d: Data, now: number): Promise<void> {
   const { room, deps } = ctx;
-  if (room.phase !== 'playing') return void (p.isBot || sendError(ctx, p.slot, 'GAME_NOT_RUNNING', 'clear'));
   const c = { seq: num(d.seq), lines: num(d.lines), combo: num(d.combo), b2b: d.b2b === true, tspin: d.tspin === true, pieceCount: num(d.pieceCount) };
+  if (room.phase !== 'playing') {
+    // 말씀 대결 정지 직전에 보낸 정상 clear: 판정·공격은 하지 않지만 진행 장부는 맞춘다 (이후 콤보·B2B R-06·R-07 연쇄 오거부 방지 — 여호수아 조정)
+    if (room.phase === 'quiz') checkClear(p.progress, c, now);
+    return void (p.isBot || sendError(ctx, p.slot, 'GAME_NOT_RUNNING', 'clear'));
+  }
   // ① 진행 검증 (R-02~R-07)
   const guard = checkClear(p.progress, c, now);
   if (!guard.ok) {

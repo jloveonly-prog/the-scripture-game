@@ -25,6 +25,8 @@ export interface ProgressLedger {
   lastDifficult: boolean;
   totalLines: number;
   garbageIn: number;
+  /** R-04 이 라운드에 서버가 이 플레이어에게 실제로 보낸 쓰레기 줄 누계 — garbageIn 상한 (부풀린 garbageIn으로 R-04 우회 방지) */
+  garbageSent: number;
   /** R-05 표본 (시각, pieceCount) */
   samples: Array<{ at: number; pieceCount: number }>;
 }
@@ -36,7 +38,7 @@ const fail = (code: GuardCode, rule: string): GuardResult => ({ ok: false, code,
 // FR-032 라운드 시작 시 장부 초기화 (seq는 소켓 단위라 이어받는다)
 export function createProgressLedger(roundStartAt: number, lastSeq = 0): ProgressLedger {
   return {
-    lastSeq, lastClearPieceCount: -1, lastCombo: 0, lastDifficult: false, totalLines: 0, garbageIn: 0,
+    lastSeq, lastClearPieceCount: -1, lastCombo: 0, lastDifficult: false, totalLines: 0, garbageIn: 0, garbageSent: 0,
     samples: [{ at: roundStartAt, pieceCount: 0 }],
   };
 }
@@ -81,11 +83,16 @@ export function checkClear(ledger: ProgressLedger, c: ClearReport, now: number):
 
 // FR-032 R-02 state 검사 (역행·중복 seq와 garbageIn 역행은 조용히 버린다 — 호출 측은 응답하지 않음)
 export function checkState(ledger: ProgressLedger, seq: number, garbageIn: number): { ok: true; garbageDelta: number } | { ok: false } {
-  if (seq <= ledger.lastSeq || garbageIn < ledger.garbageIn) return { ok: false };
+  if (seq <= ledger.lastSeq || garbageIn < ledger.garbageIn || garbageIn > ledger.garbageSent) return { ok: false };
   const garbageDelta = garbageIn - ledger.garbageIn;
   ledger.lastSeq = seq;
   ledger.garbageIn = garbageIn;
   return { ok: true, garbageDelta };
+}
+
+// FR-032 R-04 서버가 이 플레이어에게 쓰레기를 보냈다 (API-254 송신 시점) → garbageIn 상한 증가
+export function noteGarbageSent(ledger: ProgressLedger, rows: number): void {
+  if (Number.isInteger(rows) && rows > 0) ledger.garbageSent += rows;
 }
 
 // FR-032 R-02 topout 검사 (pieceCount는 직전 clear 이상)

@@ -17,16 +17,6 @@ function panel(g, r) {
   g.clear().roundRect(r.x, r.y, r.width, r.height, 8).fill({ color: COLORS.bgPanel, alpha: HUD.panelAlpha }).stroke({ width: 1, color: COLORS.lineSubtle });
 }
 
-function starPath(g, cx, cy, outer, inner) {
-  const pts = [];
-  for (let i = 0; i < 8; i += 1) {
-    const a = (Math.PI / 4) * i - Math.PI / 2;
-    const rr = i % 2 === 0 ? outer : inner;
-    pts.push(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr);
-  }
-  return g.poly(pts);
-}
-
 // D4-15 Pixi HUD 묶음
 export class HudView {
   constructor({ skin, mode }) {
@@ -61,8 +51,8 @@ export class HudView {
     this.layout = layout;
     panel(this.holdBg, layout.hold);
     panel(this.nextBg, layout.next);
+    // HUD-15 은혜 ✧는 design-vision §3.5 "내 닉네임 오른쪽" 문자대로 DOM(battle-screen)이 그린다 — Pixi 쪽은 그리지 않는다 (여호수아 경계 조정, D4-15 개정)
     this.grace.clear();
-    starPath(this.grace, layout.hold.x + layout.hold.width - 10, layout.hold.y + 10, 6, 2.2).fill(COLORS.grace);
     if (this.hud) this.update(this.hud, true);
   }
 

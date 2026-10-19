@@ -19,23 +19,19 @@ export function toStoreError(err: unknown): StoreError {
 
 // FR-072 Matchmaker RPC 프록시 Store
 export class DoStoreClient implements Store {
-  private stubCache: MatchmakerRpc | null = null;
-
   constructor(private readonly env: Pick<Env, 'MATCHMAKER'>) {}
 
+  // DO 스텁은 만든 요청(I/O 컨텍스트)에 묶인다 — isolate 캐시(selectStore)된 이 객체가 스텁을 요청 간에 재사용하면
+  // "다른 요청의 I/O" 오류로 한 번 걸러 503이 난다 (여호수아 통합 스모크에서 발견). 호출마다 새 스텁을 얻는다 (get은 네트워크 없음).
   private stub(): MatchmakerRpc {
-    if (!this.stubCache) {
-      const ns = this.env.MATCHMAKER;
-      this.stubCache = ns.get(ns.idFromName(MATCHMAKER_NAME)) as unknown as MatchmakerRpc;
-    }
-    return this.stubCache;
+    const ns = this.env.MATCHMAKER;
+    return ns.get(ns.idFromName(MATCHMAKER_NAME)) as unknown as MatchmakerRpc;
   }
 
   private async call<T>(fn: (rpc: MatchmakerRpc) => Promise<T>): Promise<T> {
     try {
       return await fn(this.stub());
     } catch (err) {
-      this.stubCache = null; // 끊긴 스텁은 다음 호출에서 다시 얻는다
       throw toStoreError(err);
     }
   }
