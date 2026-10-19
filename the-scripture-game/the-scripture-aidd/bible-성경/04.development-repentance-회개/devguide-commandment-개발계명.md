@@ -89,6 +89,7 @@ fruit-열매/
 │   │   │   ├── aux-sfx.js                   # TASK-050-2 ~220
 │   │   │   ├── bgm.js                       # TASK-050-1 ~230
 │   │   │   ├── mixer.js                     # TASK-050-1 ~120
+│   │   │   ├── sfx-voices.js                # TASK-050-2 ~130 (D-03B 분할 — L-19)
 │   │   │   └── sfx.js                       # TASK-050-2 ~260
 │   │   ├── engine/
 │   │   │   ├── bag.js                       # TASK-010-1 ~50
@@ -103,15 +104,19 @@ fruit-열매/
 │   │   │   └── srs.js                       # TASK-010-1 ~90
 │   │   ├── fx/
 │   │   │   ├── arrows.js                    # TASK-051-2 ~190
+│   │   │   ├── board-motion.js              # TASK-053 ~260 (D-03B 분할 — L-21)
 │   │   │   ├── confetti.js                  # TASK-051-2 ~60
 │   │   │   ├── flash.js                     # TASK-051-1 ~90
 │   │   │   ├── hitstop.js                   # TASK-051-1 ~60
 │   │   │   ├── juice-table-core.js          # TASK-053 ~260
+│   │   │   ├── juice-table-flow.js          # TASK-053 ~290 (D-03B 분할 — L-22)
 │   │   │   ├── juice-table-powers.js        # TASK-053 ~280
+│   │   │   ├── juice-table-quiz.js          # TASK-053 ~300 (D-03B 분할 — L-22)
 │   │   │   ├── juice.js                     # TASK-053 ~150
 │   │   │   ├── overlay.js                   # TASK-052 ~250
 │   │   │   ├── reactions.js                 # TASK-052 ~80
 │   │   │   ├── shake.js                     # TASK-051-1 ~90
+│   │   │   ├── subtitle.js                  # TASK-052 ~120 (D-03B 분할 — L-20)
 │   │   │   └── verse-card.js                # TASK-052 ~190
 │   │   ├── game/
 │   │   │   ├── apply-attack.js              # TASK-011 ~150
@@ -277,6 +282,10 @@ fruit-열매/
 | L-16 | 봇 구동(틱 루프·봇 줄 삭제 → 공용 applyClear·판정 결과 → 봇 엔진)을 GameRoom DO 셸·수신 핸들러에서 분리 (W-02 2026-10-19 — game-room.ts 실측 357줄) | `room/bot-driver.ts` | ARCH-011, ARCH-013 | task-wall §4.2 "300줄 넘으면 분할" + L-01과 같은 근거(DO 셸에는 소켓·타이머·config만). cloudflare:workers 비의존 |
 | L-17 | 홀드·다음 블록 칸의 블록 그림을 보드 뷰에서 분리 (D-03A 2026-10-19 — board-view.js 실측 349줄) | `render/piece-preview.js` | ARCH-004 | task-wall §4.2 "300줄 넘으면 분할" — 보드 1개 그리기(고정 칸·활성·고스트·힌트·위험선)와 미리보기 블록 그리기는 다른 책임(SCR-005 MyBoard ↔ HoldBox·NextQueue) |
 | L-18 | 악한 영 등장 연출(실루엣·연기·비네트·사탄 변장·용 통과·메뚜기)을 지속 효과에서 분리 (D-03A 2026-10-19 — spirit-fx.js 실측 423줄) | `render/spirit-appear.js` | ARCH-004 | task-wall §4.2 "300줄 넘으면 분할" — design-vision §4.6.4가 "공통 등장 연출" 표와 "효과 연출(지속 동안)" 열을 따로 정의(등장 1.2초 일회성 ↔ curseView 동기화 지속) |
+| L-19 | SFX 악기 생성을 재생 레시피에서 분리 (D-03B 2026-10-19 — sfx.js 실측 359줄) | `audio/sfx-voices.js` | ARCH-006 | design-vision §4.7.1 "Tone.start() 직후 악기를 한 번 만들어 재사용"(1회 생성) ↔ §4.7.2 재생마다의 음·글라이드·변형(호출마다) — 생명 주기가 다른 두 책임 |
+| L-20 | 자막 큐를 콜아웃 큐에서 분리 (D-03B 2026-10-19 — overlay.js 실측 324줄) | `fx/subtitle.js` | ARCH-005 | design-vision §4.8이 콜아웃 큐와 자막 큐를 다른 규칙(우선순위·교차·대기열 2)으로 정의, 자막은 구절 3줄(C-003) 채우기까지 |
+| L-21 | 보드 모션 원소를 표 행에서 분리 (D-03B 2026-10-19) | `fx/board-motion.js` | ARCH-005 | J·C·A·M 행이 같은 BoardView 칸 스프라이트·activeContainer 조작(보간·잔상·붕괴·상승·무너짐)을 되풀이 — 표 파일은 "행 정의만"(task-wall §3.4) |
+| L-22 | 이벤트 표를 2개 → 4개로 (D-03B 2026-10-19 — core 실측 355줄, A 행까지) | `fx/juice-table-flow.js`(A·D·M), `fx/juice-table-quiz.js`(Q·X·R-07·RX·AC·RT·GR·SV·UI) | ARCH-005 | design-vision §4.6 행 약 110개가 2파일 예산(260·280)을 넘음 — 절 단위(§4.6.3·§4.6.11·§4.6.12 / §4.6.9·§4.6.10·§4.6.13)로 분리 |
 
 > 위 14건 모두 **기능 추가가 아니라 책임 분할**이다. 새 화면·새 메시지·새 테이블·새 수치는 0개 (P4-002).
 
@@ -399,8 +408,8 @@ export async function postGuests(request: Request, env: Env): Promise<Response> 
 | GameRoom `worker/src/game-room.ts`, `room/handlers.ts`, `room/outbox.ts`, `room/bot-driver.ts` | REQ-001, REQ-005, REQ-007~REQ-011 | ARCH-011 | TASK-033 | 02 | ✅ | ✅ |
 | Worker 진입 `worker/src/index.ts` | REQ-016 | ARCH-009 | TASK-034 | 02 | ✅ | ✅ |
 | 렌더 `client/js/render/`, `client/js/art/` | REQ-013 | ARCH-004 | TASK-040~TASK-045 | 03-A | 🔄 | ⬜ |
-| 오디오 `client/js/audio/` | REQ-013 | ARCH-006 | TASK-050-1, TASK-050-2 | 03-B | ⬜ | ⬜ |
-| 연출 `client/js/fx/` | REQ-011, REQ-013 | ARCH-005 | TASK-051-1~TASK-053 | 03-B | ⬜ | ⬜ |
+| 오디오 `client/js/audio/` | REQ-013 | ARCH-006 | TASK-050-1, TASK-050-2 | 03-B | 🔄 | ⬜ |
+| 연출 `client/js/fx/` | REQ-011, REQ-013 | ARCH-005 | TASK-051-1~TASK-053 | 03-B | 🔄 | ⬜ |
 | 셸·스타일·라우터 (`index.html`, `style.css`, `styles/`, `main.js`, `screens/shell.js`, `store/session.js`) | REQ-013, FR-078 | ARCH-001 | TASK-060-1, TASK-060-2, TASK-061 | 03-C | ⬜ | ⬜ |
 | 저장·네트워크 `client/js/store/guest·settings.js`, `client/js/net/` | REQ-002, REQ-004 | ARCH-008 | TASK-062-1, TASK-062-2 | 03-C | ⬜ | ⬜ |
 | 입력 `client/js/input/` | REQ-001 | ARCH-007 | TASK-063 | 03-C | ⬜ | ⬜ |

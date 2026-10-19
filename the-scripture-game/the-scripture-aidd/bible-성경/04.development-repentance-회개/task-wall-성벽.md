@@ -149,14 +149,14 @@
 | TASK-044-2 | [03-A] 위인 엠블럼·갑주 아이콘 | 03.땅끝 | 엠블럼 4종(sling·crown·rock_key·broken_chain) + 갑주 6종 아이콘 | REQ-003, REQ-009, FR-013, FR-037, FR-049 | TBL-011 `emblem`, TBL-014, design-vision §2.13.1·§2.13.4 | `client/js/art/shapes-heroes-armor.js` | 렌더링만 | 240 | TASK-044-1 | S | 🔄 | D-03A | W-03A | ⬜ |
 | TASK-044-3 | [03-A] 천사·예수님 빛·악한 영 | 03.땅끝 | 천사 5종(visual 키)·예수님 빛 실루엣(얼굴 없음)·악한 영 14종 실루엣 | REQ-007, REQ-008, REQ-010, FR-035, FR-039, FR-049, C-002, C-010, C-011 | TBL-012 `visual`, TBL-013, design-vision §2.13.2·§2.13.3·§2.13.5 | `client/js/art/shapes-angels.js`<br>`client/js/art/shapes-spirits.js` | 렌더링만 | 220 · 280 | TASK-044-1 | S | 🔄 | D-03A | W-03A | ⬜ |
 | TASK-045 | [03-A] 존재 연출 레이어 | 03.땅끝 | SpiritLayer(14종 시각 효과)·HolyLayer(빛기둥·천사·위인 스킬 빛·예수님 실루엣 — 실루엣에 닿는 그래픽 0) | REQ-007, REQ-008, REQ-010, REQ-013, FR-027~FR-030, FR-039, FR-049, FR-054, C-002, C-011 | design-vision §2.8 z60·z80, §4.6.4·§4.6.5·§4.6.8, D3-09 | `client/js/render/spirit-fx.js`<br>`client/js/render/spirit-appear.js` **[D-03A 분할]**<br>`client/js/render/holy-fx.js` | 렌더링만 | 260 · 200 · 240 (spirit-fx 분할 전 실측 423) | TASK-042, TASK-044-3 | S | 🔄 | D-03A | W-03A | ⬜ |
-| TASK-050 | [03-B] 오디오 (전체) | 03.땅끝 | Tone.js 합성 전용 — 버스·BGM 2·SFX 17·AUX 15. 서브 2개 | REQ-013, FR-058~FR-060, NFR-005, C-007 | ARCH-006, design-vision §4.7 | — (서브 태스크 합 — L 분할표) | — | — | TASK-001-2 | L | ⬜ | D-03B | W-03B | ⬜ |
-| TASK-050-1 | [03-B] 믹서·배경음악 | 03.땅끝 | 마스터/효과음/음악 버스·음소거·첫 입력 시작, 대기실 BGM-1·대전 BGM-2(위기 적응형) | REQ-013, FR-055, FR-059, FR-060, C-007 | design-vision §4.7.1·§4.7.4, D-14 | `client/js/audio/mixer.js`<br>`client/js/audio/bgm.js` | 오디오만 | 120 · 230 | TASK-001-2 | S | ⬜ | D-03B | W-03B | ⬜ |
-| TASK-050-2 | [03-B] 효과음 SFX·AUX | 03.땅끝 | SFX-01~17(FR-058 1:1)·AUX-01~15 합성 레시피·동시 발음 제한·30ms 중복 생략 | REQ-013, FR-055, FR-058, FR-061, C-007 | design-vision §4.7.2·§4.7.3·§4.8 | `client/js/audio/sfx.js`<br>`client/js/audio/aux-sfx.js` | 오디오만 | 260 · 220 | TASK-050-1 | S | ⬜ | D-03B | W-03B | ⬜ |
-| TASK-051 | [03-B] 연출 원소 (전체) | 03.땅끝 | 흔들림·히트스톱·섬광·빛의 화살·콘페티 — 서브 2개 | REQ-013, FR-052, FR-053, FR-056, FR-061 | ARCH-005, design-vision §2.10 | — (서브 태스크 합 — L 분할표) | — | — | TASK-040, TASK-042 | L | ⬜ | D-03B | W-03B | ⬜ |
-| TASK-051-1 | [03-B] 흔들림·히트스톱·섬광 | 03.땅끝 | SHK 합성 규칙·히트스톱 0.05~0.1초·FL 토큰과 1초 3회 제한(WCAG 2.3.1) | REQ-013, FR-051, FR-052, FR-057, FR-061 | design-vision §2.10·§4.8·§6.3 | `client/js/fx/shake.js`<br>`client/js/fx/hitstop.js`<br>`client/js/fx/flash.js` | 연출만 | 90 · 60 · 90 | TASK-040 | S | ⬜ | D-03B | W-03B | ⬜ |
-| TASK-051-2 | [03-B] 빛의 화살·콘페티 | 03.땅끝 | 공격 투사체·물맷돌·가운데 상쇄 충돌, 금빛 콘페티 3회 | REQ-007, REQ-013, FR-014, FR-053, FR-056 | design-vision §4.6.3·§4.6.12 | `client/js/fx/arrows.js`<br>`client/js/fx/confetti.js` | 연출만 | 190 · 60 | TASK-042, TASK-044-2 | S | ⬜ | D-03B | W-03B | ⬜ |
-| TASK-052 | [03-B] DOM 연출·말씀 카드 | 03.땅끝 | 콜아웃 큐·자막 큐(영 이름·KJV 3줄)·니어미스·은혜 아이콘, 리액션 말풍선, 말씀 카드 이미지 저장/공유 | REQ-011, REQ-013, FR-042, FR-054, FR-061~FR-064, C-003, C-009 | ARCH-005, API-027, API-028, TBL-016, design-vision §4.8·§2.6 | `client/js/fx/overlay.js`<br>`client/js/fx/reactions.js`<br>`client/js/fx/verse-card.js` | 연출만 | 250 · 80 · 190 | TASK-044-2, TASK-006, TASK-009 | M | ⬜ | D-03B | W-03B | ⬜ |
-| TASK-053 | [03-B] 타격감 지휘 (Juice) | 03.땅끝 | 이벤트 ID(J·C·A·S·G·R·H·Q·X·D·M·RX·AC·RT·GR·SV·UI) → 시각·소리·히트스톱·진동을 같은 rAF에서 — 감소 모드 반영 | REQ-013, FR-051~FR-056, FR-061, NFR-006 | ARCH-005, design-vision §4.6 전체·§4.8 | `client/js/fx/juice.js`<br>`client/js/fx/juice-table-core.js`<br>`client/js/fx/juice-table-powers.js` | 연출 지휘만 | 150 · 260 · 280 | TASK-050-2, TASK-051-1, TASK-051-2, TASK-052, TASK-045, TASK-041 | M | ⬜ | D-03B | W-03B | ⬜ |
+| TASK-050 | [03-B] 오디오 (전체) | 03.땅끝 | Tone.js 합성 전용 — 버스·BGM 2·SFX 17·AUX 15. 서브 2개 | REQ-013, FR-058~FR-060, NFR-005, C-007 | ARCH-006, design-vision §4.7 | — (서브 태스크 합 — L 분할표) | — | — | TASK-001-2 | L | 🔄 | D-03B | W-03B | ⬜ |
+| TASK-050-1 | [03-B] 믹서·배경음악 | 03.땅끝 | 마스터/효과음/음악 버스·음소거·첫 입력 시작, 대기실 BGM-1·대전 BGM-2(위기 적응형) | REQ-013, FR-055, FR-059, FR-060, C-007 | design-vision §4.7.1·§4.7.4, D-14 | `client/js/audio/mixer.js`<br>`client/js/audio/bgm.js` | 오디오만 | 120 · 230 | TASK-001-2 | S | 🔄 | D-03B | W-03B | ⬜ |
+| TASK-050-2 | [03-B] 효과음 SFX·AUX | 03.땅끝 | SFX-01~17(FR-058 1:1)·AUX-01~15 합성 레시피·동시 발음 제한·30ms 중복 생략 | REQ-013, FR-055, FR-058, FR-061, C-007 | design-vision §4.7.2·§4.7.3·§4.8 | `client/js/audio/sfx.js`<br>`client/js/audio/sfx-voices.js` **[D-03B 분할]**<br>`client/js/audio/aux-sfx.js` | 오디오만 | 260 · 130 · 220 (sfx 분할 전 실측 359) | TASK-050-1 | S | 🔄 | D-03B | W-03B | ⬜ |
+| TASK-051 | [03-B] 연출 원소 (전체) | 03.땅끝 | 흔들림·히트스톱·섬광·빛의 화살·콘페티 — 서브 2개 | REQ-013, FR-052, FR-053, FR-056, FR-061 | ARCH-005, design-vision §2.10 | — (서브 태스크 합 — L 분할표) | — | — | TASK-040, TASK-042 | L | 🔄 | D-03B | W-03B | ⬜ |
+| TASK-051-1 | [03-B] 흔들림·히트스톱·섬광 | 03.땅끝 | SHK 합성 규칙·히트스톱 0.05~0.1초·FL 토큰과 1초 3회 제한(WCAG 2.3.1) | REQ-013, FR-051, FR-052, FR-057, FR-061 | design-vision §2.10·§4.8·§6.3 | `client/js/fx/shake.js`<br>`client/js/fx/hitstop.js`<br>`client/js/fx/flash.js` | 연출만 | 90 · 60 · 90 | TASK-040 | S | 🔄 | D-03B | W-03B | ⬜ |
+| TASK-051-2 | [03-B] 빛의 화살·콘페티 | 03.땅끝 | 공격 투사체·물맷돌·가운데 상쇄 충돌, 금빛 콘페티 3회 | REQ-007, REQ-013, FR-014, FR-053, FR-056 | design-vision §4.6.3·§4.6.12 | `client/js/fx/arrows.js`<br>`client/js/fx/confetti.js` | 연출만 | 190 · 60 | TASK-042, TASK-044-2 | S | 🔄 | D-03B | W-03B | ⬜ |
+| TASK-052 | [03-B] DOM 연출·말씀 카드 | 03.땅끝 | 콜아웃 큐·자막 큐(영 이름·KJV 3줄)·니어미스·은혜 아이콘, 리액션 말풍선, 말씀 카드 이미지 저장/공유 | REQ-011, REQ-013, FR-042, FR-054, FR-061~FR-064, C-003, C-009 | ARCH-005, API-027, API-028, TBL-016, design-vision §4.8·§2.6 | `client/js/fx/overlay.js`<br>`client/js/fx/subtitle.js` **[D-03B 분할]**<br>`client/js/fx/reactions.js`<br>`client/js/fx/verse-card.js` | 연출만 | 250 · 120 · 80 · 190 (overlay 분할 전 실측 324) | TASK-044-2, TASK-006, TASK-009 | M | 🔄 | D-03B | W-03B | ⬜ |
+| TASK-053 | [03-B] 타격감 지휘 (Juice) | 03.땅끝 | 이벤트 ID(J·C·A·S·G·R·H·Q·X·D·M·RX·AC·RT·GR·SV·UI) → 시각·소리·히트스톱·진동을 같은 rAF에서 — 감소 모드 반영 | REQ-013, FR-051~FR-056, FR-061, NFR-006 | ARCH-005, design-vision §4.6 전체·§4.8 | `client/js/fx/juice.js`<br>`client/js/fx/juice-table-core.js`<br>`client/js/fx/juice-table-flow.js` **[D-03B 분할]**<br>`client/js/fx/juice-table-powers.js`<br>`client/js/fx/juice-table-quiz.js` **[D-03B 분할]**<br>`client/js/fx/board-motion.js` **[D-03B 분할]** | 연출 지휘만 | 170 · 250 · 290 · 300 · 300 · 260 (core 분할 전 실측 355 — A·D·M 행 미포함) | TASK-050-2, TASK-051-1, TASK-051-2, TASK-052, TASK-045, TASK-041 | M | 🔄 | D-03B | W-03B | ⬜ |
 | TASK-060 | [03-C] 앱 셸·스타일 (전체) | 03.땅끝 | index.html·디자인 토큰·컴포넌트·화면·대전 CSS — 서브 2개 | REQ-013, FR-048, FR-050 | design-vision §2·§5·§6 | — (서브 태스크 합 — L 분할표) | — | — | TASK-001-2 | L | ⬜ | D-03C | W-03C | ⬜ |
 | TASK-060-1 | [03-C] HTML 셸·토큰·컴포넌트 CSS | 03.땅끝 | DOM 루트·레이어 컨테이너, 색 토큰 23·타이포 15·간격·z-레이어, 버튼·입력·모달·토스트 상태 | REQ-013, FR-048, FR-050, FR-078 | design-vision §2.1~§2.9·§4.2, screen-vision 공통 셸 | `client/index.html`<br>`client/style.css`<br>`client/styles/tokens.css`<br>`client/styles/components.css` | 스타일만 | 60 · 15 · 160 · 250 | TASK-001-2 | M | ⬜ | D-03C | W-03C | ⬜ |
 | TASK-060-2 | [03-C] 화면·대전 CSS | 03.땅끝 | 메뉴 화면 8개 반응형 스타일, 대전 HUD·오버레이 스타일(가상 해상도 좌표) | REQ-013, FR-011, FR-048, FR-057 | design-vision §3·§5·§6, screen-vision §4·§5 | `client/styles/screens.css`<br>`client/styles/battle.css` | 스타일만 | 280 · 260 | TASK-060-1 | S | ⬜ | D-03C | W-03C | ⬜ |
@@ -303,19 +303,24 @@
 | 16 | `client/js/render/holy-fx.js` | TASK-045 | 빛기둥·천사 등장·위인 스킬 빛·예수님 실루엣 그리기만 | 240 |
 | 17 | `client/js/audio/mixer.js` | TASK-050-1 | 오디오 시작·버스 음량·음소거 관리만 | 120 |
 | 18 | `client/js/audio/bgm.js` | TASK-050-1 | BGM-1·BGM-2 합성·Transport 템포·위기 층 전환만 | 230 |
-| 19 | `client/js/audio/sfx.js` | TASK-050-2 | SFX-01~SFX-17 합성·재생만 | 260 |
+| 19 | `client/js/audio/sfx.js` | TASK-050-2 | SFX-01~SFX-17 재생 레시피(음·글라이드·변형·30ms 중복 생략)만 | 260 |
+| 19-1 | `client/js/audio/sfx-voices.js` | TASK-050-2 | SFX 악기·효과 노드 1회 생성만 — **[D-03B 2026-10-19 분할]** sfx.js 구현 실측 359줄 = 악기 생성(§4.7.2 악기·옵션 열, Tone.start 직후 1회) + 재생 레시피(음·엔벨로프 시각·변형) 두 책임 → 악기 생성 분리 | 130 |
 | 20 | `client/js/audio/aux-sfx.js` | TASK-050-2 | AUX-01~AUX-15 합성·재생만 | 220 |
 | 21 | `client/js/fx/shake.js` | TASK-051-1 | 화면 흔들림 요청 합성·적용만 (흔들림 끄기 반영) | 90 |
 | 22 | `client/js/fx/hitstop.js` | TASK-051-1 | 히트스톱 프레임 정지 요청만 | 60 |
 | 23 | `client/js/fx/flash.js` | TASK-051-1 | 보드/전체 섬광·세기 배율·1초 3회 제한만 | 90 |
 | 24 | `client/js/fx/arrows.js` | TASK-051-2 | ProjectileLayer 투사체 비행·충돌 섬광 트윈만 | 190 |
 | 25 | `client/js/fx/confetti.js` | TASK-051-2 | canvas-confetti 금빛 발사만 | 60 |
-| 26 | `client/js/fx/overlay.js` | TASK-052 | DOM 콜아웃·자막 요소 생성·우선순위 큐·표시만 | 250 |
+| 26 | `client/js/fx/overlay.js` | TASK-052 | DOM 콜아웃·짧은 글자·카운트다운·니어미스 숫자·은혜 아이콘 요소 생성·콜아웃 큐·표시만 | 250 |
+| 26-1 | `client/js/fx/subtitle.js` | TASK-052 | DOM 자막(영 이름·구절 3줄) 요소 채우기·자막 큐만 — **[D-03B 2026-10-19 분할]** overlay.js 구현 실측 324줄 = 콜아웃 큐(§4.8 콜아웃 큐) + 자막 큐(§4.8 자막 큐·구절 3줄 C-003) 두 책임 → 자막 분리 | 120 |
 | 27 | `client/js/fx/reactions.js` | TASK-052 | 리액션 말풍선 표시만 | 80 |
 | 28 | `client/js/fx/verse-card.js` | TASK-052 | 말씀 카드 캔버스 그리기·PNG 저장·`navigator.share` 공유만 | 190 |
 | 29 | `client/js/fx/juice.js` | TASK-053 | 이벤트 디스패처·같은 프레임 시작·감소 모드 분기만 | 150 |
-| 30 | `client/js/fx/juice-table-core.js` | TASK-053 | J·C·A·D·M 이벤트 행(시각·모션·소리·진동·감소) 정의만 | 260 |
-| 31 | `client/js/fx/juice-table-powers.js` | TASK-053 | S·G·R·H·X·Q·RX·AC·RT·GR·SV·UI 이벤트 행 정의만 | 280 |
+| 29-1 | `client/js/fx/board-motion.js` | TASK-053 | 보드 칸·활성 블록 모션(이동 보간·회전 잔상·꼬리·궤적·찌그러짐·줄 붕괴·상승·무너짐·강조선)만 — **[D-03B 2026-10-19 분할]** 표 행마다 칸 스프라이트를 직접 움직이면 J·C·A·M 행이 같은 BoardView 조작 코드를 되풀이 → 보드 모션 원소 분리(표 행은 호출만) | 260 |
+| 30 | `client/js/fx/juice-table-core.js` | TASK-053 | J·C 이벤트 행(시각·모션·소리·진동·감소) 정의만 | 260 |
+| 30-1 | `client/js/fx/juice-table-flow.js` | TASK-053 | A·D·M 이벤트 행 정의만 — **[D-03B 2026-10-19 분할]** juice-table-core.js 구현 실측 355줄(A 행까지, D·M 행 미포함) → §4.6.3·§4.6.11·§4.6.12 행 분리 | 290 |
+| 31 | `client/js/fx/juice-table-powers.js` | TASK-053 | S·G·R·H·예수님 이벤트 행 정의만 | 280 |
+| 31-1 | `client/js/fx/juice-table-quiz.js` | TASK-053 | Q·X·R-07·RX·AC·RT·GR·SV·UI 이벤트 행 정의만 — **[D-03B 2026-10-19 분할]** 행 약 60개(§4.6.4~§4.6.13)가 한 파일 280줄 예산을 넘음 → 말씀 대결·특수 블록·결과·리액션 행 분리 | 300 |
 | 32 | `client/index.html` | TASK-060-1 | 앱 루트·캔버스/HUD/오버레이 컨테이너·메타만 | 60 |
 | 33 | `client/style.css` | TASK-060-1 | 스타일 진입점 — styles/*.css `@import`만 | 15 |
 | 34 | `client/styles/tokens.css` | TASK-060-1 | CSS 사용자 정의 속성(색·글꼴·간격·모션·z) 선언만 | 160 |
@@ -446,17 +451,17 @@
 
 | TASK-ID | 서브 태스크 | 설명 | 생성 파일 | 상태 |
 |:---|:---|:---|:---|:---:|
-| TASK-050 | 전체: 오디오 | Tone.js 합성 전용 — 버스·BGM 2·SFX 17·AUX 15. 서브 2개 | — | ⬜ |
-| TASK-050-1 | 믹서·배경음악 | 마스터/효과음/음악 버스·음소거·첫 입력 시작, 대기실 BGM-1·대전 BGM-2(위기 적응형) | `client/js/audio/mixer.js` · `client/js/audio/bgm.js` | ⬜ |
-| TASK-050-2 | 효과음 SFX·AUX | SFX-01~17(FR-058 1:1)·AUX-01~15 합성 레시피·동시 발음 제한·30ms 중복 생략 | `client/js/audio/sfx.js` · `client/js/audio/aux-sfx.js` | ⬜ |
+| TASK-050 | 전체: 오디오 | Tone.js 합성 전용 — 버스·BGM 2·SFX 17·AUX 15. 서브 2개 | — | 🔄 |
+| TASK-050-1 | 믹서·배경음악 | 마스터/효과음/음악 버스·음소거·첫 입력 시작, 대기실 BGM-1·대전 BGM-2(위기 적응형) | `client/js/audio/mixer.js` · `client/js/audio/bgm.js` | 🔄 |
+| TASK-050-2 | 효과음 SFX·AUX | SFX-01~17(FR-058 1:1)·AUX-01~15 합성 레시피·동시 발음 제한·30ms 중복 생략 | `client/js/audio/sfx.js` · `client/js/audio/sfx-voices.js` · `client/js/audio/aux-sfx.js` | 🔄 |
 
 ### TASK-051 서브 태스크 (L 규모 분할)
 
 | TASK-ID | 서브 태스크 | 설명 | 생성 파일 | 상태 |
 |:---|:---|:---|:---|:---:|
-| TASK-051 | 전체: 연출 원소 | 흔들림·히트스톱·섬광·빛의 화살·콘페티 — 서브 2개 | — | ⬜ |
-| TASK-051-1 | 흔들림·히트스톱·섬광 | SHK 합성 규칙·히트스톱 0.05~0.1초·FL 토큰과 1초 3회 제한(WCAG 2.3.1) | `client/js/fx/shake.js` · `client/js/fx/hitstop.js` · `client/js/fx/flash.js` | ⬜ |
-| TASK-051-2 | 빛의 화살·콘페티 | 공격 투사체·물맷돌·가운데 상쇄 충돌, 금빛 콘페티 3회 | `client/js/fx/arrows.js` · `client/js/fx/confetti.js` | ⬜ |
+| TASK-051 | 전체: 연출 원소 | 흔들림·히트스톱·섬광·빛의 화살·콘페티 — 서브 2개 | — | 🔄 |
+| TASK-051-1 | 흔들림·히트스톱·섬광 | SHK 합성 규칙·히트스톱 0.05~0.1초·FL 토큰과 1초 3회 제한(WCAG 2.3.1) | `client/js/fx/shake.js` · `client/js/fx/hitstop.js` · `client/js/fx/flash.js` | 🔄 |
+| TASK-051-2 | 빛의 화살·콘페티 | 공격 투사체·물맷돌·가운데 상쇄 충돌, 금빛 콘페티 3회 | `client/js/fx/arrows.js` · `client/js/fx/confetti.js` | 🔄 |
 
 ### TASK-060 서브 태스크 (L 규모 분할)
 
@@ -698,14 +703,14 @@ graph LR
 | 01.유대 | 20 | 17 | 35 | 0 | 0 | 0 | 20 | 0 | D-01 / W-01 |
 | 02.사마리아 | 5 | 5 | 16 | 0 | 0 | 0 | 5 | 0 | D-02 / W-02 |
 | 03.땅끝 — 03-A 렌더 코어 | 9 | 8 | 18 | 0 | 9 | 0 | 0 | 0 | D-03A / W-03A |
-| 03.땅끝 — 03-B 오디오·타격감 | 8 | 6 | 15 | 8 | 0 | 0 | 0 | 0 | D-03B / W-03B |
+| 03.땅끝 — 03-B 오디오·타격감 | 8 | 6 | 20 | 0 | 8 | 0 | 0 | 0 | D-03B / W-03B |
 | 03.땅끝 — 03-C 화면·HUD·네트워크 | 16 | 12 | 29 | 16 | 0 | 0 | 0 | 0 | D-03C / W-03C |
 | 03.땅끝 — 03-D 봉인·실행 | 3 | 3 | 3 | 3 | 0 | 0 | 0 | 0 | D-03D / W-03D |
-| **합계** | **75** | **64** | **146** | **36** | 0 | 0 | 39 | 0 | — |
+| **합계** | **75** | **64** | **151** | **19** | 17 | 0 | 39 | 0 | — |
 
 | 항목 | 값 |
 |:---|:---|
-| 현재 지역 | 00.jerusalem-예루살렘 **완료** — D-00 구현 · W-00 짝 검증 2026-10-19: 14행 ✅ / 짝 검증 ✅ (즉시 정화 루프 기록: `fruit-열매/history/2026-10-19.md`). RTM §5 DCL-001 승인 · DCL-002(TBL-018 rateLimit 수치 3개) 추가, 서신 4통 재생성(생성 기준 = DCL-002). 다음: 01.judaea-유대 D-01·W-01 — 인계물 = 언약책 + SKILL-04 + 01 서신 **[D-01 갱신 2026-10-19]** 01.judaea-유대 Doer 구현 완료 — 20행 ⬜→🔄 (W-01 짝 검증 대기, ✅는 Witness 판정 후). RTM §5 DCL-003(TBL-018 gravity.accelAfterMs·ledger 수치 6개) 🔄 W-01 확정 대기 → 서신 01·02·03 재생성 필요 **[W-01 갱신 2026-10-19]** 01.judaea-유대 **완료** — W-01 짝 검증: 20행 ✅ / 짝 검증 ✅ (즉시 정화 루프 기록: `fruit-열매/history/2026-10-19.md`). RTM §5 DCL-003 승인 · DCL-004(착지 평가 = 엔진 `placement.js` + TBL-018 `placement.weights`) 추가, 서신 01·02·03 재생성(생성 기준 = DCL-004). 다음: 02.samaria-사마리아 D-02·W-02 — 인계물 = 언약책 + SKILL-04 + 02 서신 **[D-02 갱신 2026-10-19]** 02.samaria-사마리아 Doer 구현 완료 — 5행 ⬜→🔄 (W-02 짝 검증 대기, ✅는 Witness 판정 후). RTM §5 DCL-005(TBL-018 `net.joinTimeoutMs`·`net.readyTimeoutMs`) 🔄 W-02 확정 대기 → 서신 02·03 재생성 필요. 파일 1개 분할 추가(`lobby/lobby-flow.ts`, §3.3 #10-1) **[W-02 갱신 2026-10-19]** 02.samaria-사마리아 **완료** — W-02 짝 검증: 5행 🔄→✅ / 짝 검증 ✅. 즉시 정화(1회차 해소) 4건: ① 거부된 `clear`가 콤보·b2b 기억을 바꿔 다음 위조 clear가 통과하던 결함 ② FR-032 초당 검사가 `state` 없는 봇의 정직한 진행을 거부(봇이 줄을 모아 지우면 모든 clear 거부) → 경과 시간 비율로 정정 ③ `/ws/room/%..` 디코딩 예외 500 → 404 ④ 청크 본문 상한 스트리밍 검사·종료 시 미인증 소켓 정리. game-room 분할(`room/bot-driver.ts`, §3.3 #13-1). RTM §5 DCL-005 승인, DCL-006(봇 난이도 수치 — 어려움 봇 공격 설계) 추가·승인. 서신 02·03 재생성(생성 기준 DCL-006). 다음: 03.uttermost-땅끝 03-A D-03A·W-03A **[D-03A 갱신 2026-10-19]** 03.uttermost-땅끝 03-A 렌더 코어 Doer 구현 완료 — 9행 ⬜→🔄 (W-03A 짝 검증 대기, ✅는 Witness 판정 후). RTM §5 DCL-007(렌더 구조 6건 — 파티클 컨테이너 2개·PT-mote 소유·v8 동적 속성·흔들림 루트에서 HolyLayer 분리·보드 단위 컨테이너·GodrayFilter angle 의미) 🔄 W-03A 확정 대기 → 서신 03 재생성 필요. 300줄 분할 2개 추가(`render/piece-preview.js` §3.4 #4-1, `render/spirit-appear.js` #15-1). 다음: W-03A |
+| 현재 지역 | 00.jerusalem-예루살렘 **완료** — D-00 구현 · W-00 짝 검증 2026-10-19: 14행 ✅ / 짝 검증 ✅ (즉시 정화 루프 기록: `fruit-열매/history/2026-10-19.md`). RTM §5 DCL-001 승인 · DCL-002(TBL-018 rateLimit 수치 3개) 추가, 서신 4통 재생성(생성 기준 = DCL-002). 다음: 01.judaea-유대 D-01·W-01 — 인계물 = 언약책 + SKILL-04 + 01 서신 **[D-01 갱신 2026-10-19]** 01.judaea-유대 Doer 구현 완료 — 20행 ⬜→🔄 (W-01 짝 검증 대기, ✅는 Witness 판정 후). RTM §5 DCL-003(TBL-018 gravity.accelAfterMs·ledger 수치 6개) 🔄 W-01 확정 대기 → 서신 01·02·03 재생성 필요 **[W-01 갱신 2026-10-19]** 01.judaea-유대 **완료** — W-01 짝 검증: 20행 ✅ / 짝 검증 ✅ (즉시 정화 루프 기록: `fruit-열매/history/2026-10-19.md`). RTM §5 DCL-003 승인 · DCL-004(착지 평가 = 엔진 `placement.js` + TBL-018 `placement.weights`) 추가, 서신 01·02·03 재생성(생성 기준 = DCL-004). 다음: 02.samaria-사마리아 D-02·W-02 — 인계물 = 언약책 + SKILL-04 + 02 서신 **[D-02 갱신 2026-10-19]** 02.samaria-사마리아 Doer 구현 완료 — 5행 ⬜→🔄 (W-02 짝 검증 대기, ✅는 Witness 판정 후). RTM §5 DCL-005(TBL-018 `net.joinTimeoutMs`·`net.readyTimeoutMs`) 🔄 W-02 확정 대기 → 서신 02·03 재생성 필요. 파일 1개 분할 추가(`lobby/lobby-flow.ts`, §3.3 #10-1) **[W-02 갱신 2026-10-19]** 02.samaria-사마리아 **완료** — W-02 짝 검증: 5행 🔄→✅ / 짝 검증 ✅. 즉시 정화(1회차 해소) 4건: ① 거부된 `clear`가 콤보·b2b 기억을 바꿔 다음 위조 clear가 통과하던 결함 ② FR-032 초당 검사가 `state` 없는 봇의 정직한 진행을 거부(봇이 줄을 모아 지우면 모든 clear 거부) → 경과 시간 비율로 정정 ③ `/ws/room/%..` 디코딩 예외 500 → 404 ④ 청크 본문 상한 스트리밍 검사·종료 시 미인증 소켓 정리. game-room 분할(`room/bot-driver.ts`, §3.3 #13-1). RTM §5 DCL-005 승인, DCL-006(봇 난이도 수치 — 어려움 봇 공격 설계) 추가·승인. 서신 02·03 재생성(생성 기준 DCL-006). 다음: 03.uttermost-땅끝 03-A D-03A·W-03A **[D-03A 갱신 2026-10-19]** 03.uttermost-땅끝 03-A 렌더 코어 Doer 구현 완료 — 9행 ⬜→🔄 (W-03A 짝 검증 대기, ✅는 Witness 판정 후). RTM §5 DCL-007(렌더 구조 6건 — 파티클 컨테이너 2개·PT-mote 소유·v8 동적 속성·흔들림 루트에서 HolyLayer 분리·보드 단위 컨테이너·GodrayFilter angle 의미) 🔄 W-03A 확정 대기 → 서신 03 재생성 필요. 300줄 분할 2개 추가(`render/piece-preview.js` §3.4 #4-1, `render/spirit-appear.js` #15-1). 다음: W-03A **[D-03B 갱신 2026-10-19]** 03.uttermost-땅끝 03-B 오디오·타격감 Doer 구현 완료 — 8행 ⬜→🔄 (W-03B 짝 검증 대기, ✅는 Witness 판정 후). RTM §5 DCL-008(03-B 설계 틈 — 미지정 세부 수치·심장박동 시계·예수님 자막 자리·콤보 배경 밝기 문장 충돌·음악 낮춤 노드) 🔄 W-03B 확정 대기 → 서신 03 재생성 필요. 300줄 분할 5개 추가(`audio/sfx-voices.js` §3.4 #19-1, `fx/subtitle.js` #26-1, `fx/board-motion.js` #29-1, `fx/juice-table-flow.js` #30-1, `fx/juice-table-quiz.js` #31-1 — 생성 파일 15→20, 합계 146→151). §7 합계 행 ⬜·🔄 칸도 03-A 🔄 9 + 03-B 🔄 8 반영(이전 값 36/0은 03-A 갱신 누락). 다음: W-03B (W-03A와 함께) |
 | 즉시 정화 루프 기록 위치 | `fruit-열매/history/YYYY-MM-DD.md` (Witness 발견 → Doer 수정, 지역 안 2회 초과 시 SKILL-05 회개 루프) |
 | RTM 태스크 연결 | `rtm-covenant-언약추적.md` §8 (116 ID → TASK-ID) — 코드 모듈 열은 TASK-072에서 채움 |
 
