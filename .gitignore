@@ -1,3 +1,14 @@
 **/backup/
 node_modules/
 .env
+
+# AIDD 작업 이력 로그 — 생태계 공통 규칙으로 git 추적 제외 (README만 유지)
+**/fruit-열매/history/*
+!**/fruit-열매/history/README.md
+
+# 빌드·로컬 런타임 산출물
+.wrangler/
+dist/
+.dev.vars
+test-results/
+playwright-report/

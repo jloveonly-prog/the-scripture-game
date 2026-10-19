@@ -13,3 +13,10 @@
 ## 이 디렉토리 (06.TheScriptureGame — 실험실)
 
 - 핵심 파이프라인(00~05)에 속하지 않는 독립 실험 유닛입니다. 성경적 소재를 게임 형식으로 구현합니다.
+
+## 개발 파이프라인 (The Scripture AIDD)
+
+- 이 폴더의 게임은 `the-scripture-aidd/` 프레임워크(원본: jloveonly-prog/the-scripture-aidd, 동기화 커밋은 `the-scripture-aidd/AIDD_SOURCE.txt`)로 개발한다. 실행 지침은 `autoRun.md`.
+- 원본 요구사항: `요구사항.md`, `게임재미설계-학술자료.md` → 스냅샷: `the-scripture-aidd/hearing-들음/req.md`
+- 설계 산출물: `the-scripture-aidd/bible-성경/`, 소스 코드: `the-scripture-aidd/fruit-열매/`
+- `statute-율법/`, `parable-비유/`, `book-경전/`, `.skill/`은 읽기 전용이다. 프레임워크를 갱신할 때는 원본 저장소에서 다시 복사하고 `AIDD_SOURCE.txt`를 갱신한다.
