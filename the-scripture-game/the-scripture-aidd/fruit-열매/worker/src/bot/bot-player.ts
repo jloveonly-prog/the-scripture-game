@@ -107,8 +107,8 @@ export class BotPlayer {
     const active = engine.active;
     if (!active) return [];
     if (this.planFor !== engine.drawCount || !this.plan) {
-      // FR-021 착지 판단 품질 = evalNoise·mistakeRate (rules.bot)
-      this.plan = choosePlacement(engine.board, active.type, this.level, this.random);
+      // FR-021 착지 판단 품질 = evalNoise·mistakeRate (rules.bot), 점수 = rules.placement.weights (DCL-004)
+      this.plan = choosePlacement(engine.board, active.type, this.level, this.rules.placement.weights, this.random);
       this.planFor = engine.drawCount;
     }
     const plan = this.plan;

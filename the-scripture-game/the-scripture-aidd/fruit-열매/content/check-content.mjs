@@ -48,6 +48,8 @@ const RULE_KEYS = [
   "grace.lossStreakRounds", "grace.garbageReduce", "grace.gaugeMultiplier", "jesus.perMatch", "jesus.garbageRemoveRatio",
   "elo.base", "elo.k", "invite.length", "invite.alphabet", "invite.ttlMs", "nickname.min", "nickname.max", "nickname.pattern",
   "bot.easy", "bot.normal", "bot.hard",
+  // 착지 평가 가중치 — 솔로몬·가브리엘 힌트·봇 공용 (data-ark TBL-018 추가 2026-10-19 — RTM §5 DCL-004)
+  "placement.weights.aggregateHeight", "placement.weights.lines", "placement.weights.holes", "placement.weights.bumpiness",
   // rateLimit 하위 키 전부 (data-ark TBL-018 재각 2026-10-19 — RTM §5 DCL-002)
   "rateLimit.state", "rateLimit.clear", "rateLimit.skill", "rateLimit.armor", "rateLimit.answer", "rateLimit.reaction",
   "rateLimit.total", "rateLimit.maxMessageBytes", "rateLimit.totalViolationMs", "rateLimit.guestCreate", "rateLimit.maxRestBodyBytes",

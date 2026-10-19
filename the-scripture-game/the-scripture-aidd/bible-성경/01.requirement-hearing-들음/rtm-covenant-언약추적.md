@@ -46,7 +46,7 @@
 | FR-012 | 게스트 닉네임 입장 | UC-001 | ARCH-001, ARCH-008, ARCH-009, ARCH-014 | API-001, API-002 | TBL-001, TBL-004 | ⬜ | ⬜ | 🔄 |
 | FR-013 | 캐릭터 선택 화면 | UC-002 | ARCH-001, ARCH-016 | API-007 | TBL-011, TBL-016 | ⬜ | ⬜ | 🔄 |
 | FR-014 | 다윗 — 물맷돌 | UC-009 | ARCH-003, ARCH-011 | API-014, API-023 | TBL-011, TBL-018 | ⬜ | ⬜ | 🔄 |
-| FR-015 | 솔로몬 — 지혜로운 마음 | UC-009 | ARCH-003, ARCH-011 | API-014, API-019, API-023 | TBL-011, TBL-018 | ⬜ | ⬜ | 🔄 |
+| FR-015 | 솔로몬 — 지혜로운 마음 | UC-009 | ARCH-002, ARCH-003, ARCH-011 | API-014, API-019, API-023 | TBL-011, TBL-018 | ⬜ | ⬜ | 🔄 |
 | FR-016 | 베드로 — 이 반석 위에 | UC-009 | ARCH-003, ARCH-011 | API-014, API-022, API-023 | TBL-011, TBL-018 | ⬜ | ⬜ | 🔄 |
 | FR-017 | 바울 — 옥문이 열리다 | UC-009 | ARCH-003, ARCH-011 | API-014, API-023 | TBL-011, TBL-018 | ⬜ | ⬜ | 🔄 |
 | FR-018 | 랜덤 매칭 | UC-003 | ARCH-010 | API-007, API-009, API-010 | TBL-001 | ⬜ | ⬜ | 🔄 |
@@ -66,7 +66,7 @@
 | FR-032 | 서버 진행 검증 | UC-007, UC-008 | ARCH-011, ARCH-015 | API-013, API-025 | TBL-018 | ⬜ | ⬜ | 🔄 |
 | FR-033 | 믿음 게이지 | UC-009 | ARCH-011 | API-024 | TBL-018 | ⬜ | ⬜ | 🔄 |
 | FR-034 | 위인 스킬 발동 | UC-009 | ARCH-011 | API-014, API-023, API-025 | TBL-011, TBL-018 | ⬜ | ⬜ | 🔄 |
-| FR-035 | 천사 5종 소환 | UC-010 | ARCH-003, ARCH-011 | API-014, API-023, API-025 | TBL-012, TBL-018 | ⬜ | ⬜ | 🔄 |
+| FR-035 | 천사 5종 소환 | UC-010 | ARCH-002, ARCH-003, ARCH-011 | API-014, API-023, API-025 | TBL-012, TBL-018 | ⬜ | ⬜ | 🔄 |
 | FR-036 | 갑주 출현·획득 | UC-011 | ARCH-002, ARCH-011 | API-013, API-023, API-024 | TBL-014, TBL-018 | ⬜ | ⬜ | 🔄 |
 | FR-037 | 갑주 6종 사용 | UC-011 | ARCH-003, ARCH-011 | API-015, API-023 | TBL-014, TBL-018 | ⬜ | ⬜ | 🔄 |
 | FR-038 | 상성표 | UC-011 | ARCH-016 | N/A (콘텐츠 정적 데이터) | TBL-015 | ⬜ | ⬜ | 🔄 |
@@ -201,13 +201,14 @@
 
 > 정경화(2026-10-19, Phase 1) 이후 상류 설계 변경: **0건** (Phase 3도 Phase 1·2 산출물의 본문을 바꾸지 않았다 — §7 화면 연결 확인은 순방향 기록이다. Phase 2는 Phase 1 산출물의 본문을 바꾸지 않았다 — 이 RTM의 ARCH/API/TBL 열 채움과 상태 갱신은 "언약추적 갱신 규칙"의 순방향 갱신이며 재각(역방향 개정)이 아니다). 첫 변경이 발생하면 템플릿 "재각 규칙 1" 형식(변경일 · 발견 Phase/지역 · 대상 ID · 변경 사유 · 영향받는 하류 산출물 · 재검증 필요 여부 · 상태)의 표를 이 절에 추가하고, 두 증인 확정(재각 규칙 3)을 통과한 변경만 기록한다.
 
-> **2026-10-19 갱신:** Phase 4 / acts-행전 00.jerusalem-예루살렘 배치에서 첫 변경 1건이 발생했다(아래 DCL-001). 위 "0건" 문장은 정경화 시점 기록으로 보존한다. **W-00 갱신(2026-10-19):** DCL-001 승인, DCL-002(TBL-018 rateLimit 수치 3개 — api-gate §2와 정합) 추가 → 이 배치의 변경 2건. **D-01 갱신(2026-10-19, 01.judaea-유대):** DCL-003(TBL-018 gravity.accelAfterMs·ledger 수치 6개 — 다른 정경 문서 원문 값 그대로) 추가, W-01 확정 대기.
+> **2026-10-19 갱신:** Phase 4 / acts-행전 00.jerusalem-예루살렘 배치에서 첫 변경 1건이 발생했다(아래 DCL-001). 위 "0건" 문장은 정경화 시점 기록으로 보존한다. **W-00 갱신(2026-10-19):** DCL-001 승인, DCL-002(TBL-018 rateLimit 수치 3개 — api-gate §2와 정합) 추가 → 이 배치의 변경 2건. **D-01 갱신(2026-10-19, 01.judaea-유대):** DCL-003(TBL-018 gravity.accelAfterMs·ledger 수치 6개 — 다른 정경 문서 원문 값 그대로) 추가, W-01 확정 대기. **W-01 갱신(2026-10-19):** DCL-003 승인, DCL-004(착지 평가 위치 = ARCH-002 `engine/placement.js` + TBL-018 `placement.weights` — 솔로몬·가브리엘 힌트 계산 위치 설계 틈 해소) 추가 → 01 배치 변경 2건.
 
 | # | 변경일 | 발견 Phase/지역 | 대상 ID(REQ/ARCH/API/TBL) | 변경 사유 | 영향받는 하류 산출물 | 재검증 필요 여부 | 상태 |
 |:---|:---|:---|:---|:---|:---|:---:|:---:|
 | DCL-001 | 2026-10-19 | Phase 4 / acts-행전 00.jerusalem-예루살렘 배치 (task-wall A-03) | TBL-001~TBL-006 (data-ark §7 마이그레이션 전략, §6.1 부록 추가), ARCH-014, FR-072 | data-ark §7의 단계 판정 수단 `PRAGMA user_version`이 Durable Object SQL API에서 거부됨 — 실측(wrangler 4.147.0 / workerd 1.20261001.1 `wrangler dev`, SQLite-backed DO): `PRAGMA user_version` 읽기·`= 1` 쓰기 모두 `not authorized: SQLITE_AUTH`. 같은 실측에서 `PRAGMA foreign_keys` = 1, FK 위반 INSERT 거부, `transactionSync` 롤백, `COLLATE NOCASE`·`RANK() OVER`·`strftime('%f')` 정상. 대안: 단일 행 표 `schema_meta(id=1, version)`로 단계 번호 기록 (task-wall A-03이 미리 정한 대안 그대로). 발견 근거 2곳: ① 실측 오류 메시지(fruit-열매/history 2026-10-19) ② task-wall A-03 사전 예측(DO SQL PRAGMA 허용 목록) | data-ark-법궤 §7·§6.1 부록, `worker/src/storage/migrations.ts`(TASK-002), `worker/test/ledger-fk.test.ts`(TASK-003), 서신 `acts-행전/TASK-000/00.jerusalem-예루살렘/epistle-서신.md` §7 발췌(재생성 필요 — 이 배치 Doer는 acts-행전 쓰기 권한 없음) | ✅ | ✅ 2026-10-19 W-00 승인 — 두 증인 확정(재각 규칙 3): ① D-00 실측 ② W-00 독립 재실측(별도 탐침 Worker, 같은 wrangler 4.147.0 `wrangler dev`): `PRAGMA user_version` 읽기·쓰기 모두 `not authorized: SQLITE_AUTH` 재현, 실제 `migrations.ts`가 workerd에서 단계 1 적용·재실행 멱등(version 1 유지)·`PRAGMA foreign_keys` = 1. §6.1 부록 DDL = migrations.ts 문자열(공백 정규화 대조 12/12 + schema_meta 일치). `ledger-fk.test.ts` 마이그레이션 3건 통과. 서신 4통 재생성 완료(W-00) |
 | DCL-002 | 2026-10-19 | Phase 4 / acts-행전 00.jerusalem-예루살렘 배치 (TASK-008 rules.json, W-00 대조) | TBL-018 `rateLimit` (data-ark §3 TBL-018 표), API-001, API-005~API-017 공통 규약(api-gate §2 "메시지 크기"·"속도 제한"), NFR-003 | api-gate §2 공통 규약이 수치 3개 — 전체 한도 3초 연속 초과 시 종료, REST 게스트 생성 접속 주소별 분당 5회, REST 본문 최대 1,024바이트 — 를 정의하지만 "모든 수치의 단일 원천"인 data-ark TBL-018 `rateLimit` 행에는 없어 rules.json에 넣을 근거가 없었다(코드가 api-gate 문장을 하드코딩하게 되는 설계 틈). 개정: TBL-018 `rateLimit` 행에 `totalViolationMs` 3000 · `guestCreate` 5/60초 · `maxRestBodyBytes` 1024 추가(기존 문장 취소선 보존), 버킷 형식 `{tokens, perMs}` 명시. 수치 값은 api-gate 원문 그대로 — 새 수치 발명 0. 발견 근거 2곳: ① D-00 보고(rules.json 작성 시 표에 없는 수치 발견) ② W-00 원문 대조(api-gate §2 65~66행 ↔ data-ark TBL-018 rateLimit 행) | data-ark-법궤 TBL-018 표, `content/rules.json`(TASK-008), `content/check-content.mjs`(TASK-009 — rateLimit 하위 키 11개 검사), 서신 00·02 (TBL-018 rateLimit 행 발췌 — 재생성), 02 사마리아 rate-limit 구현(TASK-030~TASK-034 — 이 키를 읽어야 함) | ✅ | ✅ 2026-10-19 W-00 개정·구현·검사 통과 (`npm run check:content` 통과, 키 제거 음성 검사 exit 1) |
-| DCL-003 | 2026-10-19 | Phase 4 / acts-행전 01.judaea-유대 배치 (D-01 — TASK-010-3 gravity.js, TASK-020-1·020-2 원장 서비스) | TBL-018 `gravity`·`ledger`(신규 키) (data-ark §3 TBL-018 표), FR-010, FR-012, FR-069, FR-071, ARCH-002, ARCH-014 | TBL-018은 "모든 수치의 단일 원천"(머리말)인데 01 지역 구현에 필요한 수치 6개가 다른 정경 문서에만 있다: ① FR-010 가속 시작 120,000ms — 키 이름 `gravity.at120sMs`에만 숨어 있음 ② 토큰 검증 LRU 1,000건(architecture §4·data-ark §5) ③ 랭킹 캐시 5초 TTL(data-ark §5) ④ 랭킹 상위 100명(FR-071) ⑤⑥ 전적 페이지 기본 20·최대 50(api-gate §2). 코드에 하드코딩하지 않도록 TBL-018에 `gravity.accelAfterMs` 120000, `ledger.{tokenCacheSize 1000, leaderboardCacheMs 5000, leaderboardTop 100, historyPageDefault 20, historyPageMax 50}` 추가. 수치 값은 원문 그대로 — 새 수치 발명 0 (DCL-002와 같은 유형). 발견 근거 2곳: ① D-01 구현 중 rules.json 키 부재 ② 원문 대조(architecture §4 캐시 전략 행, data-ark §5 인덱스 전략 표, api-gate §2 페이징 행, spec-tablet FR-010·FR-071) | data-ark-법궤 TBL-018 표, `content/rules.json`(TASK-008 — 키 추가), `content/check-content.mjs`(TASK-009 — RULE_KEYS 6개 추가), `client/js/engine/gravity.js`(TASK-010-3), `worker/src/services/guest-service.ts`·`ranking-service.ts`·`history-service.ts`(TASK-020-1·020-2), 서신 01·02·03 (TBL-018 발췌 — 재생성 필요: 이 배치 Doer는 acts-행전 쓰기 권한 없음), 02 사마리아 routes/matches.ts(limit 파싱 — 이 키를 읽어야 함) | ✅ | 🔄 D-01 개정·구현 — W-01 확정 대기 |
+| DCL-003 | 2026-10-19 | Phase 4 / acts-행전 01.judaea-유대 배치 (D-01 — TASK-010-3 gravity.js, TASK-020-1·020-2 원장 서비스) | TBL-018 `gravity`·`ledger`(신규 키) (data-ark §3 TBL-018 표), FR-010, FR-012, FR-069, FR-071, ARCH-002, ARCH-014 | TBL-018은 "모든 수치의 단일 원천"(머리말)인데 01 지역 구현에 필요한 수치 6개가 다른 정경 문서에만 있다: ① FR-010 가속 시작 120,000ms — 키 이름 `gravity.at120sMs`에만 숨어 있음 ② 토큰 검증 LRU 1,000건(architecture §4·data-ark §5) ③ 랭킹 캐시 5초 TTL(data-ark §5) ④ 랭킹 상위 100명(FR-071) ⑤⑥ 전적 페이지 기본 20·최대 50(api-gate §2). 코드에 하드코딩하지 않도록 TBL-018에 `gravity.accelAfterMs` 120000, `ledger.{tokenCacheSize 1000, leaderboardCacheMs 5000, leaderboardTop 100, historyPageDefault 20, historyPageMax 50}` 추가. 수치 값은 원문 그대로 — 새 수치 발명 0 (DCL-002와 같은 유형). 발견 근거 2곳: ① D-01 구현 중 rules.json 키 부재 ② 원문 대조(architecture §4 캐시 전략 행, data-ark §5 인덱스 전략 표, api-gate §2 페이징 행, spec-tablet FR-010·FR-071) | data-ark-법궤 TBL-018 표, `content/rules.json`(TASK-008 — 키 추가), `content/check-content.mjs`(TASK-009 — RULE_KEYS 6개 추가), `client/js/engine/gravity.js`(TASK-010-3), `worker/src/services/guest-service.ts`·`ranking-service.ts`·`history-service.ts`(TASK-020-1·020-2), 서신 01·02·03 (TBL-018 발췌 — 재생성 필요: 이 배치 Doer는 acts-행전 쓰기 권한 없음), 02 사마리아 routes/matches.ts(limit 파싱 — 이 키를 읽어야 함) | ✅ | ✅ 2026-10-19 W-01 승인 — 두 증인 확정(재각 규칙 3): ① D-01 구현 중 발견 ② W-01 독립 원문 대조 6/6 일치 — architecture §4 캐시 전략 행(LRU 1,000건·랭킹 상위 100 5초 TTL), data-ark §5 인덱스 표(LRU 1,000·5초 TTL), api-gate §2 페이징 행·API-003 limit(기본 20, 1~50), spec-tablet FR-071(상위 100명), `gravity.at120sMs` 키 이름(120초) — 새 수치 0, 기존 키 값 불변. rules.json 값 = data-ark 표 값, `check:content` RULE_KEYS 6개 검사 통과, 코드(gravity.js·guest/ranking/history-service)가 하드코딩 없이 이 키를 읽음. 서신 01·02·03 재생성 완료(W-01) |
+| DCL-004 | 2026-10-19 | Phase 4 / acts-행전 01.judaea-유대 배치 (W-01 대조 — D-01 인계 메모 ② 미해결 설계 틈) | ARCH-002, ARCH-013, FR-015, FR-021, FR-035, TBL-018 `placement`(신규 키) (data-ark §3 TBL-018 표, architecture §1 ARCH 표·§5.2 트리) | FR-015(솔로몬 "최적 착지 위치 힌트 10초")·FR-035(가브리엘 "착지 힌트")의 **최적 착지 계산 위치가 정경에 없다** — screen-vision SCR-005 MyBoard 행은 데이터 원천을 "로컬 엔진"이라 하지만 ARCH-002 책임 목록에 착지 평가가 없고, 평가 로직은 서버 `worker/src/bot/placement.ts`(ARCH-013)에만 있었다(클라이언트 → worker import는 계층 위반, 클라이언트 재구현은 D-12 "엔진 이중 구현 금지" 위반). 또 평가 가중치 4개가 코드 상수였다(TBL-018 "모든 수치의 단일 원천" 위반 — 힌트가 플레이어에게 보이는 규칙이 되므로 알고리즘 내부 상수로 볼 수 없음). 개정: ① 착지 후보 열거·보드 평가·최적 착지 선택을 ARCH-002 순수 엔진 `client/js/engine/placement.js`로 둔다(클라이언트 힌트·서버 봇 공용 — D-12·D-02와 정합, 공용 패키지 폴더 신설 없음) ② ARCH-013은 그 점수에 난이도 노이즈·실수율만 더한다 ③ TBL-018에 `placement.weights` 추가(값 = D-01 구현 상수 그대로 — 새 수치 발명 0). SRS 벽차기 표는 이 변경 대상이 아니다: FR-002 "SRS … 벽차기 테이블"이 표준 표 자체를 요구하고 task-wall §3.2 #4가 `srs.js`를 그 표의 위치로 지정한다(규칙 수치가 아닌 표준 알고리즘 표). 발견 근거 2곳: ① D-01 인계 메모(fruit-열매/history 2026-10-19 16:47:27 ②) ② W-01 정경 대조(screen-vision SCR-005 "고스트·힌트 ← 로컬 엔진" ↔ architecture ARCH-002 책임 목록 ↔ devguide §3.5-5 "수치는 rules.json에서만") | architecture-temple ARCH-002·ARCH-013 행·§5.2 트리, data-ark-법궤 TBL-018 표, 이 RTM §1 FR-015·FR-035 ARCH 열·§8 FR-015·FR-035·REQ-003·REQ-008 행, task-wall §2.2 TASK-019 행·§3.2·§7, devguide §2.1 트리, `content/rules.json`(TASK-008 — 키 추가), `content/check-content.mjs`(TASK-009 — RULE_KEYS +1), `client/js/engine/placement.js`(TASK-019 신규)·`index.js`(re-export 1줄)·`worker/src/bot/placement.ts`·`bot-player.ts`(TASK-019), `client/test/engine-purity.test.js`(엔진 파일 목록), 서신 01·03(재생성), 03-A board-view 힌트 그리기·03-C 컨트롤러(TASK-041·TASK-065 — `engine.placement.bestPlacement(board, type, rules.placement.weights)`를 읽어야 함) | ✅ | ✅ 2026-10-19 W-01 개정·구현 (Spec-First: 이 행 → 정경 4종 → 코드 순). 두 증인: D-01 발견(미해결 보고) + W-01 판정·구현. `npm test` 통과·`check:content` 통과·worker tsc 0 오류, 봇 착지 결과 이전과 동일(같은 가중치·같은 열거) |
 
 ---
 
@@ -227,6 +228,7 @@
 > AI의 자기신고가 아니라 계수기 출력이 증거다 (UTIL-census-언약계수.md). Phase 4·5·6·7 완료 직전에 `--phase N`으로 다시 계수한다.
 > **Phase 4 계획 시점 계수 (2026-10-19 15:37:55 UTC):** `python .skill/tools-도구/census-count-언약계수.py bible-성경/01.requirement-hearing-들음 --log` → **✅ IRONCLAD** (exit 0) — 실계수 116 (🔄 116), 문서 기재값 5항목 일치, spec-tablet ID 116개 전부 등재. §8 태스크 연결 표 추가 후에도 매트릭스 파싱·수치 불변 확인. `--phase 4`(코드 모듈 열 충족)는 구현 완료 후 TASK-072에서 실행한다.
 > **Phase 4 · 00.jerusalem-예루살렘 지역 완료 계수 (2026-10-19 16:11:29 UTC, W-00):** `python .skill/tools-도구/census-count-언약계수.py bible-성경/01.requirement-hearing-들음 --log` → **✅ IRONCLAD** (exit 0) — 실계수 116 (🔄 116), 문서 기재값 5항목 일치, spec-tablet 116 전부 등재. (§1 코드 모듈 열·✅ 전환은 TASK-072 — 지역 완료는 REQ 행 상태를 바꾸지 않는다)
+> **Phase 4 · 01.judaea-유대 지역 완료 계수 (2026-10-19 16:57:49 UTC, W-01):** `python .skill/tools-도구/census-count-언약계수.py bible-성경/01.requirement-hearing-들음 --log` → **✅ IRONCLAD** (exit 0) — 실계수 116 (🔄 116), 문서 기재값 5항목 일치, spec-tablet ID 116개 전부 등재. DCL-004로 §1 FR-015·FR-035 ARCH 열과 §8 연결이 바뀐 뒤의 계수다.
 
 ---
 
@@ -367,12 +369,12 @@
 |:---|:---|:---|:---:|
 | REQ-001 | 사용자가 브라우저에서 KJV 성경 기반 실시간 2인 대전 테트리스를 플레이한다 | TASK-008, TASK-010-1, TASK-010-2, TASK-010-3, TASK-010-4, TASK-018, TASK-030, TASK-033, TASK-041, TASK-062-2, TASK-063, TASK-065, TASK-066, TASK-067-1 | 00, 01, 02, 03 |
 | REQ-002 | 사용자는 게스트 닉네임으로 입장한다 | TASK-020-1, TASK-020-2, TASK-020-3, TASK-031, TASK-032, TASK-061, TASK-062-1, TASK-062-2, TASK-064-1, TASK-064-2 | 01, 02, 03 |
-| REQ-003 | 사용자는 위인 4명(다윗·솔로몬·베드로·바울) 중 한 명을 고른다 | TASK-005, TASK-011, TASK-015-1, TASK-015-2, TASK-044-1, TASK-044-2, TASK-044-3, TASK-064-1, TASK-064-2 | 00, 01, 03 |
+| REQ-003 | 사용자는 위인 4명(다윗·솔로몬·베드로·바울) 중 한 명을 고른다 | TASK-005, TASK-011, TASK-015-1, TASK-015-2, TASK-019, TASK-044-1, TASK-044-2, TASK-044-3, TASK-064-1, TASK-064-2 | 00, 01, 03 |
 | REQ-004 | 사용자는 대전 모드(사람 대 사람, 랜덤 매칭 + 친구 초대 코드)를 고를 수 있다 | TASK-032, TASK-062-1, TASK-062-2, TASK-064-1, TASK-064-2 | 02, 03 |
 | REQ-005 | 사용자는 AI 봇 대전(쉬움·보통·어려움)을 고를 수 있다 | TASK-008, TASK-019, TASK-032, TASK-033, TASK-062-2, TASK-064-1, TASK-064-2, TASK-066 | 00, 01, 02, 03 |
 | REQ-006 | 사용자는 연습 모드를 고를 수 있다 | TASK-018, TASK-032, TASK-062-2, TASK-064-1, TASK-064-2, TASK-066 | 01, 02, 03 |
 | REQ-007 | 줄을 지우면 상대에게 쓰레기 줄과 악한 영(14종)이 공격으로 간다. 서버가 공격을 판정한다 | TASK-005, TASK-008, TASK-011, TASK-012, TASK-013, TASK-014, TASK-030, TASK-033, TASK-044-3, TASK-045, TASK-051-2, TASK-065, TASK-066 | 00, 01, 02, 03 |
-| REQ-008 | 사용자는 믿음 게이지로 위인 스킬과 천사 5종을 쓴다 | TASK-005, TASK-008, TASK-011, TASK-013, TASK-015-1, TASK-015-2, TASK-033, TASK-044-3, TASK-045, TASK-065, TASK-066 | 00, 01, 02, 03 |
+| REQ-008 | 사용자는 믿음 게이지로 위인 스킬과 천사 5종을 쓴다 | TASK-005, TASK-008, TASK-011, TASK-013, TASK-015-1, TASK-015-2, TASK-019, TASK-033, TASK-044-3, TASK-045, TASK-065, TASK-066 | 00, 01, 02, 03 |
 | REQ-009 | 사용자는 전신갑주 6종을 얻어 쓴다 | TASK-005, TASK-010-1, TASK-010-2, TASK-010-3, TASK-010-4, TASK-011, TASK-015-1, TASK-015-2, TASK-016, TASK-033, TASK-044-2, TASK-065, TASK-066 | 00, 01, 02, 03 |
 | REQ-010 | 예수님 "세상을 이기었노라" 이벤트(첨부 A §3.2 원칙 그대로)가 경기당 1회 일어날 수 있다 | TASK-008, TASK-011, TASK-015-1, TASK-015-2, TASK-044-3, TASK-045, TASK-065, TASK-066 | 00, 01, 03 |
 | REQ-011 | 말씀 대결(성경 퀴즈, 60문항 이상)이 있다 | TASK-006, TASK-007, TASK-017, TASK-033, TASK-052, TASK-065, TASK-066 | 00, 01, 02, 03 |
@@ -396,7 +398,7 @@
 | FR-012 | 게스트 닉네임 입장 | TASK-003, TASK-020-1, TASK-031, TASK-062-1, TASK-062-2, TASK-064-1 | 00, 01, 02, 03 |
 | FR-013 | 캐릭터 선택 화면 | TASK-005, TASK-044-1, TASK-044-2, TASK-044-3, TASK-064-2 | 00, 03 |
 | FR-014 | 다윗 — 물맷돌 | TASK-005, TASK-011, TASK-015-1, TASK-051-2 | 00, 01, 03 |
-| FR-015 | 솔로몬 — 지혜로운 마음 | TASK-005, TASK-011, TASK-015-1 | 00, 01 |
+| FR-015 | 솔로몬 — 지혜로운 마음 | TASK-005, TASK-011, TASK-015-1, TASK-019 | 00, 01 |
 | FR-016 | 베드로 — 이 반석 위에 | TASK-005, TASK-011, TASK-014, TASK-015-1 | 00, 01 |
 | FR-017 | 바울 — 옥문이 열리다 | TASK-005, TASK-011, TASK-015-1 | 00, 01 |
 | FR-018 | 랜덤 매칭 | TASK-020-1, TASK-032, TASK-064-2 | 01, 02, 03 |
@@ -416,7 +418,7 @@
 | FR-032 | 서버 진행 검증 | TASK-016, TASK-030, TASK-033 | 01, 02 |
 | FR-033 | 믿음 게이지 | TASK-013, TASK-066 | 01, 03 |
 | FR-034 | 위인 스킬 발동 | TASK-015-1, TASK-065, TASK-066 | 01, 03 |
-| FR-035 | 천사 5종 소환 | TASK-005, TASK-011, TASK-015-2, TASK-044-3 | 00, 01, 03 |
+| FR-035 | 천사 5종 소환 | TASK-005, TASK-011, TASK-015-2, TASK-019, TASK-044-3 | 00, 01, 03 |
 | FR-036 | 갑주 출현·획득 | TASK-010-3, TASK-015-2, TASK-016 | 01 |
 | FR-037 | 갑주 6종 사용 | TASK-005, TASK-011, TASK-015-2, TASK-044-2 | 00, 01, 03 |
 | FR-038 | 상성표 | TASK-005, TASK-009, TASK-015-2 | 00, 01 |

@@ -90,11 +90,10 @@ function applyAngel(state, id, p, ctx) {
 function applyArmor(id, p, ctx) {
   const def = ctx.armorById.get(id);
   // FR-037 nullify(허리띠·신·투구): 해당 분류 현재 효과 해제 (다음 1회 무효는 서버 판정 — OQ #8)
-  if (def && Array.isArray(def.nullifies)) {
-    removeCursesByCategory(ctx.curse, ctx.engine, def.nullifies);
-    if (Array.isArray(p.cleared)) removeCurses(ctx.curse, ctx.engine, p.cleared);
-  }
-  return []; // 흉배·방패·검은 서버 판정 (status.armed·attack.blockedBy·reflected)
+  if (def && Array.isArray(def.nullifies)) removeCursesByCategory(ctx.curse, ctx.engine, def.nullifies);
+  // 서버가 걷은 저주 id (nullify 해제분 · 성령의 검이 되돌린 대기 공격의 저주 — 납 블록 포함)
+  if (Array.isArray(p.cleared)) return clearCursesAndLead(p.cleared, ctx);
+  return []; // 흉배·방패·검의 수치 판정은 서버 (status.armed·attack.blockedBy·reflected)
 }
 
 /**

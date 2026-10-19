@@ -27,7 +27,7 @@
 | ARCH-ID | 컴포넌트 | 위치 (`fruit-열매/`) | 책임 (단일) | 근거 REQ/FR |
 |:---|:---|:---|:---|:---|
 | ARCH-001 | 클라이언트 셸·화면 라우터 | `client/js/main.js`, `client/js/screens/` | 화면 9개 전환과 화면별 DOM 구성 (닉네임 입장·로비·캐릭터 선택·매칭 대기/초대 코드·대전·결과·전적·랭킹·옵션) | FR-078, FR-013, FR-057, FR-060, FR-069, FR-071 |
-| ARCH-002 | 게임 엔진 (DOM 비의존 순수 모듈) | `client/js/engine/` | 10×20 보드, 7종 테트로미노, 시드 7-bag, SRS 벽차기, 홀드·고스트, 줄 삭제·콤보·B2B·T-Spin·점수, 낙하 속도 곡선, 특수 칸·갑주 칸 결정론적 배정 | FR-001~FR-004, FR-010, FR-036, FR-044~FR-047 |
+| ARCH-002 | 게임 엔진 (DOM 비의존 순수 모듈) | `client/js/engine/` | 10×20 보드, 7종 테트로미노, 시드 7-bag, SRS 벽차기, 홀드·고스트, 줄 삭제·콤보·B2B·T-Spin·점수, 낙하 속도 곡선, 특수 칸·갑주 칸 결정론적 배정, **최적 착지 평가(`placement.js` — 솔로몬·가브리엘 착지 힌트와 서버 봇 공용) [재각 2026-10-19 — RTM §5 DCL-004]** | FR-001~FR-004, FR-010, FR-015, FR-021, FR-035, FR-036, FR-044~FR-047 |
 | ARCH-003 | 로컬 플레이어 컨트롤러 | `client/js/game/` | 입력→엔진→네트워크 연결, 서버가 보낸 공격·효과(쓰레기 상승, 악한 영 게임 효과, 스킬·천사·갑주·예수님 이벤트 결과)를 **내 보드**에 적용 | FR-005, FR-006, FR-014~FR-017, FR-025, FR-027~FR-030, FR-035, FR-037, FR-039 |
 | ARCH-004 | 렌더러 | `client/js/render/` | PixiJS v8 단일 Application: 보드·블록(유리 질감·발광)·시차 배경·파티클(오브젝트 풀)·pixi-filters | FR-048, FR-049, FR-051, FR-052, FR-055, NFR-001 |
 | ARCH-005 | 연출 오버레이 | `client/js/fx/` | GSAP 타임라인 + DOM 오버레이: 비네트·자막(영 이름·KJV 구절)·흔들림·히트스톱·빛의 화살·콘페티·말씀 카드 이미지 저장/공유·리액션 표시·니어미스 문구·은혜 아이콘 | FR-042, FR-053, FR-054, FR-056, FR-057, FR-061~FR-064 |
@@ -38,7 +38,7 @@
 | ARCH-010 | Matchmaker Durable Object | `worker/src/matchmaker.ts` | 전역 단일 인스턴스(`idFromName("global")`): 랜덤 매칭 대기열(Elo 근접), 친구 초대 코드 발급·조회, 봇·연습 방 배정, GameRoom 설정 전달, **원장(Ledger) SQLite의 호스트** | FR-018~FR-021, FR-023 |
 | ARCH-011 | GameRoom Durable Object | `worker/src/game-room.ts`, `worker/src/room/` | 방 1개 = 인스턴스 1개: 시드 배포, `clear` 검증, 공격 상쇄·대기열·상승 타이머, 방해 상한, 게이지·쿨다운·봉인, 스킬·천사·갑주·예수님 이벤트, 특수 칸 검증, 말씀 대결 진행·판정, 라운드·경기·이탈 판정, 결과 기록 요청 | FR-005~FR-009, FR-023, FR-025, FR-027~FR-041, FR-062, FR-064, FR-065, FR-068 |
 | ARCH-012 | 공격 판정 모듈 | `worker/src/attack.ts` | 순수 함수: (lines, combo, b2b, tspin, jericho, 연속 B2B) → 공격력·악한 영 등급·후보 목록 | FR-024, FR-026, NFR-002 |
-| ARCH-013 | AI 봇 | `worker/src/bot/` | GameRoom 안에서 ARCH-002 엔진 인스턴스를 구동: 난이도별 착지 평가·조작 속도·실수율, 말씀 대결 정답률·응답 시간 | FR-021, FR-022 |
+| ARCH-013 | AI 봇 | `worker/src/bot/` | GameRoom 안에서 ARCH-002 엔진 인스턴스를 구동: 엔진 착지 평가(ARCH-002 `placement.js`) 위에 난이도별 평가 노이즈·조작 속도·실수율 **[재각 2026-10-19 — RTM §5 DCL-004]**, 말씀 대결 정답률·응답 시간 | FR-021, FR-022 |
 | ARCH-014 | 원장 서비스 + 저장소 어댑터 | `worker/src/services/`, `worker/src/storage/`, `supabase/migrations/` | 게스트 발급·토큰 검증, 경기 기록, Elo 갱신, 진행 기록, 업적, 전적·랭킹 조회. `StorageAdapter` 인터페이스 1개 + 구현 2종(DO SQLite / Supabase) | FR-012, FR-047, FR-062, FR-065~FR-072, NFR-004, NFR-008 |
 | ARCH-015 | 프로토콜 검증·속도 제한 | `worker/src/protocol/` | 모든 수신 메시지 스키마 검증(수기 검증기), 크기 상한, 소켓별 토큰 버킷 속도 제한, 진행 불가능성 검사 | NFR-003, FR-032 |
 | ARCH-016 | 공용 게임 콘텐츠 | `content/` | heroes·angels·spirits·armor·counters·verses·quiz·rules JSON 8종 + 콘텐츠 검사 스크립트 | FR-038, FR-043, FR-074, FR-076, C-003, C-010 |
@@ -216,7 +216,7 @@ fruit-열매/
 │   │   │   └── result.js  history.js  ranking.js  options.js       (각 80~180줄)
 │   │   ├── engine/              # 순수 엔진 (ARCH-002) — 서버 봇 공유
 │   │   │   ├── rng.js  bag.js  piece.js  srs.js  board.js(~200)  scoring.js
-│   │   │   └── specials.js  gravity.js  index.js
+│   │   │   └── specials.js  gravity.js  placement.js(착지 평가 — 힌트·봇 공용, DCL-004)  index.js
 │   │   ├── game/                # 로컬 플레이어 컨트롤러 (ARCH-003)
 │   │   │   ├── local-player.js(~220)  apply-attack.js  apply-effect.js  board-codec.js
 │   │   ├── render/              # PixiJS (ARCH-004): pixi-app.js board-view.js particles.js filters.js background.js

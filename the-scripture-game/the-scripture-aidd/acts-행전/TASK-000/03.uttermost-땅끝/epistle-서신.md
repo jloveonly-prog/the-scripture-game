@@ -2,7 +2,7 @@
 
 > ⚠️ **파생 문서(Derived).** 이 서신은 원본이 아니다. 직접 수정 금지 — 원본을 고친 뒤 이 서신을 재생성하라.
 > 원본: `bible-성경/01.requirement-hearing-들음/spec-tablet-명세서.md`, `bible-성경/03.design-order-질서/screen-vision-화면설계.md`, `bible-성경/02.architecture-foundation-기초/api-gate-성문.md` (§1 목록·§2 공통 규약·§4 에러 코드), `bible-성경/02.architecture-foundation-기초/architecture-temple-성전설계.md` (§10 보안), `statute-율법/04.development-repentance-회개/security-seal-봉인.md` (봉인 계명)
-> 생성일: 2026-10-19 / 생성 기준: RTM 설계 변경 이력 최종 행 = 2026-10-19 DCL-002 (rtm-covenant-언약추적.md §5 — DCL-001 data-ark §6.1 부록·§7, DCL-002 data-ark TBL-018 `rateLimit`) · **재생성 2026-10-19 W-00** (최초 생성본은 DCL-001 추가로 무효 — acts-행전 README "서신은 무효가 된다")
+> 생성일: 2026-10-19 / 생성 기준: RTM 설계 변경 이력 최종 행 = 2026-10-19 DCL-004 (rtm-covenant-언약추적.md §5 — DCL-001 data-ark §6.1 부록·§7, DCL-002 data-ark TBL-018 `rateLimit`, DCL-003 data-ark TBL-018 `gravity.accelAfterMs`·`ledger.*`, DCL-004 architecture ARCH-002·ARCH-013 착지 평가 위치 + data-ark TBL-018 `placement.weights`) · **재생성 2026-10-19 W-01** (W-00 재생성본은 DCL-003·DCL-004 추가로 무효 — acts-행전 README "서신은 무효가 된다")
 >
 > **규격:** `statute-율법/04.development-repentance-회개/epistle-서신-template.md`
 > **이 지역의 개발 계층:** 프론트엔드/UI(03-A 렌더 코어 → 03-B 오디오·타격감 → 03-C 화면·HUD·네트워크) + 인증·보안 봉인 + 로컬 실행 인프라(03-D) (task-wall 4~6단계)
@@ -694,6 +694,36 @@ Phase 4가 반드시 받아야 할 정경 결정:
 9. **옵션은 세션 메모리만**(N-04 미승격) — localStorage에는 `swt.guest`만 쓴다(data-ark §8.3).
 
 — 출처: bible-성경/03/screen-vision-화면설계.md §9
+
+### 1. 컴포넌트 목록 (발췌 — ARCH-002 · ARCH-013, RTM §5 DCL-004 재각)
+
+| ARCH-ID | 컴포넌트 | 위치 (`fruit-열매/`) | 책임 (단일) | 근거 REQ/FR |
+|:---|:---|:---|:---|:---|
+| ARCH-002 | 게임 엔진 (DOM 비의존 순수 모듈) | `client/js/engine/` | 10×20 보드, 7종 테트로미노, 시드 7-bag, SRS 벽차기, 홀드·고스트, 줄 삭제·콤보·B2B·T-Spin·점수, 낙하 속도 곡선, 특수 칸·갑주 칸 결정론적 배정, **최적 착지 평가(`placement.js` — 솔로몬·가브리엘 착지 힌트와 서버 봇 공용) [재각 2026-10-19 — RTM §5 DCL-004]** | FR-001~FR-004, FR-010, FR-015, FR-021, FR-035, FR-036, FR-044~FR-047 |
+| ARCH-013 | AI 봇 | `worker/src/bot/` | GameRoom 안에서 ARCH-002 엔진 인스턴스를 구동: 엔진 착지 평가(ARCH-002 `placement.js`) 위에 난이도별 평가 노이즈·조작 속도·실수율 **[재각 2026-10-19 — RTM §5 DCL-004]**, 말씀 대결 정답률·응답 시간 | FR-021, FR-022 |
+
+— 출처: bible-성경/02/architecture-temple-성전설계.md §1 ARCH-002, ARCH-013
+
+### TBL-018: rules.json (규칙 수치 — 콘텐츠) — 발췌: 03 클라이언트가 읽는 엔진·힌트 행 (DCL-003·DCL-004 영향)
+
+> **목적:** spec-tablet §4.2 머리말이 Phase 2에 위임한 **모든 수치의 단일 원천**. 서버 판정과 클라이언트 표시가 같은 값을 읽는다 — 화면·코드 하드코딩 금지
+> **연결 REQ:** REQ-001, REQ-005, REQ-007~REQ-013, REQ-015, FR-004, FR-010, FR-019, FR-021~FR-047, FR-062, FR-064, FR-065, FR-070, NFR-003
+
+| 키 (경로) | 값 | 단위 | 근거 / 해석 |
+|:---|:---|:---|:---|
+| `board.width` / `board.height` | 10 / 20 | 칸 | FR-001 |
+| `board.dangerRows` | 4 | 줄 | OQ #7 위험선 = 상단 4줄, FR-055 |
+| `board.preview` | 3 | 개 | 기본 다음 블록 미리보기 |
+| `board.previewSolomon` / `board.previewGabriel` | 5 / 7 | 개 | FR-015 패시브, FR-035 가브리엘 |
+| `gravity.startMs` | 1000 | ms/줄 | FR-010 시작 낙하 간격 |
+| `gravity.at120sMs` | 500 | ms/줄 | 0~120초 선형 감소 ("완만하게") |
+| `gravity.accelEveryMs` / `gravity.accelFactor` / `gravity.minMs` | 15000 / 0.85 / 80 | ms / 배 / ms | 120초 이후 15초마다 ×0.85 ("2분 뒤부터 가속"), 하한 80ms |
+| `gravity.accelAfterMs` | 120000 | ms | **[추가 2026-10-19 — RTM §5 DCL-003]** 선형 감소 구간 끝·가속 시작 시점 (FR-010 "2분 뒤부터") — 지금까지 키 이름 `at120sMs`에만 숨어 있던 값을 단일 원천으로 올림, 값 불변 |
+| `heroSkills.understanding_heart` | cost 40, cooldownMs 20000, hintMs 10000 | — | FR-015 |
+| `angels.gabriel` | cost 40, cooldownMs 20000, pieces 7 | — | FR-035 |
+| `placement.weights` | `{"aggregateHeight": -0.510066, "lines": 0.760666, "holes": -0.35663, "bumpiness": -0.184483}` | 가중치 | **[추가 2026-10-19 — RTM §5 DCL-004]** 착지 평가 점수 = Σ 가중치 × 특징(집계 높이·지운 줄·구멍·울퉁불퉁함). FR-015 솔로몬·FR-035 가브리엘 "최적 착지 위치 힌트" = 이 점수가 가장 큰 착지(`client/js/engine/placement.js`, 클라이언트 로컬 엔진). FR-021 봇은 같은 점수에 `bot.*`의 `evalNoise`·`mistakeRate`를 더한다(난이도 차이는 `bot.*`만). 값 = 01 지역 D-01 구현 상수(공개 휴리스틱) 그대로 이전 — 새 수치 발명 0 |
+
+— 출처: bible-성경/02/data-ark-법궤.md TBL-018 (board · gravity · placement · heroSkills.understanding_heart · angels.gabriel 행만 — 원문 그대로)
 
 ### 1. API 전체 목록
 

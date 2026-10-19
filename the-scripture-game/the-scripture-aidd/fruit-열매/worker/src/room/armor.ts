@@ -46,9 +46,10 @@ export function useArmor(ctx: RoomContext, user: SlotState, opponent: SlotState 
     case "reflect": {
       const entry = opponent ? takePendingEntry(user, (e) => e.lines > 0) : null;
       if (entry && opponent) {
-        // 되돌린 공격의 저주도 내게서 걷힌다 — 공격 1회를 통째로 되돌림
-        if (entry.spiritId) clearEffects(user, now, (id) => id === entry.spiritId);
-        params = { reflected: true };
+        // 되돌린 공격의 저주도 내게서 걷힌다 — 공격 1회를 통째로 되돌림. 걷힌 id를 `cleared`로 알려 받는 클라이언트가
+        // 저주·대기 납 블록을 같이 내린다 (API-023 armor params "cleared" — W-01 정화: 서버·클라이언트 납 블록 불일치)
+        const cleared = entry.spiritId ? clearEffects(user, now, (id) => id === entry.spiritId) : [];
+        params = { reflected: true, cleared };
         emit(ctx, user, armorId, params, def.verse_ref);
         deliverAttack(ctx, user, opponent, { linesCleared: 0, attackPower: entry.lines, spiritId: entry.spiritId,
           reflected: true });

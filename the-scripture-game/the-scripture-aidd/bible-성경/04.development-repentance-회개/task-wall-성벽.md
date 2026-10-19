@@ -105,26 +105,26 @@
 
 | TASK-ID | 성벽 구간 | 지역 | 설명 | 연결 REQ | 연결 API/TBL/SCR | 생성 파일 | 파일 책임 | 예상 줄수 | 선행 | 규모 | 상태 | Doer | Witness | 짝 검증 결과 |
 |:---|:---|:---|:---|:---|:---|:---|:---|:---:|:---|:---:|:---:|:---:|:---:|:---:|
-| TASK-010 | 순수 게임 엔진 (전체) | 01.유대 | DOM·Pixi·네트워크·window 비의존 ES 모듈 — 서버 봇이 같은 파일을 import (D-12). 서브 4개 | REQ-001, REQ-009, REQ-012 | ARCH-002, TBL-018 | — (서브 태스크 합 — L 분할표) | — | — | TASK-008 | L | 🔄 | D-01 | W-01 | ⬜ |
-| TASK-010-1 | 엔진 — 난수·가방·조각·SRS | 01.유대 | 시드 PRNG(mulberry32)·독립 스트림 분기·7-bag·7종 테트로미노·SRS 벽차기 | REQ-001, FR-001, FR-002, FR-005 | ARCH-002, D-09, architecture §9.8 | `client/js/engine/rng.js`<br>`client/js/engine/bag.js`<br>`client/js/engine/piece.js`<br>`client/js/engine/srs.js` | 순수 논리만 | 45 · 50 · 90 · 90 | TASK-008 | M | 🔄 | D-01 | W-01 | ⬜ |
-| TASK-010-2 | 엔진 — 보드·판정·점수 | 01.유대 | 10×20 보드 연산(충돌·고정·삭제·쓰레기·납·구멍·위험선)과 T-Spin·콤보·B2B·점수 | REQ-001, FR-003, FR-004, FR-025, FR-029, FR-055 | ARCH-002, TBL-018 `scoring`·`board` | `client/js/engine/board.js`<br>`client/js/engine/scoring.js` | 순수 논리만 | 220 · 130 | TASK-010-1 | S | 🔄 | D-01 | W-01 | ⬜ |
-| TASK-010-3 | 엔진 — 낙하 곡선·특수 칸 배정 | 01.유대 | 경기 경과 ms → 낙하 간격, (시드·조각 번호·해금 단계·콤보·위기) → 특수/갑주 칸 결정론적 배정 + 서버 검증용 최대 확률 | REQ-009, REQ-012, FR-010, FR-036, FR-044~FR-047 | ARCH-002, D-09, D-18, TBL-018 `gravity`·`specials`·`armor` | `client/js/engine/gravity.js`<br>`client/js/engine/specials.js` | 순수 논리만 | 40 · 150 | TASK-010-1 | S | 🔄 | D-01 | W-01 | ⬜ |
-| TASK-010-4 | 엔진 — 퍼사드·순수성 테스트 | 01.유대 | Engine 상태기(스폰·이동·회전·홀드·드롭·고스트·잠금 지연·tick·이벤트 배열·스냅샷) + Node 환경 import 테스트 | REQ-001, FR-001, FR-003, FR-004, FR-010, FR-075 | ARCH-002, D-12 | `client/js/engine/index.js`<br>`client/test/engine-purity.test.js` | 순수 논리만 | 240 · 50 | TASK-010-2, TASK-010-3, TASK-001-5 | S | 🔄 | D-01 | W-01 | ⬜ |
-| TASK-011 | 클라이언트 보드 효과 논리 | 01.유대 | 서버 판정 결과(attack·garbage·effect)를 **내 엔진 상태**에 적용하는 순수 함수 + 보드 코덱 | REQ-003, REQ-007~REQ-010, REQ-012, FR-006, FR-014~FR-017, FR-025, FR-027~FR-031, FR-035, FR-037, FR-039, FR-045, FR-046, FR-062 | ARCH-003, API-012, API-020~API-023, TBL-013·TBL-014, CODE-009 | `client/js/game/board-codec.js`<br>`client/js/game/apply-attack.js`<br>`client/js/game/apply-spirit.js`<br>`client/js/game/apply-effect.js` | 순수 논리만 | 70 · 150 · 230 · 220 | TASK-010-4, TASK-009 | M | 🔄 | D-01 | W-01 | ⬜ |
-| TASK-012 | 공격 판정 (attack.ts) | 01.유대 | (lines, combo, b2b, tspin, jericho, 연속 B2B) → 공격력·악한 영 등급·후보 — 순수 함수 | REQ-007, FR-024, FR-026, NFR-002 | ARCH-012, TBL-013, TBL-018 `attack`·`spiritTier` | `worker/src/attack.ts` | 비즈니스만 | 160 | TASK-009 | S | 🔄 | D-01 | W-01 | ⬜ |
-| TASK-013 | 슬롯 판정 상태·방해 상한 | 01.유대 | 게이지(은혜 배율)·쿨다운·보유 갑주·armed·status 스냅샷 + FR-031 상한 규칙 | REQ-007, REQ-008, REQ-013, FR-028, FR-031, FR-033, FR-062 | ARCH-011, API-024, TBL-018 `gauge`·`effects`, data-ark §8.2 | `worker/src/room/player-state.ts`<br>`worker/src/room/effects.ts` | 비즈니스만 | 200 · 190 | TASK-009 | S | 🔄 | D-01 | W-01 | ⬜ |
-| TASK-014 | 쓰레기 대기·상쇄·상승 | 01.유대 | 대기 공격 큐·상쇄·1,000ms 상승 타이머·베드로 무효·은혜 −1·흉배 −2 | REQ-007, FR-016, FR-025, FR-062 | ARCH-011, API-021, API-022, TBL-018 `garbage`·`grace`·`armor` | `worker/src/room/garbage.ts` | 비즈니스만 | 170 | TASK-013 | S | 🔄 | D-01 | W-01 | ⬜ |
-| TASK-015 | 능력 판정 (전체) | 01.유대 | 위인 스킬·예수님 이벤트·천사·전신갑주 서버 판정 — 서브 2개 | REQ-003, REQ-008~REQ-010 | ARCH-011, API-014, API-015, API-023 | — (서브 태스크 합 — L 분할표) | — | — | TASK-013, TASK-014 | L | 🔄 | D-01 | W-01 | ⬜ |
-| TASK-015-1 | 위인 스킬·예수님 이벤트 | 01.유대 | 게이지·쿨다운 검증 후 4스킬 효과 결정, 예수님 이벤트(게이지 100 + 위기 + 경기당 1회) 발동 | REQ-003, REQ-008, REQ-010, FR-014~FR-017, FR-034, FR-039, C-002 | API-014, API-023, API-025, TBL-011, TBL-018 `heroSkills`·`jesus` | `worker/src/room/hero-skills.ts`<br>`worker/src/room/jesus.ts` | 비즈니스만 | 170 · 90 | TASK-013, TASK-014 | S | 🔄 | D-01 | W-01 | ⬜ |
-| TASK-015-2 | 천사·전신갑주 | 01.유대 | 천사 5종(봉인 검사·MODE_FORBIDDEN) + 갑주 6종(nullify·reduce_next·block_next·reflect) | REQ-008, REQ-009, FR-035~FR-038 | API-014, API-015, API-023, API-025, TBL-012, TBL-014, TBL-015, TBL-018 `angels`·`armor` | `worker/src/room/angels.ts`<br>`worker/src/room/armor.ts` | 비즈니스만 | 170 · 170 | TASK-013, TASK-014 | S | 🔄 | D-01 | W-01 | ⬜ |
-| TASK-016 | 특수 칸 검증 | 01.유대 | `clear.specials`를 engine/specials.js로 재계산 검증, 여리고 +1·만나 +25·갑주 획득·말씀→대결 트리거 | REQ-009, REQ-012, FR-032, FR-036, FR-044~FR-047, C-001 | API-013, API-023, TBL-018 `specials`, D-09 | `worker/src/room/specials.ts`<br>`worker/test/specials.test.ts` | 비즈니스만 | 160 · 80 | TASK-010-3, TASK-013, TASK-001-5 | S | 🔄 | D-01 | W-01 | ⬜ |
-| TASK-017 | 말씀 대결 판정 | 01.유대 | 출제·10초·오답 3초 잠금·도착순 판정·보상(50% 게이지 / 50% 갑주)·니어미스 gapMs·90초 자동·재개 지연 | REQ-011, FR-022, FR-040~FR-043 | ARCH-011, API-016, API-026, API-027, TBL-016, TBL-017, TBL-018 `quiz` | `worker/src/room/quiz.ts` | 비즈니스만 | 230 | TASK-013, TASK-009 | S | 🔄 | D-01 | W-01 | ⬜ |
-| TASK-018 | 경기 흐름·결과 | 01.유대 | 준비→시드·카운트다운→라운드→3판 2선승→경기 종료·이탈·연습 세션, 결과 집계·대표 구절·기록 페이로드 | REQ-001, REQ-006, REQ-013, REQ-014, FR-005, FR-007, FR-009, FR-023, FR-063, FR-065, FR-066, FR-068 | ARCH-011, API-019, API-029, API-030, TBL-002, TBL-003, TBL-018 `match`·`verseCard` | `worker/src/room/match-flow.ts`<br>`worker/src/room/results.ts` | 비즈니스만 | 250 · 170 | TASK-012, TASK-015-1, TASK-015-2, TASK-016, TASK-017 | M | 🔄 | D-01 | W-01 | ⬜ |
-| TASK-019 | AI 봇 | 01.유대 | GameRoom 안에서 엔진 인스턴스 구동, 난이도별 착지 평가·조작 속도·실수율·퀴즈 정답률/지연 | REQ-005, FR-021, FR-022 | ARCH-013, TBL-018 `bot`, D-10 | `worker/src/bot/placement.ts`<br>`worker/src/bot/bot-player.ts` | 비즈니스만 | 200 · 210 | TASK-010-4, TASK-009 | M | 🔄 | D-01 | W-01 | ⬜ |
-| TASK-020 | 원장 서비스 (전체) | 01.유대 | 게스트·Elo·전적·랭킹·진행 기록 비즈니스 — 서브 3개 | REQ-002, REQ-013~REQ-015 | ARCH-014 | — (서브 태스크 합 — L 분할표) | — | — | TASK-004, TASK-009 | L | 🔄 | D-01 | W-01 | ⬜ |
-| TASK-020-1 | 게스트·Elo | 01.유대 | 닉네임 검증(trim·정규식·중복)·guestId/토큰 발급·SHA-256·LRU 1,000 토큰 검증 + Elo K=32 | REQ-002, REQ-015, FR-012, FR-018, FR-070, NFR-003, NFR-008 | API-001, API-002, TBL-001, TBL-004, TBL-018 `nickname`·`elo`, D-06 | `worker/src/services/guest-service.ts`<br>`worker/src/services/elo.ts` | 비즈니스만 | 150 · 40 | TASK-004, TASK-009 | S | 🔄 | D-01 | W-01 | ⬜ |
-| TASK-020-2 | 전적·랭킹 | 01.유대 | 경기 기록 검증(2행·봇 1행 이하·verse_ref 존재)·전적 키셋 페이지·상위 100(5초 TTL)·내 순위 | REQ-014, REQ-015, FR-068~FR-071 | API-003, API-004, TBL-002, TBL-003, TBL-006 | `worker/src/services/history-service.ts`<br>`worker/src/services/ranking-service.ts` | 비즈니스만 | 150 · 90 | TASK-020-1 | S | 🔄 | D-01 | W-01 | ⬜ |
-| TASK-020-3 | 진행 기록·업적·성장 | 01.유대 | 누적 판 수·연속 패배·직전 경기 기록·성장 수치·업적 goliath_hunter·해금 단계·은혜 판정 | REQ-012, REQ-013, FR-047, FR-062, FR-065~FR-067 | TBL-004, TBL-005, TBL-018 `achievements`·`grace`·`specials.unlockRounds`, architecture §9.10 | `worker/src/services/progress-service.ts` | 비즈니스만 | 180 | TASK-020-2 | S | 🔄 | D-01 | W-01 | ⬜ |
+| TASK-010 | 순수 게임 엔진 (전체) | 01.유대 | DOM·Pixi·네트워크·window 비의존 ES 모듈 — 서버 봇이 같은 파일을 import (D-12). 서브 4개 | REQ-001, REQ-009, REQ-012 | ARCH-002, TBL-018 | — (서브 태스크 합 — L 분할표) | — | — | TASK-008 | L | ✅ | D-01 | W-01 | ✅ |
+| TASK-010-1 | 엔진 — 난수·가방·조각·SRS | 01.유대 | 시드 PRNG(mulberry32)·독립 스트림 분기·7-bag·7종 테트로미노·SRS 벽차기 | REQ-001, FR-001, FR-002, FR-005 | ARCH-002, D-09, architecture §9.8 | `client/js/engine/rng.js`<br>`client/js/engine/bag.js`<br>`client/js/engine/piece.js`<br>`client/js/engine/srs.js` | 순수 논리만 | 45 · 50 · 90 · 90 | TASK-008 | M | ✅ | D-01 | W-01 | ✅ |
+| TASK-010-2 | 엔진 — 보드·판정·점수 | 01.유대 | 10×20 보드 연산(충돌·고정·삭제·쓰레기·납·구멍·위험선)과 T-Spin·콤보·B2B·점수 | REQ-001, FR-003, FR-004, FR-025, FR-029, FR-055 | ARCH-002, TBL-018 `scoring`·`board` | `client/js/engine/board.js`<br>`client/js/engine/scoring.js` | 순수 논리만 | 220 · 130 | TASK-010-1 | S | ✅ | D-01 | W-01 | ✅ |
+| TASK-010-3 | 엔진 — 낙하 곡선·특수 칸 배정 | 01.유대 | 경기 경과 ms → 낙하 간격, (시드·조각 번호·해금 단계·콤보·위기) → 특수/갑주 칸 결정론적 배정 + 서버 검증용 최대 확률 | REQ-009, REQ-012, FR-010, FR-036, FR-044~FR-047 | ARCH-002, D-09, D-18, TBL-018 `gravity`·`specials`·`armor` | `client/js/engine/gravity.js`<br>`client/js/engine/specials.js` | 순수 논리만 | 40 · 150 | TASK-010-1 | S | ✅ | D-01 | W-01 | ✅ |
+| TASK-010-4 | 엔진 — 퍼사드·순수성 테스트 | 01.유대 | Engine 상태기(스폰·이동·회전·홀드·드롭·고스트·잠금 지연·tick·이벤트 배열·스냅샷) + Node 환경 import 테스트 | REQ-001, FR-001, FR-003, FR-004, FR-010, FR-075 | ARCH-002, D-12 | `client/js/engine/index.js`<br>`client/test/engine-purity.test.js` | 순수 논리만 | 240 · 50 | TASK-010-2, TASK-010-3, TASK-001-5 | S | ✅ | D-01 | W-01 | ✅ |
+| TASK-011 | 클라이언트 보드 효과 논리 | 01.유대 | 서버 판정 결과(attack·garbage·effect)를 **내 엔진 상태**에 적용하는 순수 함수 + 보드 코덱 | REQ-003, REQ-007~REQ-010, REQ-012, FR-006, FR-014~FR-017, FR-025, FR-027~FR-031, FR-035, FR-037, FR-039, FR-045, FR-046, FR-062 | ARCH-003, API-012, API-020~API-023, TBL-013·TBL-014, CODE-009 | `client/js/game/board-codec.js`<br>`client/js/game/apply-attack.js`<br>`client/js/game/apply-spirit.js`<br>`client/js/game/apply-effect.js` | 순수 논리만 | 70 · 150 · 230 · 220 | TASK-010-4, TASK-009 | M | ✅ | D-01 | W-01 | ✅ |
+| TASK-012 | 공격 판정 (attack.ts) | 01.유대 | (lines, combo, b2b, tspin, jericho, 연속 B2B) → 공격력·악한 영 등급·후보 — 순수 함수 | REQ-007, FR-024, FR-026, NFR-002 | ARCH-012, TBL-013, TBL-018 `attack`·`spiritTier` | `worker/src/attack.ts` | 비즈니스만 | 160 | TASK-009 | S | ✅ | D-01 | W-01 | ✅ |
+| TASK-013 | 슬롯 판정 상태·방해 상한 | 01.유대 | 게이지(은혜 배율)·쿨다운·보유 갑주·armed·status 스냅샷 + FR-031 상한 규칙 | REQ-007, REQ-008, REQ-013, FR-028, FR-031, FR-033, FR-062 | ARCH-011, API-024, TBL-018 `gauge`·`effects`, data-ark §8.2 | `worker/src/room/player-state.ts`<br>`worker/src/room/effects.ts` | 비즈니스만 | 200 · 190 | TASK-009 | S | ✅ | D-01 | W-01 | ✅ |
+| TASK-014 | 쓰레기 대기·상쇄·상승 | 01.유대 | 대기 공격 큐·상쇄·1,000ms 상승 타이머·베드로 무효·은혜 −1·흉배 −2 | REQ-007, FR-016, FR-025, FR-062 | ARCH-011, API-021, API-022, TBL-018 `garbage`·`grace`·`armor` | `worker/src/room/garbage.ts` | 비즈니스만 | 170 | TASK-013 | S | ✅ | D-01 | W-01 | ✅ |
+| TASK-015 | 능력 판정 (전체) | 01.유대 | 위인 스킬·예수님 이벤트·천사·전신갑주 서버 판정 — 서브 2개 | REQ-003, REQ-008~REQ-010 | ARCH-011, API-014, API-015, API-023 | — (서브 태스크 합 — L 분할표) | — | — | TASK-013, TASK-014 | L | ✅ | D-01 | W-01 | ✅ |
+| TASK-015-1 | 위인 스킬·예수님 이벤트 | 01.유대 | 게이지·쿨다운 검증 후 4스킬 효과 결정, 예수님 이벤트(게이지 100 + 위기 + 경기당 1회) 발동 | REQ-003, REQ-008, REQ-010, FR-014~FR-017, FR-034, FR-039, C-002 | API-014, API-023, API-025, TBL-011, TBL-018 `heroSkills`·`jesus` | `worker/src/room/hero-skills.ts`<br>`worker/src/room/jesus.ts` | 비즈니스만 | 170 · 90 | TASK-013, TASK-014 | S | ✅ | D-01 | W-01 | ✅ |
+| TASK-015-2 | 천사·전신갑주 | 01.유대 | 천사 5종(봉인 검사·MODE_FORBIDDEN) + 갑주 6종(nullify·reduce_next·block_next·reflect) | REQ-008, REQ-009, FR-035~FR-038 | API-014, API-015, API-023, API-025, TBL-012, TBL-014, TBL-015, TBL-018 `angels`·`armor` | `worker/src/room/angels.ts`<br>`worker/src/room/armor.ts` | 비즈니스만 | 170 · 170 | TASK-013, TASK-014 | S | ✅ | D-01 | W-01 | ✅ |
+| TASK-016 | 특수 칸 검증 | 01.유대 | `clear.specials`를 engine/specials.js로 재계산 검증, 여리고 +1·만나 +25·갑주 획득·말씀→대결 트리거 | REQ-009, REQ-012, FR-032, FR-036, FR-044~FR-047, C-001 | API-013, API-023, TBL-018 `specials`, D-09 | `worker/src/room/specials.ts`<br>`worker/test/specials.test.ts` | 비즈니스만 | 160 · 80 | TASK-010-3, TASK-013, TASK-001-5 | S | ✅ | D-01 | W-01 | ✅ |
+| TASK-017 | 말씀 대결 판정 | 01.유대 | 출제·10초·오답 3초 잠금·도착순 판정·보상(50% 게이지 / 50% 갑주)·니어미스 gapMs·90초 자동·재개 지연 | REQ-011, FR-022, FR-040~FR-043 | ARCH-011, API-016, API-026, API-027, TBL-016, TBL-017, TBL-018 `quiz` | `worker/src/room/quiz.ts` | 비즈니스만 | 230 | TASK-013, TASK-009 | S | ✅ | D-01 | W-01 | ✅ |
+| TASK-018 | 경기 흐름·결과 | 01.유대 | 준비→시드·카운트다운→라운드→3판 2선승→경기 종료·이탈·연습 세션, 결과 집계·대표 구절·기록 페이로드 | REQ-001, REQ-006, REQ-013, REQ-014, FR-005, FR-007, FR-009, FR-023, FR-063, FR-065, FR-066, FR-068 | ARCH-011, API-019, API-029, API-030, TBL-002, TBL-003, TBL-018 `match`·`verseCard` | `worker/src/room/match-flow.ts`<br>`worker/src/room/results.ts` | 비즈니스만 | 250 · 170 | TASK-012, TASK-015-1, TASK-015-2, TASK-016, TASK-017 | M | ✅ | D-01 | W-01 | ✅ |
+| TASK-019 | AI 봇 (+ 착지 평가 엔진 공용 — RTM §5 DCL-004) | 01.유대 | GameRoom 안에서 엔진 인스턴스 구동, 난이도별 착지 평가·조작 속도·실수율·퀴즈 정답률/지연. **[W-01 2026-10-19 DCL-004]** 착지 후보 열거·평가는 엔진 `placement.js`(솔로몬·가브리엘 힌트 공용), 봇은 노이즈·실수율만 | REQ-005, FR-021, FR-022, FR-015, FR-035 | ARCH-013, ARCH-002, TBL-018 `bot`·`placement`, D-10, D-12 | `worker/src/bot/placement.ts`<br>`worker/src/bot/bot-player.ts`<br>`client/js/engine/placement.js` | 비즈니스만 (placement.js = 순수 논리만) | 200 · 210 · 80 | TASK-010-4, TASK-009 | M | ✅ | D-01 | W-01 | ✅ |
+| TASK-020 | 원장 서비스 (전체) | 01.유대 | 게스트·Elo·전적·랭킹·진행 기록 비즈니스 — 서브 3개 | REQ-002, REQ-013~REQ-015 | ARCH-014 | — (서브 태스크 합 — L 분할표) | — | — | TASK-004, TASK-009 | L | ✅ | D-01 | W-01 | ✅ |
+| TASK-020-1 | 게스트·Elo | 01.유대 | 닉네임 검증(trim·정규식·중복)·guestId/토큰 발급·SHA-256·LRU 1,000 토큰 검증 + Elo K=32 | REQ-002, REQ-015, FR-012, FR-018, FR-070, NFR-003, NFR-008 | API-001, API-002, TBL-001, TBL-004, TBL-018 `nickname`·`elo`, D-06 | `worker/src/services/guest-service.ts`<br>`worker/src/services/elo.ts` | 비즈니스만 | 150 · 40 | TASK-004, TASK-009 | S | ✅ | D-01 | W-01 | ✅ |
+| TASK-020-2 | 전적·랭킹 | 01.유대 | 경기 기록 검증(2행·봇 1행 이하·verse_ref 존재)·전적 키셋 페이지·상위 100(5초 TTL)·내 순위 | REQ-014, REQ-015, FR-068~FR-071 | API-003, API-004, TBL-002, TBL-003, TBL-006 | `worker/src/services/history-service.ts`<br>`worker/src/services/ranking-service.ts` | 비즈니스만 | 150 · 90 | TASK-020-1 | S | ✅ | D-01 | W-01 | ✅ |
+| TASK-020-3 | 진행 기록·업적·성장 | 01.유대 | 누적 판 수·연속 패배·직전 경기 기록·성장 수치·업적 goliath_hunter·해금 단계·은혜 판정 | REQ-012, REQ-013, FR-047, FR-062, FR-065~FR-067 | TBL-004, TBL-005, TBL-018 `achievements`·`grace`·`specials.unlockRounds`, architecture §9.10 | `worker/src/services/progress-service.ts` | 비즈니스만 | 180 | TASK-020-2 | S | ✅ | D-01 | W-01 | ✅ |
 
 ### 2.3 02.samaria-사마리아 — 성문 (프로토콜·REST·Durable Object·진입)
 
@@ -218,7 +218,7 @@
 | 31 | `client/js/content.js` | TASK-009 | content JSON 7종 import(quiz.json 제외 — 정답 `answer`는 서버만 사용, 문제는 API-026 `quiz`로 수신: TBL-017·FR-032. D-00 2026-10-19 갱신) + id 색인(Map) 제공만 — 클라이언트 단일 import 지점 | 70 |
 | 32 | `worker/src/content.ts` | TASK-009 | content JSON 8종 import + 타입 + id 색인 제공만 — 서버 단일 import 지점 | 90 |
 
-### 3.2 01.judaea-유대 (34개)
+### 3.2 01.judaea-유대 (35개 — #35는 W-01 DCL-004 추가)
 
 | # | 생성 파일 (`fruit-열매/` 기준) | TASK-ID | 단일 책임 (한 줄) | 예상 줄수 |
 |:--|:---|:---|:---|:---:|
@@ -249,13 +249,14 @@
 | 25 | `worker/src/room/quiz.ts` | TASK-017 | 말씀 대결 수명주기·판정·보상 결정만 (봇 응답은 주입된 콜백) | 230 |
 | 26 | `worker/src/room/match-flow.ts` | TASK-018 | 라운드·경기 상태 전이(시작·승패·다음 라운드·이탈·무효·연습)만 | 250 |
 | 27 | `worker/src/room/results.ts` | TASK-018 | 슬롯 통계 집계·`recordMatch`/`recordPractice` 페이로드·`matchEnd` 페이로드 조립만 | 170 |
-| 28 | `worker/src/bot/placement.ts` | TASK-019 | 착지 후보 열거·평가(높이·구멍·줄)·evalNoise 적용만 | 200 |
+| 28 | `worker/src/bot/placement.ts` | TASK-019 | ~~착지 후보 열거·평가(높이·구멍·줄)·evalNoise 적용만~~ **[W-01 DCL-004]** 엔진 착지 점수(#35)에 evalNoise·mistakeRate 적용만 | 200 → 60 |
 | 29 | `worker/src/bot/bot-player.ts` | TASK-019 | 봇 행동 루프(moveInterval·mistakeRate)·줄 삭제 결과 보고·퀴즈 응답 시각 생성만 | 210 |
 | 30 | `worker/src/services/guest-service.ts` | TASK-020-1 | 게스트 생성·토큰 해시·토큰 검증(LRU 캐시)만 | 150 |
 | 31 | `worker/src/services/elo.ts` | TASK-020-1 | Elo 기대 승률·갱신 순수 함수만 | 40 |
 | 32 | `worker/src/services/history-service.ts` | TASK-020-2 | 경기 기록 검증·저장 위임·전적 페이지 조립만 | 150 |
 | 33 | `worker/src/services/ranking-service.ts` | TASK-020-2 | 랭킹 상위 100 캐시·무효화·내 순위만 | 90 |
 | 34 | `worker/src/services/progress-service.ts` | TASK-020-3 | 진행 기록 갱신·성장 수치·업적 판정·해금 단계·은혜 여부 계산만 | 180 |
+| 35 | `client/js/engine/placement.js` | TASK-019 | 착지 후보 열거·보드 평가(rules.placement.weights)·최적 착지 선택만 — 솔로몬·가브리엘 힌트와 서버 봇 공용 순수 엔진 (RTM §5 DCL-004) | 80 |
 
 ### 3.3 02.samaria-사마리아 (14개)
 
@@ -366,7 +367,7 @@
 
 | 파일 | TASK | 예상 | 단일 책임 근거 (분리하지 않는 이유) |
 |:---|:---|:---:|:---|
-| `client/js/engine/index.js` | TASK-010-4 | 240 → **실측 354 [D-01 2026-10-19 기재]** | Engine 퍼사드 단일 책임(입력 명령·시간 → 상태 전이 → 이벤트 배열). 300줄 초과분은 서버 판정 결과를 내 보드에 적용하는 얇은 위임 메서드 12개(applyGarbage·addLeadRows·removeLeadRows·punchHoles·removeTopBlocks·removeGarbageRows·nudge·setGravityMultiplier·setPreviewCount·getGhost·getNext·snapshot — 각 3~8줄, 계산은 board.js) — 퍼사드에서 빼면 클라이언트(apply-*.js)와 서버 봇(bot-player.ts)이 board.js를 직접 다뤄 D-12 "엔진 진입점 하나"가 깨진다. 500줄 미만, 책임 혼재 없음 → SKILL-04 "단일 책임이면 근거 기재 후 통과" 경로. W-01 판정 대상 (분할 요구 시 `engine/effects-api.js` 같은 서브 태스크로 task-wall §3 갱신 후 분리) |
+| `client/js/engine/index.js` | TASK-010-4 | 240 → **실측 354 [D-01 2026-10-19 기재]** | Engine 퍼사드 단일 책임(입력 명령·시간 → 상태 전이 → 이벤트 배열). 300줄 초과분은 서버 판정 결과를 내 보드에 적용하는 얇은 위임 메서드 12개(applyGarbage·addLeadRows·removeLeadRows·punchHoles·removeTopBlocks·removeGarbageRows·nudge·setGravityMultiplier·setPreviewCount·getGhost·getNext·snapshot — 각 3~8줄, 계산은 board.js) — 퍼사드에서 빼면 클라이언트(apply-*.js)와 서버 봇(bot-player.ts)이 board.js를 직접 다뤄 D-12 "엔진 진입점 하나"가 깨진다. 500줄 미만, 책임 혼재 없음 → SKILL-04 "단일 책임이면 근거 기재 후 통과" 경로. W-01 판정 대상 (분할 요구 시 `engine/effects-api.js` 같은 서브 태스크로 task-wall §3 갱신 후 분리) **[W-01 판정 2026-10-19 — 통과, 분리 안 함]** 실측 356줄(placement re-export 2줄 포함). 메서드 전부가 Engine 한 상태(board·active·hold·leadLinesLeft·crisis·topOut)의 전이이고 계산은 board.js·scoring.js·specials.js·gravity.js·placement.js에 위임됨 — 책임 혼재 없음. 위임 메서드를 떼면 활성 블록 밀어올림(liftActive)·위기 갱신·Top-out 판정이 두 파일에 걸쳐 같은 상태를 고치게 되어 오히려 응집이 깨진다. 500줄 미만 |
 | `worker/src/room/match-flow.ts` | TASK-018 | 250 | 라운드·경기 상태 전이(시작·승패·다음 라운드·이탈·무효·연습)만 |
 | `worker/src/protocol/validate.ts` | TASK-030 | 270 | 수신 메시지 10종 필드 타입·범위·열거 검증만 (추가 필드 무시) |
 | `worker/src/room/handlers.ts` | TASK-033 | 260 | 수신 메시지 8종(ready·state·clear·skill·armor·answer·reaction·topout) → room/* 호출, 핸들러마다 try/catch → reject/error |
@@ -404,28 +405,28 @@
 
 | TASK-ID | 서브 태스크 | 설명 | 생성 파일 | 상태 |
 |:---|:---|:---|:---|:---:|
-| TASK-010 | 전체: 순수 게임 엔진 | DOM·Pixi·네트워크·window 비의존 ES 모듈 — 서버 봇이 같은 파일을 import (D-12). 서브 4개 | — | 🔄 |
-| TASK-010-1 | 엔진 — 난수·가방·조각·SRS | 시드 PRNG(mulberry32)·독립 스트림 분기·7-bag·7종 테트로미노·SRS 벽차기 | `client/js/engine/rng.js` · `client/js/engine/bag.js` · `client/js/engine/piece.js` · `client/js/engine/srs.js` | 🔄 |
-| TASK-010-2 | 엔진 — 보드·판정·점수 | 10×20 보드 연산(충돌·고정·삭제·쓰레기·납·구멍·위험선)과 T-Spin·콤보·B2B·점수 | `client/js/engine/board.js` · `client/js/engine/scoring.js` | 🔄 |
-| TASK-010-3 | 엔진 — 낙하 곡선·특수 칸 배정 | 경기 경과 ms → 낙하 간격, (시드·조각 번호·해금 단계·콤보·위기) → 특수/갑주 칸 결정론적 배정 + 서버 검증용 최대 확률 | `client/js/engine/gravity.js` · `client/js/engine/specials.js` | 🔄 |
-| TASK-010-4 | 엔진 — 퍼사드·순수성 테스트 | Engine 상태기(스폰·이동·회전·홀드·드롭·고스트·잠금 지연·tick·이벤트 배열·스냅샷) + Node 환경 import 테스트 | `client/js/engine/index.js` · `client/test/engine-purity.test.js` | 🔄 |
+| TASK-010 | 전체: 순수 게임 엔진 | DOM·Pixi·네트워크·window 비의존 ES 모듈 — 서버 봇이 같은 파일을 import (D-12). 서브 4개 | — | ✅ |
+| TASK-010-1 | 엔진 — 난수·가방·조각·SRS | 시드 PRNG(mulberry32)·독립 스트림 분기·7-bag·7종 테트로미노·SRS 벽차기 | `client/js/engine/rng.js` · `client/js/engine/bag.js` · `client/js/engine/piece.js` · `client/js/engine/srs.js` | ✅ |
+| TASK-010-2 | 엔진 — 보드·판정·점수 | 10×20 보드 연산(충돌·고정·삭제·쓰레기·납·구멍·위험선)과 T-Spin·콤보·B2B·점수 | `client/js/engine/board.js` · `client/js/engine/scoring.js` | ✅ |
+| TASK-010-3 | 엔진 — 낙하 곡선·특수 칸 배정 | 경기 경과 ms → 낙하 간격, (시드·조각 번호·해금 단계·콤보·위기) → 특수/갑주 칸 결정론적 배정 + 서버 검증용 최대 확률 | `client/js/engine/gravity.js` · `client/js/engine/specials.js` | ✅ |
+| TASK-010-4 | 엔진 — 퍼사드·순수성 테스트 | Engine 상태기(스폰·이동·회전·홀드·드롭·고스트·잠금 지연·tick·이벤트 배열·스냅샷) + Node 환경 import 테스트 | `client/js/engine/index.js` · `client/test/engine-purity.test.js` | ✅ |
 
 ### TASK-015 서브 태스크 (L 규모 분할)
 
 | TASK-ID | 서브 태스크 | 설명 | 생성 파일 | 상태 |
 |:---|:---|:---|:---|:---:|
-| TASK-015 | 전체: 능력 판정 | 위인 스킬·예수님 이벤트·천사·전신갑주 서버 판정 — 서브 2개 | — | 🔄 |
-| TASK-015-1 | 위인 스킬·예수님 이벤트 | 게이지·쿨다운 검증 후 4스킬 효과 결정, 예수님 이벤트(게이지 100 + 위기 + 경기당 1회) 발동 | `worker/src/room/hero-skills.ts` · `worker/src/room/jesus.ts` | 🔄 |
-| TASK-015-2 | 천사·전신갑주 | 천사 5종(봉인 검사·MODE_FORBIDDEN) + 갑주 6종(nullify·reduce_next·block_next·reflect) | `worker/src/room/angels.ts` · `worker/src/room/armor.ts` | 🔄 |
+| TASK-015 | 전체: 능력 판정 | 위인 스킬·예수님 이벤트·천사·전신갑주 서버 판정 — 서브 2개 | — | ✅ |
+| TASK-015-1 | 위인 스킬·예수님 이벤트 | 게이지·쿨다운 검증 후 4스킬 효과 결정, 예수님 이벤트(게이지 100 + 위기 + 경기당 1회) 발동 | `worker/src/room/hero-skills.ts` · `worker/src/room/jesus.ts` | ✅ |
+| TASK-015-2 | 천사·전신갑주 | 천사 5종(봉인 검사·MODE_FORBIDDEN) + 갑주 6종(nullify·reduce_next·block_next·reflect) | `worker/src/room/angels.ts` · `worker/src/room/armor.ts` | ✅ |
 
 ### TASK-020 서브 태스크 (L 규모 분할)
 
 | TASK-ID | 서브 태스크 | 설명 | 생성 파일 | 상태 |
 |:---|:---|:---|:---|:---:|
-| TASK-020 | 전체: 원장 서비스 | 게스트·Elo·전적·랭킹·진행 기록 비즈니스 — 서브 3개 | — | 🔄 |
-| TASK-020-1 | 게스트·Elo | 닉네임 검증(trim·정규식·중복)·guestId/토큰 발급·SHA-256·LRU 1,000 토큰 검증 + Elo K=32 | `worker/src/services/guest-service.ts` · `worker/src/services/elo.ts` | 🔄 |
-| TASK-020-2 | 전적·랭킹 | 경기 기록 검증(2행·봇 1행 이하·verse_ref 존재)·전적 키셋 페이지·상위 100(5초 TTL)·내 순위 | `worker/src/services/history-service.ts` · `worker/src/services/ranking-service.ts` | 🔄 |
-| TASK-020-3 | 진행 기록·업적·성장 | 누적 판 수·연속 패배·직전 경기 기록·성장 수치·업적 goliath_hunter·해금 단계·은혜 판정 | `worker/src/services/progress-service.ts` | 🔄 |
+| TASK-020 | 전체: 원장 서비스 | 게스트·Elo·전적·랭킹·진행 기록 비즈니스 — 서브 3개 | — | ✅ |
+| TASK-020-1 | 게스트·Elo | 닉네임 검증(trim·정규식·중복)·guestId/토큰 발급·SHA-256·LRU 1,000 토큰 검증 + Elo K=32 | `worker/src/services/guest-service.ts` · `worker/src/services/elo.ts` | ✅ |
+| TASK-020-2 | 전적·랭킹 | 경기 기록 검증(2행·봇 1행 이하·verse_ref 존재)·전적 키셋 페이지·상위 100(5초 TTL)·내 순위 | `worker/src/services/history-service.ts` · `worker/src/services/ranking-service.ts` | ✅ |
+| TASK-020-3 | 진행 기록·업적·성장 | 누적 판 수·연속 패배·직전 경기 기록·성장 수치·업적 goliath_hunter·해금 단계·은혜 판정 | `worker/src/services/progress-service.ts` | ✅ |
 
 ### TASK-044 서브 태스크 (L 규모 분할)
 
@@ -689,17 +690,17 @@ graph LR
 | 지역 · 그룹 | 태스크 행 (상위 L 포함) | 실행 단위 (생성 파일 보유) | 생성 파일 | ⬜ | 🔄 | 🔁 | ✅ | ❌ | Doer / Witness |
 |:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---|
 | 00.예루살렘 | 14 | 13 | 32 | 0 | 0 | 0 | 14 | 0 | D-00 / W-00 |
-| 01.유대 | 20 | 17 | 34 | 0 | 20 | 0 | 0 | 0 | D-01 / W-01 |
+| 01.유대 | 20 | 17 | 35 | 0 | 0 | 0 | 20 | 0 | D-01 / W-01 |
 | 02.사마리아 | 5 | 5 | 14 | 5 | 0 | 0 | 0 | 0 | D-02 / W-02 |
 | 03.땅끝 — 03-A 렌더 코어 | 9 | 8 | 16 | 9 | 0 | 0 | 0 | 0 | D-03A / W-03A |
 | 03.땅끝 — 03-B 오디오·타격감 | 8 | 6 | 15 | 8 | 0 | 0 | 0 | 0 | D-03B / W-03B |
 | 03.땅끝 — 03-C 화면·HUD·네트워크 | 16 | 12 | 29 | 16 | 0 | 0 | 0 | 0 | D-03C / W-03C |
 | 03.땅끝 — 03-D 봉인·실행 | 3 | 3 | 3 | 3 | 0 | 0 | 0 | 0 | D-03D / W-03D |
-| **합계** | **75** | **64** | **143** | **41** | 20 | 0 | 14 | 0 | — |
+| **합계** | **75** | **64** | **144** | **41** | 0 | 0 | 34 | 0 | — |
 
 | 항목 | 값 |
 |:---|:---|
-| 현재 지역 | 00.jerusalem-예루살렘 **완료** — D-00 구현 · W-00 짝 검증 2026-10-19: 14행 ✅ / 짝 검증 ✅ (즉시 정화 루프 기록: `fruit-열매/history/2026-10-19.md`). RTM §5 DCL-001 승인 · DCL-002(TBL-018 rateLimit 수치 3개) 추가, 서신 4통 재생성(생성 기준 = DCL-002). 다음: 01.judaea-유대 D-01·W-01 — 인계물 = 언약책 + SKILL-04 + 01 서신 **[D-01 갱신 2026-10-19]** 01.judaea-유대 Doer 구현 완료 — 20행 ⬜→🔄 (W-01 짝 검증 대기, ✅는 Witness 판정 후). RTM §5 DCL-003(TBL-018 gravity.accelAfterMs·ledger 수치 6개) 🔄 W-01 확정 대기 → 서신 01·02·03 재생성 필요 |
+| 현재 지역 | 00.jerusalem-예루살렘 **완료** — D-00 구현 · W-00 짝 검증 2026-10-19: 14행 ✅ / 짝 검증 ✅ (즉시 정화 루프 기록: `fruit-열매/history/2026-10-19.md`). RTM §5 DCL-001 승인 · DCL-002(TBL-018 rateLimit 수치 3개) 추가, 서신 4통 재생성(생성 기준 = DCL-002). 다음: 01.judaea-유대 D-01·W-01 — 인계물 = 언약책 + SKILL-04 + 01 서신 **[D-01 갱신 2026-10-19]** 01.judaea-유대 Doer 구현 완료 — 20행 ⬜→🔄 (W-01 짝 검증 대기, ✅는 Witness 판정 후). RTM §5 DCL-003(TBL-018 gravity.accelAfterMs·ledger 수치 6개) 🔄 W-01 확정 대기 → 서신 01·02·03 재생성 필요 **[W-01 갱신 2026-10-19]** 01.judaea-유대 **완료** — W-01 짝 검증: 20행 ✅ / 짝 검증 ✅ (즉시 정화 루프 기록: `fruit-열매/history/2026-10-19.md`). RTM §5 DCL-003 승인 · DCL-004(착지 평가 = 엔진 `placement.js` + TBL-018 `placement.weights`) 추가, 서신 01·02·03 재생성(생성 기준 = DCL-004). 다음: 02.samaria-사마리아 D-02·W-02 — 인계물 = 언약책 + SKILL-04 + 02 서신 |
 | 즉시 정화 루프 기록 위치 | `fruit-열매/history/YYYY-MM-DD.md` (Witness 발견 → Doer 수정, 지역 안 2회 초과 시 SKILL-05 회개 루프) |
 | RTM 태스크 연결 | `rtm-covenant-언약추적.md` §8 (116 ID → TASK-ID) — 코드 모듈 열은 TASK-072에서 채움 |
 

@@ -1,4 +1,4 @@
-// engine-purity.test.js — 엔진 9파일 Node import·DOM 전역 미사용·같은 시드 같은 순서 확인 단위 테스트만 (D-12)
+// engine-purity.test.js — 엔진 10파일 Node import·DOM 전역 미사용·같은 시드 같은 순서 확인 단위 테스트만 (D-12)
 // TASK-010-4 | REQ-001 FR-001 FR-005 FR-075 | ARCH-002 ARCH-018 | D-12 (엔진은 DOM·Pixi·window·타이머·JSON import 금지)
 import { describe, expect, it } from "vitest";
 import { readFileSync, readdirSync } from "node:fs";
@@ -7,9 +7,9 @@ import { dirname, join } from "node:path";
 import { rules, armor } from "../js/content.js";
 
 const ENGINE_DIR = join(dirname(fileURLToPath(import.meta.url)), "../js/engine");
-// task-wall §3.2 #1~#9 — 엔진 파일 목록 그대로
+// task-wall §3.2 #1~#9 + #35(placement.js — RTM §5 DCL-004) — 엔진 파일 목록 그대로
 const ENGINE_FILES = ["rng.js", "bag.js", "piece.js", "srs.js", "board.js", "scoring.js", "gravity.js", "specials.js",
-  "index.js"];
+  "placement.js", "index.js"];
 // devguide §3.5-4 금지 식별자 (주석 줄 제외 후 검사)
 const FORBIDDEN = [
   /\bwindow\b/, /\bdocument\b/, /\blocalStorage\b/, /\bsessionStorage\b/, /\bnavigator\b/, /\bsetTimeout\b/,

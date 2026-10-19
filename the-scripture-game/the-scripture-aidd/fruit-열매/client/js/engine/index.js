@@ -15,6 +15,8 @@ export { CELL, PIECE_TYPES, pieceCells, spawnPiece } from "./piece.js";
 export * as board from "./board.js";
 export { gravityIntervalMs } from "./gravity.js";
 export * as specials from "./specials.js";
+// FR-015·FR-035 착지 힌트 + ARCH-013 봇 공용 착지 평가 (RTM §5 DCL-004)
+export * as placement from "./placement.js";
 export { sequenceFor } from "./bag.js";
 
 /**
