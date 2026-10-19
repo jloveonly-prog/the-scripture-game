@@ -1,0 +1,6 @@
+[
+{"id":"david","nameKo":"다윗","nameEn":"David","skill":{"id":"hero_david","nameKo":"물맷돌","descKo":"상대 보드에서 가장 높은 열의 꼭대기 블록 3개를 파괴","cost":50,"cooldownMs":20000,"action":{"type":"destroyTopBlocks","count":3}},"passive":null,"verseRef":"1 Samuel 17:49","emblem":{"motif":"sling","palette":["gold","blue-sky"]}},
+{"id":"solomon","nameKo":"솔로몬","nameEn":"Solomon","skill":{"id":"hero_solomon","nameKo":"지혜로운 마음","descKo":"최적 착지 위치 힌트 10초","cost":40,"cooldownMs":20000,"action":{"type":"landingHint","durationMs":10000}},"passive":{"type":"previewCount","count":5},"verseRef":"1 Kings 3:9","emblem":{"motif":"heart","palette":["gold","purple"]}},
+{"id":"peter","nameKo":"베드로","nameEn":"Peter","skill":{"id":"hero_peter","nameKo":"이 반석 위에","descKo":"10초 동안 쓰레기 줄 상승 무효","cost":50,"cooldownMs":25000,"action":{"type":"garbageImmune","durationMs":10000}},"passive":null,"verseRef":"Matthew 16:18","emblem":{"motif":"rock","palette":["silver","blue-deep"]}},
+{"id":"paul","nameKo":"바울","nameEn":"Paul","skill":{"id":"hero_paul","nameKo":"옥문이 열리다","descKo":"지진 연출과 함께 맨 아래 쓰레기 줄 3줄 삭제","cost":60,"cooldownMs":25000,"action":{"type":"removeBottomGarbage","rows":3}},"passive":null,"verseRef":"Acts 16:26","emblem":{"motif":"chains","palette":["scarlet","gold"]}}
+]

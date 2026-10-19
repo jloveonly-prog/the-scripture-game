@@ -1,0 +1,8 @@
+[
+{"id":"belt_of_truth","nameKo":"진리의 허리띠","cellCode":"d","action":{"type":"wardCategories","categories":["deception","control"],"charges":1,"clearActive":true},"verseRef":"Ephesians 6:14"},
+{"id":"breastplate_of_righteousness","nameKo":"의의 흉배","cellCode":"e","action":{"type":"reduceNextGarbage","rows":2},"verseRef":"Ephesians 6:14"},
+{"id":"gospel_shoes","nameKo":"평안의 복음의 신","cellCode":"f","action":{"type":"wardCategories","categories":["speed"],"charges":1,"clearActive":true},"verseRef":"Ephesians 6:15"},
+{"id":"shield_of_faith","nameKo":"믿음의 방패","cellCode":"g","action":{"type":"blockNextAttack"},"verseRef":"Ephesians 6:16"},
+{"id":"helmet_of_salvation","nameKo":"구원의 투구","cellCode":"h","action":{"type":"wardCategories","categories":["vision"],"charges":1,"clearActive":true},"verseRef":"Ephesians 6:17"},
+{"id":"sword_of_the_spirit","nameKo":"성령의 검","cellCode":"i","action":{"type":"reflectNextAttack"},"verseRef":"Ephesians 6:17"}
+]

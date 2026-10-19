@@ -1,0 +1,17 @@
+<!doctype html>
+<!-- TASK-002 · ARCH-001 · NFR-004 · NFR-005 · api-gate §5.4 — 단일 페이지 진입 문서: CSP·뷰포트·앱 루트만 둔다. 화면 DOM은 js/main.js(므낫세 지파)가 그린다. -->
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#07080F" />
+    <title>영적 전쟁 테트리스 — Spiritual Warfare Tetris</title>
+  </head>
+  <body>
+    <div id="app" data-app-root></div>
+    <noscript>이 게임은 JavaScript가 필요합니다.</noscript>
+    <script type="module" src="/js/main.js"></script>
+  </body>
+</html>

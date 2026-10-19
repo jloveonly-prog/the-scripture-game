@@ -1,0 +1,23 @@
+// TASK-003 · C-005 · D-12 — Worker TypeScript 검사 설정 (tsc --noEmit).
+// 클라이언트 동형 모듈(client/js/net/protocol.js, client/js/engine/*)을 allowJs로 읽기 전용 import 한다.
+// 런타임 타입은 `npm run types:worker`가 만든 worker-configuration.d.ts (Env는 src/env.ts가 직접 정의).
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022"],
+    "types": [],
+    "strict": true,
+    "noEmit": true,
+    "allowJs": true,
+    "checkJs": false,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "allowImportingTsExtensions": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src/**/*.ts", "worker-configuration.d.ts"]
+}

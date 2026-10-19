@@ -1,0 +1,7 @@
+[
+{"id":"michael","nameKo":"미가엘","nameEn":"Michael","cost":80,"cooldownMs":30000,"action":{"type":"negateSpirits","spiritIds":["dragon","angel_of_light"],"charges":1},"art":{"motif":"sword_wings"},"verseRef":"Jude 1:9"},
+{"id":"gabriel","nameKo":"가브리엘","nameEn":"Gabriel","cost":30,"cooldownMs":15000,"action":{"type":"revealQueue","count":7,"landingHint":true},"art":{"motif":"herald_wings"},"verseRef":"Luke 1:19"},
+{"id":"cherubim","nameKo":"그룹","nameEn":"Cherubims","cost":40,"cooldownMs":15000,"action":{"type":"burnIncoming","rows":2},"art":{"motif":"four_faces_wheels"},"verseRef":"Genesis 3:24"},
+{"id":"seraphim","nameKo":"스랍","nameEn":"Seraphims","cost":50,"cooldownMs":20000,"action":{"type":"cleanseCurses","categories":["deception","control","speed","board"]},"art":{"motif":"six_wings_coal"},"verseRef":"Isaiah 6:6-7"},
+{"id":"ministering_spirits","nameKo":"섬기는 영들","nameEn":"Ministering Spirits","cost":20,"cooldownMs":10000,"action":{"type":"removeGarbageRow","rows":1},"art":{"motif":"small_lights"},"verseRef":"Hebrews 1:14"}
+]

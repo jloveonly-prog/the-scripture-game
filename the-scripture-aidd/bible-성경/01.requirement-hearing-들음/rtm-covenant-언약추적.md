@@ -8,6 +8,7 @@
 > **갱신 시점:** Phase 1 완료 — 언약추적 갱신 규칙에 따라 REQ 열 전체 등재 + UC-ID 연결, 나머지 열(ARCH/API/TBL/코드/테스트)은 ⬜. 이 RTM은 프로젝트 전체에서 단 1개이며 Phase 2~7에서 계속 갱신된다.
 > **갱신 시점 (Phase 2 완료):** 언약추적 갱신 규칙 "Phase 2 완료 시 ARCH-ID, API-ID, TBL-ID 열 채움"에 따라 116행 전부 기재 — 근거 [`architecture-temple-성전설계.md`](../02.architecture-foundation-기초/architecture-temple-성전설계.md) (ARCH-001~022), [`api-gate-성문.md`](../02.architecture-foundation-기초/api-gate-성문.md) (API-001~006, API-101~154, API-201~262, API-290), [`data-ark-법궤.md`](../02.architecture-foundation-기초/data-ark-법궤.md) (TBL-001~007, TBL-101~109, TBL-201). 서버 API·테이블이 없는 클라이언트 전용 요구사항은 빈칸 대신 "해당 없음(사유)"으로 판단을 기록했다. 상태 ⬜ → 🔄 (설계 연결, 코드·테스트 미연결). `A~B` 표기는 양끝 포함 연속 ID 범위.
 > **갱신 시점 (Phase 3 완료):** 언약추적 갱신 규칙 "Phase 3 완료 시 화면 관련 항목 연결 확인"에 따라 116개 ID 전부의 화면 연결을 확인해 §7에 기재했다 — 근거 [`screen-vision-화면설계.md`](../03.design-order-질서/screen-vision-화면설계.md) (SCR-001~009), [`design-vision-디자인명세.md`](../03.design-order-질서/design-vision-디자인명세.md). §1 매트릭스에는 화면 전용 열이 없으므로 열 구조(계수기 파싱 대상)는 바꾸지 않았고, 상태도 🔄 그대로다 (화면 확인은 설계 구간 안의 확인이며 코드·테스트 연결이 아님).
+> **갱신 시점 (Phase 4 착수 — 2026-10-20 기반 단계):** task-wall 정경화 조건 "RTM에 태스크 ↔ REQ 연결 반영"에 따라 §8 태스크 연결 표를 신설했다 (116/116 연결). §5에 첫 설계 변경(재각 R1 — npm workspaces → 단일 package.json)을 기록했다. §1 "코드 모듈"·"테스트 ID" 열과 상태는 지파 구현·통합(TASK-090) 후 채운다 — 지금은 🔄 그대로.
 
 ---
 
@@ -201,6 +202,12 @@
 ## 5. 설계 변경 이력 (Design Change Log — 두 번째 돌판 규칙)
 
 > 정경화(2026-10-19, Phase 1) 이후 상류 설계 변경: **0건** (Phase 2 갱신은 언약추적 갱신 규칙에 따른 ARCH/API/TBL 열 기재와 상태 전환뿐이며, Phase 1 요구사항 원문·ID·UC 연결은 바뀌지 않았다). 첫 변경이 발생하면 템플릿 "재각 규칙 1" 형식(변경일 · 발견 Phase/지역 · 대상 ID · 변경 사유 · 영향받는 하류 산출물 · 재검증 필요 여부 · 상태)의 표를 이 절에 추가하고, 두 증인 확정(재각 규칙 3)을 통과한 변경만 기록한다.
+>
+> **Phase 4 기반 단계(2026-10-20)에 첫 변경 1건이 발생했다.** 두 증인(npm 설치 오류 로그 + 독립 재현·드라이브 매핑 확인)은 `architecture-temple-성전설계.md` §15 R1에 있다. Phase 1 요구사항 원문·ID는 바뀌지 않았고(FR-073 문장 그대로), 116행 상태는 모두 🔄 그대로다.
+
+| 변경일 | 발견 Phase/지역 | 대상 ID(REQ/ARCH/API/TBL) | 변경 사유 | 영향받는 하류 산출물 | 재검증 필요 여부 | 상태 |
+|:---|:---|:---|:---|:---|:---:|:---:|
+| 2026-10-20 | Phase 4 / acts-행전 예루살렘(00) 기반 배치 — TASK-001 | ARCH-019 (D-29, architecture §3.2·§4.6·§5.2·§5.3) — 관련 REQ-016, FR-073 | 개발 PC `D:`(원격 데스크톱 리디렉션 드라이브)가 junction·symlink를 만들 수 없어 npm workspaces 링크가 `EISDIR`로 실패 → workspaces 없는 단일 `fruit-열매/package.json` 루트로 재각 (R1) | `task-wall-성벽.md` TASK-001~003, `devguide-commandment-개발계명.md` §1·§2, `fruit-열매/package.json`·`scripts/dev.mjs` | ✅ (Phase 5 UC-021 단일 명령 실행 검증) | 🔄 |
 
 ---
 
@@ -317,3 +324,129 @@
 | C-012 | 해당 없음(소스 폴더 구조) | C-013 | 해당 없음(backup 비공개 규칙) |
 
 > 확인 결과: 116/116 기재 (화면 연결 103 · 해당 없음 13 — REQ-016, REQ-017, FR-072, FR-073, FR-075, FR-076, FR-077, NFR-004, NFR-007, C-004, C-006, C-012, C-013). 화면 9개 각각은 1개 이상의 REQ/FR로 역추적된다 (`screen-vision-화면설계.md` §1 연결 REQ 열).
+
+---
+
+## 8. 태스크 연결 (Phase 4 착수 — task-wall 정경화 조건 "RTM에 태스크 ↔ REQ 연결 반영")
+
+> 근거 [`task-wall-성벽.md`](../04.development-repentance-회개/task-wall-성벽.md) §2 태스크 분할표의 "연결 REQ" 열을 역으로 모은 표다 (범위 표기 `FR-014~017`은 양끝 포함으로 펼침, 서브 태스크가 같은 ID를 가지면 부모 TASK는 생략). 이 표는 §1 매트릭스와 별도이며 계수 대상(상태 열)이 아니다 — §1의 "코드 모듈" 열은 지파 정복 완료 후 여호수아(TASK-090)가 실제 파일 경로로 채운다.
+> 결과: spec-tablet ID 116개(REQ 17 · FR 78 · NFR 8 · C 13) 전부 1개 이상 TASK에 연결 — 미연결 0건 (2026-10-20 스크립트 역계수).
+
+| 대상 ID | 연결 TASK-ID |
+|:---|:---|
+| REQ-001 | TASK-004, TASK-010, TASK-011, TASK-023, TASK-060, TASK-063-1 |
+| REQ-002 | TASK-032, TASK-033, TASK-060, TASK-062 |
+| REQ-003 | TASK-006, TASK-021, TASK-040, TASK-062 |
+| REQ-004 | TASK-034, TASK-060, TASK-062 |
+| REQ-005 | TASK-012, TASK-034, TASK-062 |
+| REQ-006 | TASK-023, TASK-034, TASK-062 |
+| REQ-007 | TASK-006, TASK-011, TASK-020 |
+| REQ-008 | TASK-006, TASK-011, TASK-021 |
+| REQ-009 | TASK-006, TASK-011, TASK-021 |
+| REQ-010 | TASK-011, TASK-021, TASK-040 |
+| REQ-011 | TASK-022, TASK-063, TASK-070 |
+| REQ-012 | TASK-010, TASK-021 |
+| REQ-013 | TASK-031, TASK-040, TASK-041, TASK-050, TASK-062, TASK-063 |
+| REQ-014 | TASK-005, TASK-030, TASK-031, TASK-033, TASK-062, TASK-063 |
+| REQ-015 | TASK-005, TASK-030, TASK-031, TASK-033, TASK-062, TASK-063 |
+| REQ-016 | TASK-001, TASK-002, TASK-003, TASK-005, TASK-030, TASK-090 |
+| REQ-017 | TASK-001, TASK-007, TASK-010-6, TASK-011-4, TASK-020-4, TASK-021-6, TASK-023-5, TASK-030-4, TASK-031-3, TASK-032-3, TASK-033-4, TASK-034-3, TASK-064, TASK-070, TASK-090 |
+| FR-001 | TASK-004, TASK-010-1 |
+| FR-002 | TASK-004, TASK-010-1 |
+| FR-003 | TASK-010-2, TASK-010-5, TASK-040-1 |
+| FR-004 | TASK-010-2, TASK-010-3 |
+| FR-005 | TASK-004, TASK-010-1, TASK-023-1, TASK-023-2, TASK-062-2 |
+| FR-006 | TASK-004, TASK-011-3, TASK-023-3, TASK-040-1, TASK-060-1 |
+| FR-007 | TASK-011-3, TASK-023-2, TASK-041-3, TASK-063-2 |
+| FR-008 | TASK-004, TASK-023-3, TASK-023-4, TASK-033-3, TASK-060-1 |
+| FR-009 | TASK-023-1, TASK-023-2, TASK-023-4, TASK-031-2 |
+| FR-010 | TASK-010-4, TASK-023-2 |
+| FR-011 | TASK-010-5, TASK-011-1 |
+| FR-012 | TASK-030, TASK-032-1, TASK-033-2, TASK-060-2, TASK-062-1 |
+| FR-013 | TASK-006, TASK-040-3, TASK-062-2 |
+| FR-014 | TASK-006, TASK-010-2, TASK-011-2, TASK-021-2, TASK-062-2 |
+| FR-015 | TASK-006, TASK-010-5, TASK-011-2, TASK-021-2, TASK-062-2 |
+| FR-016 | TASK-006, TASK-011-2, TASK-021-2, TASK-062-2 |
+| FR-017 | TASK-006, TASK-010-2, TASK-011-2, TASK-021-2, TASK-062-2 |
+| FR-018 | TASK-034-2, TASK-060-1, TASK-062-2 |
+| FR-019 | TASK-034-2, TASK-060-1, TASK-062-2 |
+| FR-020 | TASK-034-2, TASK-060-1, TASK-062-2 |
+| FR-021 | TASK-012, TASK-034 |
+| FR-022 | TASK-012, TASK-022 |
+| FR-023 | TASK-023-2, TASK-034, TASK-063-1 |
+| FR-024 | TASK-006, TASK-020-1 |
+| FR-025 | TASK-010-2, TASK-011-2 |
+| FR-026 | TASK-006, TASK-020-1 |
+| FR-027 | TASK-006, TASK-011-2, TASK-020-2, TASK-041-2 |
+| FR-028 | TASK-006, TASK-011-2, TASK-020-2, TASK-021-3, TASK-041-2 |
+| FR-029 | TASK-006, TASK-010-2, TASK-011-2, TASK-020-2, TASK-041-2 |
+| FR-030 | TASK-006, TASK-011-2, TASK-020-1, TASK-020-2, TASK-041-2 |
+| FR-031 | TASK-006, TASK-020-2 |
+| FR-032 | TASK-020-3, TASK-032-2 |
+| FR-033 | TASK-006, TASK-021-1, TASK-040-2 |
+| FR-034 | TASK-006, TASK-021-1, TASK-021-2, TASK-063-1 |
+| FR-035 | TASK-006, TASK-010-2, TASK-010-5, TASK-011-2, TASK-021-3 |
+| FR-036 | TASK-006, TASK-010-4, TASK-021-4, TASK-040-2 |
+| FR-037 | TASK-006, TASK-011-2, TASK-021-4 |
+| FR-038 | TASK-006, TASK-021-4 |
+| FR-039 | TASK-011-2, TASK-021-5, TASK-040-3 |
+| FR-040 | TASK-011-3, TASK-022 |
+| FR-041 | TASK-022, TASK-063-3 |
+| FR-042 | TASK-022, TASK-063-3 |
+| FR-043 | TASK-022, TASK-070 |
+| FR-044 | TASK-010-4, TASK-021-5, TASK-040-1 |
+| FR-045 | TASK-010-2, TASK-010-4, TASK-011-2, TASK-020-1, TASK-021-5, TASK-040-1 |
+| FR-046 | TASK-010-4, TASK-011-2, TASK-021-5, TASK-040-1 |
+| FR-047 | TASK-010-4, TASK-021-5, TASK-023-2, TASK-040 |
+| FR-048 | TASK-040-1, TASK-040-2, TASK-061 |
+| FR-049 | TASK-040-3 |
+| FR-050 | TASK-002, TASK-061 |
+| FR-051 | TASK-041-1 |
+| FR-052 | TASK-041-1, TASK-041-2, TASK-041-3 |
+| FR-053 | TASK-041-2 |
+| FR-054 | TASK-041-2 |
+| FR-055 | TASK-004, TASK-011-3, TASK-041, TASK-050 |
+| FR-056 | TASK-041-3, TASK-063-2 |
+| FR-057 | TASK-041-1, TASK-041-4, TASK-062-3 |
+| FR-058 | TASK-050 |
+| FR-059 | TASK-050 |
+| FR-060 | TASK-050, TASK-062-3 |
+| FR-061 | TASK-011-3, TASK-041-1, TASK-041-3, TASK-041-4 |
+| FR-062 | TASK-021-1, TASK-023-2, TASK-040-2 |
+| FR-063 | TASK-022, TASK-063-2 |
+| FR-064 | TASK-011-1, TASK-023-3, TASK-063-3 |
+| FR-065 | TASK-006, TASK-031-1, TASK-063-2 |
+| FR-066 | TASK-031-1, TASK-063-2 |
+| FR-067 | TASK-005, TASK-023-2, TASK-030-1, TASK-031-2 |
+| FR-068 | TASK-005, TASK-030-1, TASK-031-2 |
+| FR-069 | TASK-005, TASK-030-1, TASK-033-2, TASK-062-3 |
+| FR-070 | TASK-005, TASK-030-1, TASK-031-1, TASK-031-2, TASK-063-2 |
+| FR-071 | TASK-005, TASK-030-1, TASK-033-2, TASK-062-3 |
+| FR-072 | TASK-003, TASK-005, TASK-030-1, TASK-030-2, TASK-030-3, TASK-030-4, TASK-034-2 |
+| FR-073 | TASK-001, TASK-002, TASK-003, TASK-033-1, TASK-090 |
+| FR-074 | TASK-002, TASK-006, TASK-070 |
+| FR-075 | TASK-007, TASK-010-6, TASK-011-4, TASK-020-4, TASK-021-6, TASK-023-5, TASK-030-4, TASK-031-3, TASK-032-3, TASK-033-4, TASK-034-3, TASK-041-4 |
+| FR-076 | TASK-070 |
+| FR-077 | TASK-064 |
+| FR-078 | TASK-061, TASK-062-1 |
+| NFR-001 | TASK-040-1, TASK-041-1 |
+| NFR-002 | TASK-011-3, TASK-023-3, TASK-064 |
+| NFR-003 | TASK-004, TASK-023-3, TASK-023-4, TASK-032-1, TASK-032-2, TASK-032-3, TASK-033-1, TASK-033-2, TASK-033-4, TASK-034-2 |
+| NFR-004 | TASK-002, TASK-003, TASK-030-2 |
+| NFR-005 | TASK-002, TASK-040, TASK-050, TASK-061 |
+| NFR-006 | TASK-041-3 |
+| NFR-007 | TASK-001 |
+| NFR-008 | TASK-030, TASK-032-1, TASK-060-2 |
+| C-001 | TASK-062-1 |
+| C-002 | TASK-021-5, TASK-040-3 |
+| C-003 | TASK-006, TASK-063-2, TASK-070 |
+| C-004 | TASK-001, TASK-003, TASK-030-3 |
+| C-005 | TASK-001, TASK-002, TASK-061 |
+| C-006 | TASK-004, TASK-033-3, TASK-060-1 |
+| C-007 | TASK-040-3, TASK-050 |
+| C-008 | TASK-003, TASK-062-1 |
+| C-009 | TASK-004, TASK-032-2, TASK-063-3 |
+| C-010 | TASK-006, TASK-070 |
+| C-011 | TASK-040-3, TASK-041 |
+| C-012 | TASK-001 |
+| C-013 | TASK-001 |

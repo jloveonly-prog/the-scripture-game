@@ -1,0 +1,16 @@
+[
+{"spiritId":"unclean_spirit","angels":[],"armor":["helmet_of_salvation"]},
+{"spiritId":"deaf_dumb_spirit","angels":[],"armor":["helmet_of_salvation"]},
+{"spiritId":"legion","angels":["cherubim"],"armor":["helmet_of_salvation"]},
+{"spiritId":"lying_spirit","angels":["seraphim"],"armor":["belt_of_truth"]},
+{"spiritId":"divination_spirit","angels":["seraphim"],"armor":["belt_of_truth"]},
+{"spiritId":"beelzebub","angels":[],"armor":["helmet_of_salvation"]},
+{"spiritId":"prince_of_the_air","angels":["seraphim"],"armor":["gospel_shoes"]},
+{"spiritId":"prince_of_persia","angels":[],"armor":["shield_of_faith","sword_of_the_spirit"]},
+{"spiritId":"abaddon","angels":[],"armor":["shield_of_faith","sword_of_the_spirit"]},
+{"spiritId":"jezebel","angels":["seraphim"],"armor":["belt_of_truth"]},
+{"spiritId":"wickedness","angels":["seraphim"],"armor":["breastplate_of_righteousness"]},
+{"spiritId":"babylon","angels":[],"armor":["helmet_of_salvation"]},
+{"spiritId":"angel_of_light","angels":["michael","seraphim"],"armor":["belt_of_truth"]},
+{"spiritId":"dragon","angels":["michael"],"armor":["helmet_of_salvation","shield_of_faith"]}
+]

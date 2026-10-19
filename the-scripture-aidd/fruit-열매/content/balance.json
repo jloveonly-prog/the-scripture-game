@@ -1,0 +1,16 @@
+{
+"attack": {"baseByLines":[0,0,1,2,4],"tspinBonusByLines":[0,1,2,3],"comboBonus":[{"minCombo":1,"maxCombo":2,"bonus":1},{"minCombo":3,"maxCombo":4,"bonus":2},{"minCombo":5,"maxCombo":99,"bonus":3}],"b2bBonus":1,"jerichoBonusPerCell":1,"holeColumnRange":[0,9]},
+"spiritGrades": {"consecutiveB2bTetris":["dragon"],"b2bTetris":["abaddon","jezebel","wickedness","babylon","angel_of_light"],"tetrisBoosted":["abaddon","jezebel","wickedness"],"tetrisBoostedComboMin":3,"tetris":["prince_of_the_air","abaddon"],"baseGradeByLines":{"2":1,"3":2},"tspinSingleBaseGrade":1,"tspinGradeBonus":1,"comboGradeBonus":{"minCombo":3,"bonus":1},"maxGrade":5,"candidatesByGrade":{"1":["unclean_spirit","deaf_dumb_spirit"],"2":["legion","lying_spirit","divination_spirit"],"3":["beelzebub","prince_of_the_air","prince_of_persia"],"4":["abaddon","jezebel","wickedness"],"5":["babylon","angel_of_light"]}},
+"faith": {"min":0,"max":100,"gainByLines":[0,5,10,15,20],"tspinBonus":5,"mannaGain":25,"quizRewardGain":50,"practiceAllows":["hero"]},
+"specials": {"word":{"minGap":7,"maxGap":12,"battleOnly":true},"jericho":{"base":0.03,"perCombo":0.02,"comboCap":6,"max":0.15,"blastSize":3},"manna":{"lowChance":0.02,"highChance":0.06,"dangerChance":0.12,"highThresholdRows":12},"armor":{"chance":0.04,"battleOnly":true},"priority":["word","jericho","manna","armor"],"stageByNextRound":[{"fromRound":1,"toRound":3,"stage":0},{"fromRound":4,"toRound":4,"stage":1},{"fromRound":5,"toRound":null,"stage":2}],"kindsByStage":{"0":[],"1":["word"],"2":["word","jericho","manna"]},"seedXor":1592639710,"rollsPerPiece":2},
+"interference": {"maxTimedMs":6000,"maxConcurrent":2,"reapplyCooldownMs":1500,"timedLimitExempt":["prince_of_persia"]},
+"quiz": {"autoIntervalMs":90000,"timeLimitMs":10000,"wrongLockMs":3000,"rewardFaith":50,"rewardArmorChance":0.5,"resultShowMs":3000,"nearMissDecimals":2},
+"gravity": {"baseCellsPerSec":1.0,"linearPerSec":0.025,"linearUntilSec":120,"accelBase":1.012,"maxCellsPerSec":20,"softDropMultiplier":20},
+"input": {"lockDelayMs":500,"lockResetsMax":15,"dasMs":150,"arrMs":33,"stateHz":12,"dangerRows":4,"nextPreviewCount":3},
+"grace": {"lossStreakMin":3,"garbageReduction":1,"faithMultiplier":1.15},
+"bots": {"easy":{"thinkMs":900,"actionIntervalMs":180,"mistakeRate":0.30,"quizAccuracy":0.45,"quizDelayMs":[5000,9000]},"normal":{"thinkMs":600,"actionIntervalMs":110,"mistakeRate":0.12,"quizAccuracy":0.65,"quizDelayMs":[3000,7000]},"hard":{"thinkMs":350,"actionIntervalMs":60,"mistakeRate":0.02,"quizAccuracy":0.85,"quizDelayMs":[1500,4500]}},
+"invite": {"length":6,"alphabet":"ABCDEFGHJKLMNPQRSTUVWXYZ23456789","ttlMs":600000,"maxReissue":5},
+"elo": {"initial":1000,"k":32,"scale":400,"floor":0},
+"match": {"bestOf":3,"winsNeeded":2,"countdownMs":3000,"roundResultMs":3000},
+"reactions": {"intervalMs":1500}
+}

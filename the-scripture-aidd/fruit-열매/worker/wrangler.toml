@@ -1,0 +1,27 @@
+# TASK-003 · REQ-016 · FR-072 · FR-073 · C-004 · C-008 · D-02 · D-04 — 로컬 wrangler dev 설정 (로그인·외부 키 불필요).
+# 운영 [env.staging]/[env.production] 블록은 C-008(실제 배포 제외)에 따라 작성하지 않는다 (architecture §4.4).
+name = "spiritual-warfare-tetris"
+main = "src/index.ts"
+compatibility_date = "2026-09-01"
+
+# D-02: Durable Object 2종 — Matchmaker(싱글턴 "global"), GameRoom(방 1개 = 인스턴스 1개)
+[[durable_objects.bindings]]
+name = "MATCHMAKER"
+class_name = "Matchmaker"
+
+[[durable_objects.bindings]]
+name = "GAME_ROOM"
+class_name = "GameRoom"
+
+# data-ark §7.1: DO SQLite 저장소 클래스 (태그 v1)
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Matchmaker", "GameRoom"]
+
+# api-gate API-005·006: WebSocket Origin 허용 목록 (운영 전환은 이 값만 바꾼다 — 코드 변경 0줄, architecture §4.4)
+[vars]
+ALLOWED_ORIGINS = "http://localhost:5173,http://127.0.0.1:5173"
+
+[dev]
+ip = "127.0.0.1"
+port = 8787

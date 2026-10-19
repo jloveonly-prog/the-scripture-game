@@ -141,6 +141,8 @@ flowchart LR
 | @playwright/test | 루트 | devDependencies | 1.53.0 | REQ-017 |
 
 > Node.js v24.18.0 / npm 11.16.0 (개발 PC 실측). npm workspaces는 npm 7+ 기본 기능이라 별도 도구가 필요 없다.
+>
+> **※ 재각 R1 (2026-10-20, Phase 4 — §15):** 개발 PC의 `D:` 드라이브(원격 데스크톱 리디렉션 `\\TSCLIENT\D`)가 디렉터리 접합(junction)·심볼릭 링크를 만들 수 없어 npm workspaces 링크가 `EISDIR`로 실패한다. 따라서 위 표의 "설치 위치" 열은 **소속 계층 표시**로만 남기고, 실제 설치는 전부 `fruit-열매/package.json` 하나(루트)에서 한다. Phase 4 잠금 버전은 `bible-성경/04.development-repentance-회개/devguide-commandment-개발계명.md` §1.2.
 
 ---
 
@@ -211,9 +213,9 @@ worker/src/store/select-store.ts
 | 항목 | 값 | 설명 |
 |:---|:---|:---|
 | 진입 명령 | `fruit-열매/`에서 `npm install && npm run dev` | 루트 `dev` 스크립트 = `node scripts/dev.mjs` |
-| `scripts/dev.mjs` | Node `child_process.spawn`으로 `npm run dev -w worker`와 `npm run dev -w client`를 함께 띄우고, 출력에 `[worker]`/`[client]` 접두어, 한쪽이 종료되면 다른 쪽도 종료. `WRANGLER_SEND_METRICS=false`로 첫 실행 질의 차단 | 추가 의존성 없음 (§3.1) |
-| worker dev | `wrangler dev --port 8787 --ip 127.0.0.1` | 로그인 불필요 로컬 런타임 |
-| client dev | `vite --port 5173 --strictPort` | 포트 충돌 시 즉시 실패 + 안내 (UC-021 E1) |
+| `scripts/dev.mjs` | Node `child_process.spawn`으로 `npm run dev -w worker`와 `npm run dev -w client`를 함께 띄우고, 출력에 `[worker]`/`[client]` 접두어, 한쪽이 종료되면 다른 쪽도 종료. `WRANGLER_SEND_METRICS=false`로 첫 실행 질의 차단 — **재각 R1(§15): 루트 스크립트 `npm run dev:worker`·`npm run dev:client`를 띄운다** | 추가 의존성 없음 (§3.1) |
+| worker dev | `wrangler dev --port 8787 --ip 127.0.0.1` — **재각 R1: 루트에서 `--config worker/wrangler.toml` 추가** | 로그인 불필요 로컬 런타임 |
+| client dev | `vite --port 5173 --strictPort` — **재각 R1: 루트에서 `--config client/vite.config.js` 추가** | 포트 충돌 시 즉시 실패 + 안내 (UC-021 E1) |
 | Vite 프록시 | `/api` → `http://127.0.0.1:8787`, `/ws` → `ws://127.0.0.1:8787` (`ws: true`) | 브라우저는 5173 한 출처만 사용 |
 | Vite 파일 접근 | `server.fs.allow`에 `fruit-열매/` 루트 포함 | `content/*.json` import 허용 (FR-074) |
 | 비밀 파일 | `worker/.dev.vars` (없으면 로컬 모드), 예시 `worker/.dev.vars.example`(빈 값) | NFR-004 |
@@ -234,7 +236,7 @@ worker/src/store/select-store.ts
 
 ### 5.2 판단 결과
 
-- **채택 구조:** npm workspaces 단일 루트(`fruit-열매/`) + A §4.5의 네 영역(`client/`, `worker/`, `content/`, `supabase/`) + 테스트·스크립트 영역(`tests/`, `scripts/`). 서버는 **HTTP 핸들러(`worker/src/http/`) / 서비스(`worker/src/room/`, `matchmaking/`, `results/`, `attack.ts`) / 데이터(`worker/src/store/`)** 분리, 클라이언트는 **화면 템플릿(`client/js/screens/`) / 엔진(`engine/`) / 조정(`battle/`) / 표현(`render/`, `fx/`, `audio/`, `ui/`) / 통신(`net/`)** 분리.
+- **채택 구조:** npm workspaces 단일 루트(`fruit-열매/`) — **재각 R1(§15): workspaces 없이 `fruit-열매/package.json` 1개가 모든 의존성·스크립트를 가진다** — + A §4.5의 네 영역(`client/`, `worker/`, `content/`, `supabase/`) + 테스트·스크립트 영역(`tests/`, `scripts/`). 서버는 **HTTP 핸들러(`worker/src/http/`) / 서비스(`worker/src/room/`, `matchmaking/`, `results/`, `attack.ts`) / 데이터(`worker/src/store/`)** 분리, 클라이언트는 **화면 템플릿(`client/js/screens/`) / 엔진(`engine/`) / 조정(`battle/`) / 표현(`render/`, `fx/`, `audio/`, `ui/`) / 통신(`net/`)** 분리.
 - **판단 근거:** 체크리스트 #1(CRUD 부분 포함 → 강제 분리), #2(화면 9개 ≥ 4), #3(HTTP·렌더링 혼재 금지), A §4.5 목표 구조(C-012), SKILL-02 줄 수 가이드(책임 2개+ 분리).
 - **A §4.5 대비 변경점 (모두 책임 분리를 위한 하위 승격, 영역 추가 없음):** `game.js` → `engine/`, `effects.js` → `fx/`, `audio.js` → `audio/`, `network.js` → `net/`, `auth.js`(Supabase 로그인) → `auth/guest-session.js`(Supabase Auth 제외 — K5), `game-room.ts` → `game-room.ts` 셸 + `room/`, `matchmaker.ts` → 셸 + `matchmaking/`, `style.css` → `styles/`. `client/assets/`(이미지·사운드)는 C-007(녹음 음원·일러스트 미사용)로 **만들지 않는다**. `unlocks` 테이블은 위인 해금 제외(C-008)로 만들지 않는다.
 - **동형(isomorphic) 모듈 결정:** 엔진의 정본 위치는 A §4.5가 지정한 클라이언트(`client/js/engine/`)이고, 서버(봇 시뮬레이션 ARCH-014, 진행 검증 보조)는 이를 **읽기 전용으로 import** 한다. 메시지 타입 이름·필드 한계 상수도 `client/js/net/protocol.js` 하나를 양쪽이 import 한다. 별도 `shared/` 영역을 만들지 않는다 (C-012 문자적 해석 — §11 #3).
@@ -244,7 +246,7 @@ worker/src/store/select-store.ts
 
 ```
 fruit-열매/
-├── package.json                # npm workspaces 루트 ["client","worker"] + dev/test/check:content/e2e/typecheck 스크립트
+├── package.json                # npm workspaces 루트 ["client","worker"] + dev/test/check:content/e2e/typecheck 스크립트 (재각 R1: workspaces 없음 — 모든 의존성·스크립트를 이 파일 하나에, §15)
 ├── package-lock.json           # Phase 4 생성·고정 (NFR-007)
 ├── .gitignore                  # node_modules, worker/.dev.vars, worker/.wrangler, dist, test-results, playwright-report, backup/
 ├── vitest.config.js            # tests/unit/** (JS·TS)
@@ -256,7 +258,7 @@ fruit-열매/
 │   ├── heroes.json  angels.json  spirits.json  armor.json  counters.json
 │   └── verses.json  quiz.json  balance.json  achievements.json
 ├── client/
-│   ├── package.json  vite.config.js  index.html
+│   ├── package.json  vite.config.js  index.html   (재각 R1: client/package.json 없음)
 │   ├── styles/                 # base.css, screens.css, overlay.css
 │   └── js/
 │       ├── main.js             # 부트스트랩·화면 라우터
@@ -271,7 +273,7 @@ fruit-열매/
 │       ├── audio/              # Tone.js 합성
 │       └── ui/                 # 퀴즈 패널·말씀 카드·리액션·토스트
 ├── worker/
-│   ├── package.json  wrangler.toml  tsconfig.json  .dev.vars.example
+│   ├── package.json  wrangler.toml  tsconfig.json  .dev.vars.example   (재각 R1: worker/package.json 없음, wrangler types 생성물 worker-configuration.d.ts 추가)
 │   └── src/
 │       ├── index.ts  env.ts  attack.ts  elo.ts  content.ts  matchmaker.ts  game-room.ts
 │       ├── http/  auth/  protocol/
@@ -639,7 +641,7 @@ sequenceDiagram
 | D-26 | 파티클 오브젝트 풀 + 프레임 단위 재사용, 연출 세기 배율 단일 모듈 | NFR-001, FR-057 | 60fps(중급 모바일) | 프레임 루프 내 객체 생성 금지 | Phase 4: particle-pool.js·fx-intensity.js |
 | D-27 | 같은 출처 프록시(Vite → wrangler) | FR-073, NFR-004 | CORS·출처 설정 없이 브라우저 2개 대전 | 운영에선 `VITE_SERVER_ORIGIN`으로 대체 | Phase 4: vite.config.js `server.proxy` |
 | D-28 | 단일 명령 = 의존성 없는 `scripts/dev.mjs` | FR-073, C-005 | 스택 밖 도구 추가 회피 | Windows·macOS·Linux 공통 `npm` 실행(셸 구문 미사용) | Phase 4: Windows PowerShell 5.1에서도 동작 확인 |
-| D-29 | npm workspaces 단일 루트 (`client`, `worker`) | FR-073, C-012 | 루트에서 `npm install` 한 번 | 루트에 lockfile 1개 | Phase 4: NFR-007 고정 |
+| D-29 | npm workspaces 단일 루트 (`client`, `worker`) — **재각 R1(§15): workspaces 없는 단일 `package.json` 루트** | FR-073, C-012 | 루트에서 `npm install` 한 번 | 루트에 lockfile 1개 | Phase 4: NFR-007 고정 |
 | D-30 | 메시지 봉투: C→S `{type, data}`, S→C `{type, success, data}` / `{type:"error", success:false, error}` | FR-008, NFR-003 | 템플릿 공통 응답 형식(Malachi 3:6)을 WS에도 적용 | 프레임 최대 4KB | Phase 4: validate.ts 단일 진입 |
 | D-31 | 빈도 제한: 종류별 토큰 버킷 (`state` 20/초, `clear` 10/초 …), 위반 3회/10초 시 연결 종료 4008 | NFR-003, FR-032 | "비정상 빈도 메시지 차단" | 정상 플레이 상한보다 여유 있게 설정 (상태 송신 12Hz) | Phase 4: rate-limit.ts |
 | D-32 | 콘텐츠 JSON 1항목 1줄 서식, `verseRef` 외래키로 구절 단일 원천 | FR-074, FR-076, C-003 | 파일 줄 수 한계 + 구절 중복 금지(정규화) | 검사 스크립트가 참조 무결성 검사 | Phase 4: check-content.mjs |
@@ -745,3 +747,24 @@ TIER-3이므로 Phase 3(질서)은 **새 세션 또는 새 서브에이전트**�
 3. `bible-성경/01.requirement-hearing-들음/` 4종 + 이 디렉토리의 정경 3종 (`architecture-temple-성전설계.md`, `data-ark-법궤.md`, `api-gate-성문.md`)
 
 Phase 3이 반드시 받아야 할 정경 결정: 화면 9개(FR-078)와 화면 파일 9개(§5.4) 1:1, 서버 거부 피드백 종류(api-gate §4 에러 코드), 연결 전환 상태(D-02·D-08), 오디오 시작 안내(D-24), 코드 생성 그래픽만 사용(D-25), 연출 세기 옵션 항목(FR-057), 봉인 제5계명 입장 고지 문구(§9).
+
+---
+
+## 15. 재각 기록 (Phase 4 — 두 번째 돌판, RTM §5 변경 이력과 1:1)
+
+> *"Hew thee two tables of stone like unto the first."* — Exodus 34:1 (KJV). 기존 본문은 지우지 않고 각 위치에 "재각 R1" 표시를 붙였다 (재각 규칙 2 — 내용 보존).
+
+### R1 (2026-10-20) — npm workspaces → 단일 package.json 루트
+
+| 항목 | 내용 |
+|:---|:---|
+| 대상 | D-29, §3.2 "설치 위치" 열, §4.6 `scripts/dev.mjs`·worker dev·client dev 행, §5.2 채택 구조, §5.3 폴더 트리(`package.json`, `client/package.json`, `worker/package.json`) |
+| 발견 | Phase 4 기반 단계(2단계 — 공통 기반 선완료) `npm install` 실행 중 |
+| 증인 1 | `npm install` 오류 로그: `EISDIR: illegal operation on a directory, symlink '...\fruit-열매\worker' -> '...\fruit-열매\node_modules\swt-worker'` (npm workspaces 링크 생성 실패, exit 28) |
+| 증인 2 | 독립 재현: Node `fs.symlinkSync(..., 'junction')`이 `C:` 임시 경로에서는 성공하고 `D:\...\fruit-열매\` 안에서는 같은 `EISDIR`로 실패. `net use` 결과 `D:` = `\\TSCLIENT\D`(원격 데스크톱 드라이브 리디렉션 — 재분석 지점(reparse point) 미지원) |
+| 변경 | `fruit-열매/package.json` 하나가 클라이언트·서버·테스트 의존성 전부와 스크립트(`dev`, `dev:worker`, `dev:client`, `build`, `build:client`, `build:worker`, `typecheck`, `types:worker`, `test`, `test:e2e`, `check:content`)를 가진다. `client/package.json`·`worker/package.json`은 만들지 않는다. Vite·wrangler는 `--config client/vite.config.js`·`--config worker/wrangler.toml`로 실행한다 (wrangler의 `main`·`.dev.vars`·`.wrangler/state`는 설정 파일 기준 경로라 `worker/` 아래에 그대로 남는다 — data-ark §1.1 물리 위치 불변) |
+| 불변 | FR-073 "`npm install && npm run dev` 한 번" · lockfile 1개(D-29 제약) · 폴더 영역(client/·worker/·content/·supabase/·tests/·scripts/ — C-012) · 포트·프록시(§4.6) · 스택(§3.1) |
+| 영향받는 하류 | Phase 4 `task-wall-성벽.md` TASK-001~003, `devguide-commandment-개발계명.md` §1·§2 |
+| 상태 | 🔄 (개정 완료 — Phase 4 정경화 때 재정경화) |
+
+R1과 함께 `worker/worker-configuration.d.ts`(`wrangler types --include-env=false` 생성물 — §3.1 "wrangler types로 Env 타입 생성"의 런타임 타입 부분)를 기반 산출물로 둔다. `Env` 인터페이스는 `worker/src/env.ts`가 직접 정의한다 (DO 클래스가 지파 작업 전에는 없으므로 생성기의 Env 출력은 쓰지 않는다).

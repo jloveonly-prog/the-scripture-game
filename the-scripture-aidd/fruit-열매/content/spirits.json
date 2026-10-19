@@ -1,0 +1,16 @@
+[
+{"id":"unclean_spirit","nameKo":"더러운 귀신","nameKjv":"unclean spirit","grade":1,"category":"vision","effect":{"kinds":["darken"],"durationMs":3000,"params":{"opacity":0.3}},"verseRef":"Mark 1:23","art":{"motif":"smoke_mass"}},
+{"id":"deaf_dumb_spirit","nameKo":"귀먹고 말 못하게 하는 귀신","nameKjv":"dumb and deaf spirit","grade":1,"category":"vision","effect":{"kinds":["muteSfx","hideNext"],"durationMs":5000,"params":{}},"verseRef":"Mark 9:25","art":{"motif":"covered_ears_mouth"}},
+{"id":"legion","nameKo":"군대","nameKjv":"Legion","grade":2,"category":"vision","effect":{"kinds":["shadowSwarm"],"durationMs":4000,"params":{"coverRatio":0.4}},"verseRef":"Mark 5:9","art":{"motif":"shadow_crowd"}},
+{"id":"lying_spirit","nameKo":"거짓말하는 영","nameKjv":"lying spirit","grade":2,"category":"deception","effect":{"kinds":["fakeNext","fakeGhost"],"durationMs":6000,"params":{}},"verseRef":"1 Kings 22:22","art":{"motif":"warped_mask"}},
+{"id":"divination_spirit","nameKo":"점치는 귀신","nameKjv":"spirit of divination","grade":2,"category":"deception","effect":{"kinds":["wrongGhost"],"durationMs":6000,"params":{"columnOffset":2}},"verseRef":"Acts 16:16","art":{"motif":"smoke_orb"}},
+{"id":"beelzebub","nameKo":"바알세불","nameKjv":"Beelzebub","grade":3,"category":"vision","effect":{"kinds":["flySwarm"],"durationMs":6000,"params":{"coverRatio":0.6}},"verseRef":"Matthew 12:24","art":{"motif":"fly_cloud"}},
+{"id":"prince_of_the_air","nameKo":"공중 권세 잡은 자","nameKjv":"prince of the power of the air","grade":3,"category":"speed","effect":{"kinds":["wind"],"durationMs":6000,"params":{"gravityMultiplier":2,"pushIntervalMs":1000}},"verseRef":"Ephesians 2:2","art":{"motif":"whirlwind_wings"}},
+{"id":"prince_of_persia","nameKo":"바사 왕국의 군주","nameKjv":"prince of Persia","grade":3,"category":"seal","effect":{"kinds":["angelSeal"],"durationMs":21000,"params":{}},"verseRef":"Daniel 10:13","art":{"motif":"crowned_shadow"}},
+{"id":"abaddon","nameKo":"아바돈/아볼루온","nameKjv":"Abaddon / Apollyon","grade":4,"category":"board","effect":{"kinds":["locustHoles"],"durationMs":0,"params":{"blocks":3}},"verseRef":"Revelation 9:11","art":{"motif":"locust_king"}},
+{"id":"jezebel","nameKo":"이세벨의 영","nameKjv":"Jezebel","grade":4,"category":"control","effect":{"kinds":["reverseLR"],"durationMs":6000,"params":{}},"verseRef":"Revelation 2:20","art":{"motif":"mirrored_woman"}},
+{"id":"wickedness","nameKo":"악 (에바 속의 여인)","nameKjv":"Wickedness","grade":4,"category":"board","effect":{"kinds":["leadRow"],"durationMs":0,"params":{"rows":1,"clearsToExpire":4}},"verseRef":"Zechariah 5:7-8","art":{"motif":"ephah_lead"}},
+{"id":"babylon","nameKo":"큰 음녀 바벨론","nameKjv":"Babylon the Great","grade":5,"category":"vision","effect":{"kinds":["drunkenWave"],"durationMs":6000,"params":{}},"verseRef":"Revelation 17:5","art":{"motif":"tilted_cup"}},
+{"id":"angel_of_light","nameKo":"광명의 천사로 가장한 사탄","nameKjv":"angel of light","grade":5,"category":"deception","effect":{"kinds":["falseAngel"],"durationMs":6000,"params":{"disguiseMs":1500,"curseKinds":["reverseLR","darken"],"curseOpacity":0.3}},"verseRef":"2 Corinthians 11:14","art":{"motif":"false_angel"}},
+{"id":"dragon","nameKo":"루시퍼/용/옛 뱀/사탄","nameKjv":"the great dragon","grade":"boss","category":"vision","effect":{"kinds":["blackout"],"durationMs":4000,"params":{"opacity":0.97,"minGarbage":6}},"verseRef":"Revelation 12:9","art":{"motif":"red_dragon"}}
+]

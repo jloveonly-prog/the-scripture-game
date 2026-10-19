@@ -1,0 +1,9 @@
+# TASK-001 · ARCH-021 · NFR-004 · C-013 — 비밀·로컬 산출물·backup 비공개
+node_modules/
+worker/.dev.vars
+worker/.wrangler/
+.wrangler/
+dist/
+test-results/
+playwright-report/
+backup/
