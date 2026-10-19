@@ -140,15 +140,15 @@
 
 | TASK-ID | 성벽 구간 | 지역 | 설명 | 연결 REQ | 연결 API/TBL/SCR | 생성 파일 | 파일 책임 | 예상 줄수 | 선행 | 규모 | 상태 | Doer | Witness | 짝 검증 결과 |
 |:---|:---|:---|:---|:---|:---|:---|:---|:---:|:---|:---:|:---:|:---:|:---:|:---:|
-| TASK-040 | [03-A] Pixi 코어·배치 | 03.땅끝 | Application 1개·zIndex 레이어 11개·rAF, 가상 해상도 2벌 letterbox·DOM 오버레이 같은 배율 | REQ-013, FR-011, FR-048, NFR-001 | ARCH-004, SCR-005, design-vision §2.8·§5.2, D3-03, D3-14 | `client/js/render/pixi-app.js`<br>`client/js/render/layout.js` | 렌더링만 | 150 · 130 | TASK-001-2, TASK-009 | S | ⬜ | D-03A | W-03A | ⬜ |
-| TASK-041 | [03-A] 블록 텍스처·보드 뷰 | 03.땅끝 | 유리 질감 블록 36장 + 특수 덮개 16장 굽기, 내/상대 보드 그리기(고스트·힌트·특수 칸·위험선·바뀐 칸만 갱신) | REQ-001, REQ-013, FR-001, FR-003, FR-006, FR-048, FR-051, FR-055 | ARCH-004, API-020, SCR-005, design-vision §2.2~§2.3·§2.11 | `client/js/render/block-textures.js`<br>`client/js/render/board-view.js` | 렌더링만 | 180 · 260 | TASK-040, TASK-010-4 | S | ⬜ | D-03A | W-03A | ⬜ |
-| TASK-042 | [03-A] 파티클·필터·자동 품질 | 03.땅끝 | 풀 600 파티클, 무거운 필터 동시 3개 관리, 프레임 시간 기반 가벼운 그리기 | REQ-013, FR-052, FR-053, FR-056, NFR-001 | ARCH-004, design-vision §2.10·§4.9, D-13 | `client/js/render/particles.js`<br>`client/js/render/filters.js`<br>`client/js/render/quality.js` | 렌더링만 | 220 · 170 · 80 | TASK-040 | M | ⬜ | D-03A | W-03A | ⬜ |
-| TASK-043 | [03-A] 시차 배경 | 03.땅끝 | 4층 시차 배경·공격 받음 붉게·위기 어둡게 | REQ-013, FR-048, FR-053, FR-055 | ARCH-004, design-vision §2.12 | `client/js/render/background.js` | 렌더링만 | 180 | TASK-040 | S | ⬜ | D-03A | W-03A | ⬜ |
-| TASK-044 | [03-A] 코드 그래픽 (전체) | 03.땅끝 | 엠블럼·천사·악한 영·갑주·예수님 빛·기호를 128 상자 좌표 데이터로, Pixi·SVG 두 출력 — 서브 3개 | REQ-003, REQ-013, FR-013, FR-049, C-007, C-011 | design-vision §2.13 | — (서브 태스크 합 — L 분할표) | — | — | TASK-040 | L | ⬜ | D-03A | W-03A | ⬜ |
-| TASK-044-1 | [03-A] 그래픽 출력기·기호 | 03.땅끝 | 그리기 명령 → Pixi Graphics(크기별 텍스처) / 인라인 SVG, 은혜 비둘기·별빛·빛 별·업적 인장·UI 아이콘 8 | REQ-013, FR-049, FR-062, FR-065, C-007 | design-vision §2.13 머리말·§2.13.6 | `client/js/art/to-pixi.js`<br>`client/js/art/to-svg.js`<br>`client/js/art/shapes-ui.js` | 렌더링만 | 90 · 70 · 170 | TASK-040 | S | ⬜ | D-03A | W-03A | ⬜ |
-| TASK-044-2 | [03-A] 위인 엠블럼·갑주 아이콘 | 03.땅끝 | 엠블럼 4종(sling·crown·rock_key·broken_chain) + 갑주 6종 아이콘 | REQ-003, REQ-009, FR-013, FR-037, FR-049 | TBL-011 `emblem`, TBL-014, design-vision §2.13.1·§2.13.4 | `client/js/art/shapes-heroes-armor.js` | 렌더링만 | 240 | TASK-044-1 | S | ⬜ | D-03A | W-03A | ⬜ |
-| TASK-044-3 | [03-A] 천사·예수님 빛·악한 영 | 03.땅끝 | 천사 5종(visual 키)·예수님 빛 실루엣(얼굴 없음)·악한 영 14종 실루엣 | REQ-007, REQ-008, REQ-010, FR-035, FR-039, FR-049, C-002, C-010, C-011 | TBL-012 `visual`, TBL-013, design-vision §2.13.2·§2.13.3·§2.13.5 | `client/js/art/shapes-angels.js`<br>`client/js/art/shapes-spirits.js` | 렌더링만 | 220 · 280 | TASK-044-1 | S | ⬜ | D-03A | W-03A | ⬜ |
-| TASK-045 | [03-A] 존재 연출 레이어 | 03.땅끝 | SpiritLayer(14종 시각 효과)·HolyLayer(빛기둥·천사·위인 스킬 빛·예수님 실루엣 — 실루엣에 닿는 그래픽 0) | REQ-007, REQ-008, REQ-010, REQ-013, FR-027~FR-030, FR-039, FR-049, FR-054, C-002, C-011 | design-vision §2.8 z60·z80, §4.6.4·§4.6.5·§4.6.8, D3-09 | `client/js/render/spirit-fx.js`<br>`client/js/render/holy-fx.js` | 렌더링만 | 260 · 240 | TASK-042, TASK-044-3 | S | ⬜ | D-03A | W-03A | ⬜ |
+| TASK-040 | [03-A] Pixi 코어·배치 | 03.땅끝 | Application 1개·zIndex 레이어 11개·rAF, 가상 해상도 2벌 letterbox·DOM 오버레이 같은 배율 | REQ-013, FR-011, FR-048, NFR-001 | ARCH-004, SCR-005, design-vision §2.8·§5.2, D3-03, D3-14 | `client/js/render/pixi-app.js`<br>`client/js/render/layout.js` | 렌더링만 | 150 · 130 | TASK-001-2, TASK-009 | S | 🔄 | D-03A | W-03A | ⬜ |
+| TASK-041 | [03-A] 블록 텍스처·보드 뷰 | 03.땅끝 | 유리 질감 블록 36장 + 특수 덮개 16장 굽기, 내/상대 보드 그리기(고스트·힌트·특수 칸·위험선·바뀐 칸만 갱신) | REQ-001, REQ-013, FR-001, FR-003, FR-006, FR-048, FR-051, FR-055 | ARCH-004, API-020, SCR-005, design-vision §2.2~§2.3·§2.11 | `client/js/render/block-textures.js`<br>`client/js/render/board-view.js`<br>`client/js/render/piece-preview.js` **[D-03A 분할]** | 렌더링만 | 180 · 260 · 80 (board-view 분할 전 실측 349) | TASK-040, TASK-010-4 | S | 🔄 | D-03A | W-03A | ⬜ |
+| TASK-042 | [03-A] 파티클·필터·자동 품질 | 03.땅끝 | 풀 600 파티클, 무거운 필터 동시 3개 관리, 프레임 시간 기반 가벼운 그리기 | REQ-013, FR-052, FR-053, FR-056, NFR-001 | ARCH-004, design-vision §2.10·§4.9, D-13 | `client/js/render/particles.js`<br>`client/js/render/filters.js`<br>`client/js/render/quality.js` | 렌더링만 | 220 · 170 · 80 | TASK-040 | M | 🔄 | D-03A | W-03A | ⬜ |
+| TASK-043 | [03-A] 시차 배경 | 03.땅끝 | 4층 시차 배경·공격 받음 붉게·위기 어둡게 | REQ-013, FR-048, FR-053, FR-055 | ARCH-004, design-vision §2.12 | `client/js/render/background.js` | 렌더링만 | 180 | TASK-040 | S | 🔄 | D-03A | W-03A | ⬜ |
+| TASK-044 | [03-A] 코드 그래픽 (전체) | 03.땅끝 | 엠블럼·천사·악한 영·갑주·예수님 빛·기호를 128 상자 좌표 데이터로, Pixi·SVG 두 출력 — 서브 3개 | REQ-003, REQ-013, FR-013, FR-049, C-007, C-011 | design-vision §2.13 | — (서브 태스크 합 — L 분할표) | — | — | TASK-040 | L | 🔄 | D-03A | W-03A | ⬜ |
+| TASK-044-1 | [03-A] 그래픽 출력기·기호 | 03.땅끝 | 그리기 명령 → Pixi Graphics(크기별 텍스처) / 인라인 SVG, 은혜 비둘기·별빛·빛 별·업적 인장·UI 아이콘 8 | REQ-013, FR-049, FR-062, FR-065, C-007 | design-vision §2.13 머리말·§2.13.6 | `client/js/art/to-pixi.js`<br>`client/js/art/to-svg.js`<br>`client/js/art/shapes-ui.js` | 렌더링만 | 90 · 70 · 170 | TASK-040 | S | 🔄 | D-03A | W-03A | ⬜ |
+| TASK-044-2 | [03-A] 위인 엠블럼·갑주 아이콘 | 03.땅끝 | 엠블럼 4종(sling·crown·rock_key·broken_chain) + 갑주 6종 아이콘 | REQ-003, REQ-009, FR-013, FR-037, FR-049 | TBL-011 `emblem`, TBL-014, design-vision §2.13.1·§2.13.4 | `client/js/art/shapes-heroes-armor.js` | 렌더링만 | 240 | TASK-044-1 | S | 🔄 | D-03A | W-03A | ⬜ |
+| TASK-044-3 | [03-A] 천사·예수님 빛·악한 영 | 03.땅끝 | 천사 5종(visual 키)·예수님 빛 실루엣(얼굴 없음)·악한 영 14종 실루엣 | REQ-007, REQ-008, REQ-010, FR-035, FR-039, FR-049, C-002, C-010, C-011 | TBL-012 `visual`, TBL-013, design-vision §2.13.2·§2.13.3·§2.13.5 | `client/js/art/shapes-angels.js`<br>`client/js/art/shapes-spirits.js` | 렌더링만 | 220 · 280 | TASK-044-1 | S | 🔄 | D-03A | W-03A | ⬜ |
+| TASK-045 | [03-A] 존재 연출 레이어 | 03.땅끝 | SpiritLayer(14종 시각 효과)·HolyLayer(빛기둥·천사·위인 스킬 빛·예수님 실루엣 — 실루엣에 닿는 그래픽 0) | REQ-007, REQ-008, REQ-010, REQ-013, FR-027~FR-030, FR-039, FR-049, FR-054, C-002, C-011 | design-vision §2.8 z60·z80, §4.6.4·§4.6.5·§4.6.8, D3-09 | `client/js/render/spirit-fx.js`<br>`client/js/render/spirit-appear.js` **[D-03A 분할]**<br>`client/js/render/holy-fx.js` | 렌더링만 | 260 · 200 · 240 (spirit-fx 분할 전 실측 423) | TASK-042, TASK-044-3 | S | 🔄 | D-03A | W-03A | ⬜ |
 | TASK-050 | [03-B] 오디오 (전체) | 03.땅끝 | Tone.js 합성 전용 — 버스·BGM 2·SFX 17·AUX 15. 서브 2개 | REQ-013, FR-058~FR-060, NFR-005, C-007 | ARCH-006, design-vision §4.7 | — (서브 태스크 합 — L 분할표) | — | — | TASK-001-2 | L | ⬜ | D-03B | W-03B | ⬜ |
 | TASK-050-1 | [03-B] 믹서·배경음악 | 03.땅끝 | 마스터/효과음/음악 버스·음소거·첫 입력 시작, 대기실 BGM-1·대전 BGM-2(위기 적응형) | REQ-013, FR-055, FR-059, FR-060, C-007 | design-vision §4.7.1·§4.7.4, D-14 | `client/js/audio/mixer.js`<br>`client/js/audio/bgm.js` | 오디오만 | 120 · 230 | TASK-001-2 | S | ⬜ | D-03B | W-03B | ⬜ |
 | TASK-050-2 | [03-B] 효과음 SFX·AUX | 03.땅끝 | SFX-01~17(FR-058 1:1)·AUX-01~15 합성 레시피·동시 발음 제한·30ms 중복 생략 | REQ-013, FR-055, FR-058, FR-061, C-007 | design-vision §4.7.2·§4.7.3·§4.8 | `client/js/audio/sfx.js`<br>`client/js/audio/aux-sfx.js` | 오디오만 | 260 · 220 | TASK-050-1 | S | ⬜ | D-03B | W-03B | ⬜ |
@@ -279,7 +279,7 @@
 | 13-1 | `worker/src/room/bot-driver.ts` | TASK-033 | 봇 엔진 구동만 — 틱 루프(1000/net.stateHz)·봇 줄 삭제 → 사람과 같은 `applyClear`·판정 결과(attack·garbage·effect) → 봇 엔진 전달 — **[W-02 2026-10-19 분할]** game-room.ts 실측 357줄 = DO 셸 + 봇 구동(두 책임) → §4.2 "300줄 넘으면 분할". handlers.ts의 `botTick`도 이리로(handlers = 수신 메시지 8종 + 공용 applyClear만) | 90 |
 | 14 | `worker/src/index.ts` | TASK-034 | 요청 경로 분기·Origin 검사·Upgrade 전달·전역 오류 응답만 + `export default { fetch }`·`export { Matchmaker, GameRoom }` | 130 |
 
-### 3.4 03.uttermost-땅끝 (63개)
+### 3.4 03.uttermost-땅끝 (65개 — #4-1·#15-1은 D-03A 300줄 분할로 추가)
 
 | # | 생성 파일 (`fruit-열매/` 기준) | TASK-ID | 단일 책임 (한 줄) | 예상 줄수 |
 |:--|:---|:---|:---|:---:|
@@ -287,6 +287,7 @@
 | 2 | `client/js/render/layout.js` | TASK-040 | 가로형 1280×720 / 세로형 720×1280 선택·배율 계산·캔버스/DOM 동기화만 | 130 |
 | 3 | `client/js/render/block-textures.js` | TASK-041 | 블록·특수 칸 텍스처 굽기만 | 180 |
 | 4 | `client/js/render/board-view.js` | TASK-041 | 보드 1개 그리기(고정 칸·활성·고스트·힌트·위험선)만 — 내/상대 공용 | 260 |
+| 4-1 | `client/js/render/piece-preview.js` | TASK-041 | 홀드·다음 블록 칸의 블록 그림(특수 칸 문양 축소 포함)만 — **[D-03A 2026-10-19 분할]** board-view.js 구현 실측 349줄 = 보드 그리기 + 미리보기 블록 그리기 두 책임 → 미리보기 분리 (SCR-005 HoldBox·NextQueue 블록 그림, 글자는 DOM) | 80 |
 | 5 | `client/js/render/particles.js` | TASK-042 | 파티클 풀·프리셋(PT-*) 방출만 | 220 |
 | 6 | `client/js/render/filters.js` | TASK-042 | pixi-filters 부착·해제·동시 3개 상한만 | 170 |
 | 7 | `client/js/render/quality.js` | TASK-042 | 프레임 시간 감시·가벼운 그리기 전환/복귀만 | 80 |
@@ -298,6 +299,7 @@
 | 13 | `client/js/art/shapes-angels.js` | TASK-044-3 | 천사 5 + 예수님 빛 실루엣 그리기 명령 데이터만 | 220 |
 | 14 | `client/js/art/shapes-spirits.js` | TASK-044-3 | 악한 영 14 실루엣 그리기 명령 데이터만 (고어·선정 없음) | 280 |
 | 15 | `client/js/render/spirit-fx.js` | TASK-045 | 악한 영 시각 효과 생성·갱신·제거만 (가림 수치는 spirits.json 그대로 — D3-09) | 260 |
+| 15-1 | `client/js/render/spirit-appear.js` | TASK-045 | 악한 영 등장 연출(실루엣·연기·비네트·사탄 변장·용 통과·메뚜기 갉음)만 — **[D-03A 2026-10-19 분할]** spirit-fx.js 구현 실측 423줄 = 등장 연출(§4.6.4 공통 등장 표·S-09·S-13·S-14 등장) + 지속 효과(S-01~S-14 효과 연출 열) 두 책임 → 등장 연출 분리 | 200 |
 | 16 | `client/js/render/holy-fx.js` | TASK-045 | 빛기둥·천사 등장·위인 스킬 빛·예수님 실루엣 그리기만 | 240 |
 | 17 | `client/js/audio/mixer.js` | TASK-050-1 | 오디오 시작·버스 음량·음소거 관리만 | 120 |
 | 18 | `client/js/audio/bgm.js` | TASK-050-1 | BGM-1·BGM-2 합성·Transport 템포·위기 층 전환만 | 230 |
@@ -347,7 +349,7 @@
 | 62 | `bible-성경/04/security-seal-봉인.md` | TASK-071 | 봉인 10계명 점검 결과 산출물만 (parable 예시 형식) | 90 |
 | 63 | `bible-성경/04/sync-fruit-열매검증.md` | TASK-072 | 9열매 동기화 검증 결과 산출물만 | 110 |
 
-> 합계 143개 = 소스·설정·테스트·문서 141개(`fruit-열매/`) + Phase 4 점검 산출물 2개(`bible-성경/04/`). `package-lock.json`은 TASK-001 Doer가 `npm install`로 **생성**(손으로 쓰지 않음 — NFR-007 고정 장치)하므로 표에 넣지 않는다. 계획에 없는 파일은 만들지 않는다(SKILL-04 2단계) — 필요해지면 먼저 이 표를 고치고 Witness 확인을 받는다.
+> 합계 143개 = 소스·설정·테스트·문서 141개(`fruit-열매/`) + Phase 4 점검 산출물 2개(`bible-성경/04/`). **[D-03A 2026-10-19]** 구현 중 300줄 분할로 추가된 파일(§3.3 #10-1·#13-1, §3.4 #4-1·#15-1)은 각 절 머리말에 기재한다. `package-lock.json`은 TASK-001 Doer가 `npm install`로 **생성**(손으로 쓰지 않음 — NFR-007 고정 장치)하므로 표에 넣지 않는다. 계획에 없는 파일은 만들지 않는다(SKILL-04 2단계) — 필요해지면 먼저 이 표를 고치고 Witness 확인을 받는다.
 > **Phase 5(광야)로 넘기는 테스트:** architecture §5.3이 나열한 나머지 테스트 — `client/test/engine-srs·engine-board·engine-bag·board-codec`, `worker/test/attack·elo·garbage·effects-cap`, HTTP 통합, `client/e2e/battle-two-browsers.spec.js` — 는 SKILL-05 1겹에서 작성한다. Phase 4는 architecture §11이 Phase 4에 지정한 테스트(D-09 specials, D-12 엔진 순수성, D-16 validate, data-ark §6.2 원장 FK)만 만든다 → `npm test`가 Phase 4 안에서 이미 실행 대상을 갖는다.
 
 ---
@@ -435,10 +437,10 @@
 
 | TASK-ID | 서브 태스크 | 설명 | 생성 파일 | 상태 |
 |:---|:---|:---|:---|:---:|
-| TASK-044 | 전체: 코드 그래픽 | 엠블럼·천사·악한 영·갑주·예수님 빛·기호를 128 상자 좌표 데이터로, Pixi·SVG 두 출력 — 서브 3개 | — | ⬜ |
-| TASK-044-1 | 그래픽 출력기·기호 | 그리기 명령 → Pixi Graphics(크기별 텍스처) / 인라인 SVG, 은혜 비둘기·별빛·빛 별·업적 인장·UI 아이콘 8 | `client/js/art/to-pixi.js` · `client/js/art/to-svg.js` · `client/js/art/shapes-ui.js` | ⬜ |
-| TASK-044-2 | 위인 엠블럼·갑주 아이콘 | 엠블럼 4종(sling·crown·rock_key·broken_chain) + 갑주 6종 아이콘 | `client/js/art/shapes-heroes-armor.js` | ⬜ |
-| TASK-044-3 | 천사·예수님 빛·악한 영 | 천사 5종(visual 키)·예수님 빛 실루엣(얼굴 없음)·악한 영 14종 실루엣 | `client/js/art/shapes-angels.js` · `client/js/art/shapes-spirits.js` | ⬜ |
+| TASK-044 | 전체: 코드 그래픽 | 엠블럼·천사·악한 영·갑주·예수님 빛·기호를 128 상자 좌표 데이터로, Pixi·SVG 두 출력 — 서브 3개 | — | 🔄 |
+| TASK-044-1 | 그래픽 출력기·기호 | 그리기 명령 → Pixi Graphics(크기별 텍스처) / 인라인 SVG, 은혜 비둘기·별빛·빛 별·업적 인장·UI 아이콘 8 | `client/js/art/to-pixi.js` · `client/js/art/to-svg.js` · `client/js/art/shapes-ui.js` | 🔄 |
+| TASK-044-2 | 위인 엠블럼·갑주 아이콘 | 엠블럼 4종(sling·crown·rock_key·broken_chain) + 갑주 6종 아이콘 | `client/js/art/shapes-heroes-armor.js` | 🔄 |
+| TASK-044-3 | 천사·예수님 빛·악한 영 | 천사 5종(visual 키)·예수님 빛 실루엣(얼굴 없음)·악한 영 14종 실루엣 | `client/js/art/shapes-angels.js` · `client/js/art/shapes-spirits.js` | 🔄 |
 
 ### TASK-050 서브 태스크 (L 규모 분할)
 
@@ -695,7 +697,7 @@ graph LR
 | 00.예루살렘 | 14 | 13 | 32 | 0 | 0 | 0 | 14 | 0 | D-00 / W-00 |
 | 01.유대 | 20 | 17 | 35 | 0 | 0 | 0 | 20 | 0 | D-01 / W-01 |
 | 02.사마리아 | 5 | 5 | 16 | 0 | 0 | 0 | 5 | 0 | D-02 / W-02 |
-| 03.땅끝 — 03-A 렌더 코어 | 9 | 8 | 16 | 9 | 0 | 0 | 0 | 0 | D-03A / W-03A |
+| 03.땅끝 — 03-A 렌더 코어 | 9 | 8 | 18 | 0 | 9 | 0 | 0 | 0 | D-03A / W-03A |
 | 03.땅끝 — 03-B 오디오·타격감 | 8 | 6 | 15 | 8 | 0 | 0 | 0 | 0 | D-03B / W-03B |
 | 03.땅끝 — 03-C 화면·HUD·네트워크 | 16 | 12 | 29 | 16 | 0 | 0 | 0 | 0 | D-03C / W-03C |
 | 03.땅끝 — 03-D 봉인·실행 | 3 | 3 | 3 | 3 | 0 | 0 | 0 | 0 | D-03D / W-03D |
@@ -703,7 +705,7 @@ graph LR
 
 | 항목 | 값 |
 |:---|:---|
-| 현재 지역 | 00.jerusalem-예루살렘 **완료** — D-00 구현 · W-00 짝 검증 2026-10-19: 14행 ✅ / 짝 검증 ✅ (즉시 정화 루프 기록: `fruit-열매/history/2026-10-19.md`). RTM §5 DCL-001 승인 · DCL-002(TBL-018 rateLimit 수치 3개) 추가, 서신 4통 재생성(생성 기준 = DCL-002). 다음: 01.judaea-유대 D-01·W-01 — 인계물 = 언약책 + SKILL-04 + 01 서신 **[D-01 갱신 2026-10-19]** 01.judaea-유대 Doer 구현 완료 — 20행 ⬜→🔄 (W-01 짝 검증 대기, ✅는 Witness 판정 후). RTM §5 DCL-003(TBL-018 gravity.accelAfterMs·ledger 수치 6개) 🔄 W-01 확정 대기 → 서신 01·02·03 재생성 필요 **[W-01 갱신 2026-10-19]** 01.judaea-유대 **완료** — W-01 짝 검증: 20행 ✅ / 짝 검증 ✅ (즉시 정화 루프 기록: `fruit-열매/history/2026-10-19.md`). RTM §5 DCL-003 승인 · DCL-004(착지 평가 = 엔진 `placement.js` + TBL-018 `placement.weights`) 추가, 서신 01·02·03 재생성(생성 기준 = DCL-004). 다음: 02.samaria-사마리아 D-02·W-02 — 인계물 = 언약책 + SKILL-04 + 02 서신 **[D-02 갱신 2026-10-19]** 02.samaria-사마리아 Doer 구현 완료 — 5행 ⬜→🔄 (W-02 짝 검증 대기, ✅는 Witness 판정 후). RTM §5 DCL-005(TBL-018 `net.joinTimeoutMs`·`net.readyTimeoutMs`) 🔄 W-02 확정 대기 → 서신 02·03 재생성 필요. 파일 1개 분할 추가(`lobby/lobby-flow.ts`, §3.3 #10-1) **[W-02 갱신 2026-10-19]** 02.samaria-사마리아 **완료** — W-02 짝 검증: 5행 🔄→✅ / 짝 검증 ✅. 즉시 정화(1회차 해소) 4건: ① 거부된 `clear`가 콤보·b2b 기억을 바꿔 다음 위조 clear가 통과하던 결함 ② FR-032 초당 검사가 `state` 없는 봇의 정직한 진행을 거부(봇이 줄을 모아 지우면 모든 clear 거부) → 경과 시간 비율로 정정 ③ `/ws/room/%..` 디코딩 예외 500 → 404 ④ 청크 본문 상한 스트리밍 검사·종료 시 미인증 소켓 정리. game-room 분할(`room/bot-driver.ts`, §3.3 #13-1). RTM §5 DCL-005 승인, DCL-006(봇 난이도 수치 — 어려움 봇 공격 설계) 추가·승인. 서신 02·03 재생성(생성 기준 DCL-006). 다음: 03.uttermost-땅끝 03-A D-03A·W-03A |
+| 현재 지역 | 00.jerusalem-예루살렘 **완료** — D-00 구현 · W-00 짝 검증 2026-10-19: 14행 ✅ / 짝 검증 ✅ (즉시 정화 루프 기록: `fruit-열매/history/2026-10-19.md`). RTM §5 DCL-001 승인 · DCL-002(TBL-018 rateLimit 수치 3개) 추가, 서신 4통 재생성(생성 기준 = DCL-002). 다음: 01.judaea-유대 D-01·W-01 — 인계물 = 언약책 + SKILL-04 + 01 서신 **[D-01 갱신 2026-10-19]** 01.judaea-유대 Doer 구현 완료 — 20행 ⬜→🔄 (W-01 짝 검증 대기, ✅는 Witness 판정 후). RTM §5 DCL-003(TBL-018 gravity.accelAfterMs·ledger 수치 6개) 🔄 W-01 확정 대기 → 서신 01·02·03 재생성 필요 **[W-01 갱신 2026-10-19]** 01.judaea-유대 **완료** — W-01 짝 검증: 20행 ✅ / 짝 검증 ✅ (즉시 정화 루프 기록: `fruit-열매/history/2026-10-19.md`). RTM §5 DCL-003 승인 · DCL-004(착지 평가 = 엔진 `placement.js` + TBL-018 `placement.weights`) 추가, 서신 01·02·03 재생성(생성 기준 = DCL-004). 다음: 02.samaria-사마리아 D-02·W-02 — 인계물 = 언약책 + SKILL-04 + 02 서신 **[D-02 갱신 2026-10-19]** 02.samaria-사마리아 Doer 구현 완료 — 5행 ⬜→🔄 (W-02 짝 검증 대기, ✅는 Witness 판정 후). RTM §5 DCL-005(TBL-018 `net.joinTimeoutMs`·`net.readyTimeoutMs`) 🔄 W-02 확정 대기 → 서신 02·03 재생성 필요. 파일 1개 분할 추가(`lobby/lobby-flow.ts`, §3.3 #10-1) **[W-02 갱신 2026-10-19]** 02.samaria-사마리아 **완료** — W-02 짝 검증: 5행 🔄→✅ / 짝 검증 ✅. 즉시 정화(1회차 해소) 4건: ① 거부된 `clear`가 콤보·b2b 기억을 바꿔 다음 위조 clear가 통과하던 결함 ② FR-032 초당 검사가 `state` 없는 봇의 정직한 진행을 거부(봇이 줄을 모아 지우면 모든 clear 거부) → 경과 시간 비율로 정정 ③ `/ws/room/%..` 디코딩 예외 500 → 404 ④ 청크 본문 상한 스트리밍 검사·종료 시 미인증 소켓 정리. game-room 분할(`room/bot-driver.ts`, §3.3 #13-1). RTM §5 DCL-005 승인, DCL-006(봇 난이도 수치 — 어려움 봇 공격 설계) 추가·승인. 서신 02·03 재생성(생성 기준 DCL-006). 다음: 03.uttermost-땅끝 03-A D-03A·W-03A **[D-03A 갱신 2026-10-19]** 03.uttermost-땅끝 03-A 렌더 코어 Doer 구현 완료 — 9행 ⬜→🔄 (W-03A 짝 검증 대기, ✅는 Witness 판정 후). RTM §5 DCL-007(렌더 구조 6건 — 파티클 컨테이너 2개·PT-mote 소유·v8 동적 속성·흔들림 루트에서 HolyLayer 분리·보드 단위 컨테이너·GodrayFilter angle 의미) 🔄 W-03A 확정 대기 → 서신 03 재생성 필요. 300줄 분할 2개 추가(`render/piece-preview.js` §3.4 #4-1, `render/spirit-appear.js` #15-1). 다음: W-03A |
 | 즉시 정화 루프 기록 위치 | `fruit-열매/history/YYYY-MM-DD.md` (Witness 발견 → Doer 수정, 지역 안 2회 초과 시 SKILL-05 회개 루프) |
 | RTM 태스크 연결 | `rtm-covenant-언약추적.md` §8 (116 ID → TASK-ID) — 코드 모듈 열은 TASK-072에서 채움 |
 

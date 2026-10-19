@@ -195,6 +195,8 @@
 | 80 | HolyLayer | 빛기둥·천사·위인 스킬 빛·예수님 실루엣 (투사체보다 위 — 실루엣에 어떤 공격도 닿지 않게 그려짐, C-002) |
 | 90 | ScreenFxLayer | 비네트·전체 화면 섬광 |
 
+> **[추가 2026-10-19 — RTM §5 DCL-007] 스테이지 구조:** 레터박스(배율·원점, §5.2) → [흔들림 루트 `screenRoot` = z0~z70 레이어 (SHK "화면" 대상·§4.6.8 밝기 필터 대상), HolyLayer(z80), ScreenFxLayer(z90)]. HolyLayer는 흔들림 루트 밖이라 화면 흔들림·밝기 필터가 예수님 실루엣에 닿지 않는다(C-002). z10~z40은 **보드마다 컨테이너 1개**(SHK "보드"·보드 필터 대상) 안의 하위 레이어(zIndex 10·20·25·30·40)로 둔다 — 보드끼리 겹치지 않으므로 그리기 순서는 위 표와 같다.
+
 **DOM 오버레이 (`z-index`):** 캔버스 0 · HUD 100 · 콜아웃 글자 200 · 자막 250 · 퀴즈 모달 300 · 옵션·일시정지·확인 모달 400 · 토스트 500 · 오디오 시작 안내 600 · 세로 회전 안내 700 · 화면 전환 장막 800.
 
 ### 2.9 모션 토큰 (GSAP 3.15)
@@ -250,7 +252,7 @@
 | FL-3 | 0.6 | 40ms / 260ms | 보드 + 주변 (금빛 #E8B84A) |
 | FL-4 | 0.85 | 80ms / 900ms | 화면 전체 (흰빛 #FFF8E7) |
 
-**파티클 (PT)** — 모두 `ParticleContainer` 한 개의 풀(최대 600개)에서 꺼낸다. 풀이 차면 우선순위가 낮은 것부터 회수: ① 게임 정보 파티클(악한 영 가림 — 파리 떼·그림자 떼·메뚜기) ② 삭제 파편 ③ 장식(먼지·불꽃·깃털·배경 빛 입자). 감소 모드: ②③ 개수 ×0.5, ①은 개수 유지(D3-09)·움직임 속도 ×0.5.
+**파티클 (PT)** — 모두 `ParticleContainer` 한 개의 풀(최대 600개)에서 꺼낸다. **[추가 2026-10-19 — RTM §5 DCL-007]** 풀은 ParticleLayer(z50) 안의 일반 혼합·가산 혼합(PT-spark) `ParticleContainer` 2개가 함께 쓰며 상한 600(가벼운 그리기 300)은 둘의 합이다(Pixi v8 blendMode는 컨테이너 단위). PT-mote(P1·P4, 무한 순환)는 BackgroundLayer 전용 컨테이너가 소유하고 풀에 세지 않는다. 풀이 차면 우선순위가 낮은 것부터 회수: ① 게임 정보 파티클(악한 영 가림 — 파리 떼·그림자 떼·메뚜기) ② 삭제 파편 ③ 장식(먼지·불꽃·깃털·배경 빛 입자). 감소 모드: ②③ 개수 ×0.5, ①은 개수 유지(D3-09)·움직임 속도 ×0.5.
 
 | 토큰 | 개수 | 수명 | 속도 | 크기 | 기타 |
 |:---|:---:|:---:|:---|:---|:---|
@@ -1133,7 +1135,7 @@ flowchart LR
 | 시간 | 시각 | 모션 | 소리 |
 |:---|:---|:---|:---|
 | 0 ~ 300ms | 스테이지(HolyLayer 제외) `AdjustmentFilter` brightness 1→0.25 | 300ms `power2.inOut` | 배경음악 −18dB 300ms 램프 / AUX-07 시작 (a 1.0s) |
-| 300 ~ 900ms | 화면 위 가운데에서 한 줄기 빛: 폭 220 세로 빛기둥 + `GodrayFilter`(angle 90 아래 방향, gain 0.6, lacunarity 2.5, parallel true, alpha 0.8) — HolyLayer만 / §2.13.5 빛 실루엣이 내 보드 가운데 위에 투명도 0→0.55 | 600ms `power2.out` | |
+| 300 ~ 900ms | 화면 위 가운데에서 한 줄기 빛: 폭 220 세로 빛기둥 + `GodrayFilter`(angle 90 아래 방향, gain 0.6, lacunarity 2.5, parallel true, alpha 0.8) — HolyLayer만 **[추가 2026-10-19 — RTM §5 DCL-007 ⑥]** pixi-filters 6.1.5의 angle은 0 = 세로·90 = 가로 빛살이므로 "아래 방향"은 angle 0으로 구현 / §2.13.5 빛 실루엣이 내 보드 가운데 위에 투명도 0→0.55 | 600ms `power2.out` | |
 | 900 ~ 1,600ms | 빛 띠(높이 48, #FFF8E7 0.8)가 보드 위→아래로 훑음: 지나간 자리의 어둠 덮개·악한 영 칩·필터·납 블록이 빛 입자로 녹아 사라지고, 쓰레기 줄 절반(`params.garbageRemoveRatio` 0.5, 내림)이 위로 빛 입자(PT-flake 24/줄)가 되어 올라감 | 띠 700ms `none` / 줄 소멸 60ms 간격 | |
 | 900 ~ 3,300ms | DOM 자막(z 250, 내 보드 위쪽이 아닌 가운데 통로·상단 바 아래 넓은 영역 — 보드 칸을 가리지 않음): ① *"be of good cheer; I have overcome the world."* — John 16:33 (Cinzel 26px #FFF8E7) + 직접 번역(type.verse-ko 22px) ② *"And the light shineth in darkness; and the darkness comprehended it not."* — John 1:5 (18px) + 번역. 글은 verses.json | 줄마다 투명도 0→1 400ms, 600ms 간격 | |
 | 3,300 ~ 3,900ms | 실루엣·빛기둥 소멸, 밝기 1.0 복귀 | 600ms `power2.inOut` | 배경음악 1,500ms에 걸쳐 원래 음량 |
@@ -1314,7 +1316,7 @@ flowchart LR
 | Pixi Application | 1개 (D-13), `resolution = min(devicePixelRatio, 2)`, `antialias: true`, 배경 투명 아님(#07060D), `autoDensity: true` |
 | 블록 텍스처 | 시작 시 36장 + 특수 덮개 16장 굽기 (§2.11) — 블록당 실시간 필터 0개 |
 | 동시 필터 | 무거운 필터(Shockwave·AdvancedBloom·Blur·Displacement·Godray·RGBSplit) 동시 3개까지. 넘으면 가장 오래된 장식용 필터 먼저 해제 (게임 정보용 — S-12 흐림 — 은 해제하지 않음) |
-| 파티클 | 풀 600 (D-13), `ParticleContainer` 동적 속성 position·rotation·alpha |
+| 파티클 | 풀 600 (D-13), `ParticleContainer` 동적 속성 position·rotation·alpha **[추가 2026-10-19 — RTM §5 DCL-007]** v8 이름으로 position·rotation·color(alpha)·vertex(크기 — PT-smoke 1→1.6)·uvs(풀 재사용 시 프리셋 텍스처 교체), 텍스처는 시작 시 구운 아틀라스 1장 |
 | DOM 오버레이 | 트윈은 `transform`·`opacity`만 (레이아웃 재계산 없음), 콜아웃·자막 요소는 미리 만들어 재사용 |
 | 자동 품질 조절 | 프레임 시간이 20ms를 넘는 프레임이 60프레임 연속이면 "가벼운 그리기": 파티클 풀 300, Bloom 끔, Glow는 구운 텍스처만, 배경 P4 정지. 30초 동안 16.7ms 이하가 유지되면 복귀 (옵션이 아닌 내부 동작 — NFR-001 측정 기준 유지 장치) |
 | 상대 보드 | `opponentState` 수신(초당 12회) 때만 다시 그림 — 칸 스프라이트 200개 재사용, 바뀐 칸만 텍스처 교체 |

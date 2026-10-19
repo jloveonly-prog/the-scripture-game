@@ -135,8 +135,10 @@ fruit-열매/
 │   │   │   ├── holy-fx.js                   # TASK-045 ~240
 │   │   │   ├── layout.js                    # TASK-040 ~130
 │   │   │   ├── particles.js                 # TASK-042 ~220
+│   │   │   ├── piece-preview.js             # TASK-041 ~80 (D-03A 분할 — L-17)
 │   │   │   ├── pixi-app.js                  # TASK-040 ~150
 │   │   │   ├── quality.js                   # TASK-042 ~80
+│   │   │   ├── spirit-appear.js             # TASK-045 ~200 (D-03A 분할 — L-18)
 │   │   │   └── spirit-fx.js                 # TASK-045 ~260
 │   │   ├── screens/
 │   │   │   ├── battle-hud.js                # TASK-066 ~260
@@ -273,6 +275,8 @@ fruit-열매/
 | L-14 | 원장 단위 테스트용 SqlStorage 모사 | `worker/test/helpers/sql-storage-fake.ts` | ARCH-018 | task-wall A-04 — 테스트 전용, 런타임 번들에 포함되지 않음 |
 | L-15 | 로비 흐름을 Matchmaker DO 셸·원장 RPC 파사드에서 분리 (D-02 2026-10-19 — matchmaker.ts 실측 401줄) | `lobby/lobby-flow.ts` | ARCH-010 | task-wall §4.2 "300줄 넘으면 분할" + L-02와 같은 근거(Matchmaker 셸에는 소켓 분기·RPC만). cloudflare:workers 비의존 |
 | L-16 | 봇 구동(틱 루프·봇 줄 삭제 → 공용 applyClear·판정 결과 → 봇 엔진)을 GameRoom DO 셸·수신 핸들러에서 분리 (W-02 2026-10-19 — game-room.ts 실측 357줄) | `room/bot-driver.ts` | ARCH-011, ARCH-013 | task-wall §4.2 "300줄 넘으면 분할" + L-01과 같은 근거(DO 셸에는 소켓·타이머·config만). cloudflare:workers 비의존 |
+| L-17 | 홀드·다음 블록 칸의 블록 그림을 보드 뷰에서 분리 (D-03A 2026-10-19 — board-view.js 실측 349줄) | `render/piece-preview.js` | ARCH-004 | task-wall §4.2 "300줄 넘으면 분할" — 보드 1개 그리기(고정 칸·활성·고스트·힌트·위험선)와 미리보기 블록 그리기는 다른 책임(SCR-005 MyBoard ↔ HoldBox·NextQueue) |
+| L-18 | 악한 영 등장 연출(실루엣·연기·비네트·사탄 변장·용 통과·메뚜기)을 지속 효과에서 분리 (D-03A 2026-10-19 — spirit-fx.js 실측 423줄) | `render/spirit-appear.js` | ARCH-004 | task-wall §4.2 "300줄 넘으면 분할" — design-vision §4.6.4가 "공통 등장 연출" 표와 "효과 연출(지속 동안)" 열을 따로 정의(등장 1.2초 일회성 ↔ curseView 동기화 지속) |
 
 > 위 14건 모두 **기능 추가가 아니라 책임 분할**이다. 새 화면·새 메시지·새 테이블·새 수치는 0개 (P4-002).
 
@@ -394,7 +398,7 @@ export async function postGuests(request: Request, env: Env): Promise<Response> 
 | Matchmaker `worker/src/matchmaker.ts`, `lobby/` | REQ-004~REQ-006 | ARCH-010 | TASK-032 | 02 | ✅ | ✅ |
 | GameRoom `worker/src/game-room.ts`, `room/handlers.ts`, `room/outbox.ts`, `room/bot-driver.ts` | REQ-001, REQ-005, REQ-007~REQ-011 | ARCH-011 | TASK-033 | 02 | ✅ | ✅ |
 | Worker 진입 `worker/src/index.ts` | REQ-016 | ARCH-009 | TASK-034 | 02 | ✅ | ✅ |
-| 렌더 `client/js/render/`, `client/js/art/` | REQ-013 | ARCH-004 | TASK-040~TASK-045 | 03-A | ⬜ | ⬜ |
+| 렌더 `client/js/render/`, `client/js/art/` | REQ-013 | ARCH-004 | TASK-040~TASK-045 | 03-A | 🔄 | ⬜ |
 | 오디오 `client/js/audio/` | REQ-013 | ARCH-006 | TASK-050-1, TASK-050-2 | 03-B | ⬜ | ⬜ |
 | 연출 `client/js/fx/` | REQ-011, REQ-013 | ARCH-005 | TASK-051-1~TASK-053 | 03-B | ⬜ | ⬜ |
 | 셸·스타일·라우터 (`index.html`, `style.css`, `styles/`, `main.js`, `screens/shell.js`, `store/session.js`) | REQ-013, FR-078 | ARCH-001 | TASK-060-1, TASK-060-2, TASK-061 | 03-C | ⬜ | ⬜ |
