@@ -378,12 +378,12 @@ export async function postGuests(request: Request, env: Env): Promise<Response> 
 | 원장 `worker/src/storage/`, `supabase/migrations/` | REQ-014, REQ-015, REQ-016 | ARCH-014 | TASK-002~TASK-004 | 00 | ✅ | ✅ |
 | 콘텐츠 `content/*.json` 8종 | REQ-003, REQ-007~REQ-012 | ARCH-016 | TASK-005~TASK-008 | 00 | ✅ | ✅ |
 | 콘텐츠 색인·검사 (`check-content.mjs`, `content.js`, `content.ts`) | REQ-016, REQ-017 | ARCH-016 | TASK-009 | 00 | ✅ | ✅ |
-| 엔진 `client/js/engine/` | REQ-001, REQ-009, REQ-012 | ARCH-002 | TASK-010-1~TASK-010-4 | 01 | ⬜ | ⬜ |
-| 클라이언트 보드 효과 `client/js/game/apply-*.js`, `board-codec.js` | REQ-003, REQ-007~REQ-010 | ARCH-003 | TASK-011 | 01 | ⬜ | ⬜ |
-| 공격 판정 `worker/src/attack.ts` | REQ-007 | ARCH-012 | TASK-012 | 01 | ⬜ | ⬜ |
-| 방 판정 `worker/src/room/*` (handlers·outbox 제외) | REQ-001, REQ-003, REQ-006~REQ-012 | ARCH-011 | TASK-013~TASK-018 | 01 | ⬜ | ⬜ |
-| AI 봇 `worker/src/bot/` | REQ-005 | ARCH-013 | TASK-019 | 01 | ⬜ | ⬜ |
-| 원장 서비스 `worker/src/services/` | REQ-002, REQ-013~REQ-015 | ARCH-014 | TASK-020-1~TASK-020-3 | 01 | ⬜ | ⬜ |
+| 엔진 `client/js/engine/` | REQ-001, REQ-009, REQ-012 | ARCH-002 | TASK-010-1~TASK-010-4 | 01 | 🔄 | ⬜ |
+| 클라이언트 보드 효과 `client/js/game/apply-*.js`, `board-codec.js` | REQ-003, REQ-007~REQ-010 | ARCH-003 | TASK-011 | 01 | 🔄 | ⬜ |
+| 공격 판정 `worker/src/attack.ts` | REQ-007 | ARCH-012 | TASK-012 | 01 | 🔄 | ⬜ |
+| 방 판정 `worker/src/room/*` (handlers·outbox 제외) | REQ-001, REQ-003, REQ-006~REQ-012 | ARCH-011 | TASK-013~TASK-018 | 01 | 🔄 | ⬜ |
+| AI 봇 `worker/src/bot/` | REQ-005 | ARCH-013 | TASK-019 | 01 | 🔄 | ⬜ |
+| 원장 서비스 `worker/src/services/` | REQ-002, REQ-013~REQ-015 | ARCH-014 | TASK-020-1~TASK-020-3 | 01 | 🔄 | ⬜ |
 | 프로토콜 `worker/src/protocol/` | REQ-001, REQ-007, NFR-003 | ARCH-015 | TASK-030 | 02 | ⬜ | ⬜ |
 | REST `worker/src/routes/` | REQ-002, REQ-014, REQ-015 | ARCH-009 | TASK-031 | 02 | ⬜ | ⬜ |
 | Matchmaker `worker/src/matchmaker.ts`, `lobby/` | REQ-004~REQ-006 | ARCH-010 | TASK-032 | 02 | ⬜ | ⬜ |

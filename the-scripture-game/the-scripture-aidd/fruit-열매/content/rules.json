@@ -19,6 +19,7 @@
   "gravity": {
     "startMs": 1000,
     "at120sMs": 500,
+    "accelAfterMs": 120000,
     "accelEveryMs": 15000,
     "accelFactor": 0.85,
     "minMs": 80
@@ -147,6 +148,13 @@
   },
   "progressCheck": {
     "maxPiecesPerSecond": 10
+  },
+  "ledger": {
+    "tokenCacheSize": 1000,
+    "leaderboardCacheMs": 5000,
+    "leaderboardTop": 100,
+    "historyPageDefault": 20,
+    "historyPageMax": 50
   },
   "reactions": [
     { "id": "amen", "emoji": "🙏", "label_ko": "아멘" },

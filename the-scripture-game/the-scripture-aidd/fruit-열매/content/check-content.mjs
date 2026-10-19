@@ -32,7 +32,7 @@ const REQUIRED_VERSES = [
 const RULE_KEYS = [
   "board.width", "board.height", "board.dangerRows", "board.preview", "board.previewSolomon", "board.previewGabriel",
   "net.stateHz", "engine.lockDelayMs", "engine.dasMs", "engine.arrMs", "engine.softDropMultiplier",
-  "gravity.startMs", "gravity.at120sMs", "gravity.accelEveryMs", "gravity.accelFactor", "gravity.minMs",
+  "gravity.startMs", "gravity.at120sMs", "gravity.accelAfterMs", "gravity.accelEveryMs", "gravity.accelFactor", "gravity.minMs",
   "scoring.lines", "scoring.tspin", "scoring.b2bMultiplier", "scoring.comboPer", "scoring.softDropPerCell", "scoring.hardDropPerCell",
   "attack.lines", "attack.tspinBonus", "attack.comboBonus", "attack.b2bBonus", "attack.jerichoBonus",
   "spiritTier.byLines", "spiritTier.tetrisPool", "spiritTier.tierUpTspin", "spiritTier.tierUpComboFrom",
@@ -52,6 +52,8 @@ const RULE_KEYS = [
   "rateLimit.state", "rateLimit.clear", "rateLimit.skill", "rateLimit.armor", "rateLimit.answer", "rateLimit.reaction",
   "rateLimit.total", "rateLimit.maxMessageBytes", "rateLimit.totalViolationMs", "rateLimit.guestCreate", "rateLimit.maxRestBodyBytes",
   "progressCheck.maxPiecesPerSecond", "reactions",
+  // 원장 서비스 수치 + 가속 시작 시점 (data-ark TBL-018 추가 2026-10-19 — RTM §5 DCL-003)
+  "ledger.tokenCacheSize", "ledger.leaderboardCacheMs", "ledger.leaderboardTop", "ledger.historyPageDefault", "ledger.historyPageMax",
   "achievements.goliath_hunter", "verseCard", "victoryVerse",
 ];
 // C-010: KJV 본문에 근거 없는 존재 (req.md §3.4 주석)
