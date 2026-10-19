@@ -1,0 +1,35 @@
+<!doctype html>
+<!-- index.html — 앱 루트·캔버스/HUD/오버레이 컨테이너·메타만
+     TASK-060-1 | REQ-013 FR-048 FR-050 FR-078 | design-vision §2.8 DOM z·§6.1 3.1.1·§6.4 | screen-vision 공통 셸 -->
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#07060D" />
+    <meta name="description" content="KJV 영적 전쟁 테트리스 — 실시간 2인 대전" />
+    <title>영적 전쟁 테트리스 — Spiritual Warfare Tetris</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <!-- 공통 셸: 메뉴 배경(DOM) — SCR-005는 Pixi 배경 -->
+    <div id="backdrop" class="backdrop" aria-hidden="true"></div>
+    <!-- 메뉴 화면 9개 중 SCR-005 외 화면이 그려지는 자리 -->
+    <div id="screen" class="screen-root"></div>
+    <!-- SCR-005 대전: Pixi 캔버스 1개 + 가상 해상도 DOM 오버레이(HUD·콜아웃·자막·모달) -->
+    <div id="battle" class="battle-layer" hidden>
+      <div id="stage" class="stage-mount"></div>
+      <div id="overlay" class="ov"></div>
+    </div>
+    <!-- 승리 콘페티·업적 콘페티 (결과 화면에서도 보이도록 대전 층 밖) -->
+    <div id="confetti" class="confetti-host"></div>
+    <!-- 최상위: 토스트(최대 2개)·오디오 시작 안내·세로 회전 안내·장막 -->
+    <div id="toasts" class="toast-host" role="status" aria-live="polite"></div>
+    <div id="audio-toast" class="audio-toast" hidden>🔈 소리를 켜려면 화면을 누르세요</div>
+    <div id="veil" class="veil" aria-hidden="true"></div>
+    <!-- §6.4 스크린리더 알림 영역 2개 -->
+    <div id="live-polite" class="sr-only" aria-live="polite"></div>
+    <div id="live-assertive" class="sr-only" aria-live="assertive" role="alert"></div>
+    <noscript>이 게임은 JavaScript가 필요합니다.</noscript>
+    <script type="module" src="./js/main.js"></script>
+  </body>
+</html>

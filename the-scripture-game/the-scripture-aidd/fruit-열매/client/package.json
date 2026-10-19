@@ -5,7 +5,8 @@
   "description": "Vite 클라이언트 (TASK-001-2 | REQ-016 FR-073 C-005 | ARCH-017)",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 5173 --strictPort"
+    "dev": "vite --port 5173 --strictPort",
+    "build": "vite build"
   },
   "dependencies": {
     "@fontsource/cinzel": "5.3.0",

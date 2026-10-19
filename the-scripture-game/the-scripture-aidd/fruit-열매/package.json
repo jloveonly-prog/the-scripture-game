@@ -16,7 +16,8 @@
     "dev": "concurrently -k -n client,worker \"npm run dev -w client\" \"npm run dev -w worker\"",
     "test": "vitest run",
     "check:content": "node content/check-content.mjs",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "build": "npm run build -w client"
   },
   "devDependencies": {
     "@playwright/test": "1.56.1",

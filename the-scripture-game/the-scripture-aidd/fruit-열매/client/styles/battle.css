@@ -1,0 +1,268 @@
+/* battle.css — SCR-005 HUD·덧씌움 레이아웃·감소 모드 스타일만
+   TASK-060-2 | REQ-013 FR-011 FR-048 FR-057 | design-vision §3.5.1~§3.5.5·§4.4·§5.2·§6.3 | screen-vision §4 SCR-005
+   좌표는 가상 px(§3.5 좌표표 원문) — 오버레이 루트(.ov)가 layout.js의 transform: scale(배율)로 캔버스와 맞춰진다.
+   data-layout: lv 가로·대전 / lp 가로·연습 / pv 세로·대전 / pp 세로·연습, data-touch: 터치 기기 */
+
+.battle-layer { position: fixed; inset: 0; overflow: hidden; background: var(--c-abyss); touch-action: none; }
+.battle-layer .stage-mount { position: absolute; inset: 0; }
+.confetti-host { position: fixed; inset: 0; pointer-events: none; z-index: 650; }
+.ov { position: absolute; left: 0; top: 0; pointer-events: none; font-family: var(--font-ko); color: var(--c-text); }
+.ov .hud {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--w);
+  height: var(--h);
+  z-index: var(--z-hud);
+}
+.ov .hud.live { pointer-events: auto; }
+.ov .lbl { font: 400 14px/1.2 var(--font-ko); color: var(--c-text-2); }
+.ov .num { font: 700 22px/1 var(--font-en); font-variant-numeric: tabular-nums; }
+
+/* ── 가로형 1280×720 대전 (§3.5.1 좌표표) ── */
+.ov[data-layout="lv"] .hud-top { --x: 0px; --y: 0px; --w: 1280px; --h: 56px; }
+.ov[data-layout="lv"] .hud-hold { --x: 24px; --y: 72px; --w: 240px; --h: 96px; }
+.ov[data-layout="lv"] .hud-skill { --x: 24px; --y: 180px; --w: 240px; --h: 88px; }
+.ov[data-layout="lv"] .hud-angels { --x: 24px; --y: 280px; --w: 240px; --h: 128px; }
+.ov[data-layout="lv"] .hud-armor { --x: 24px; --y: 420px; --w: 240px; --h: 124px; }
+.ov[data-layout="lv"] .hud-chips { --x: 24px; --y: 556px; --w: 240px; --h: 64px; }
+.ov[data-layout="lv"] .hud-ready { --x: 24px; --y: 628px; --w: 240px; --h: 40px; }
+.ov[data-layout="lv"] .hud-gauge { --x: 272px; --y: 84px; --w: 16px; --h: 600px; }
+.ov[data-layout="lv"] .hud-pending { --x: 602px; --y: 84px; --w: 12px; --h: 600px; }
+.ov[data-layout="lv"] .hud-next { --x: 626px; --y: 84px; --w: 100px; --h: 412px; }
+.ov[data-layout="lv"] .hud-stats { --x: 626px; --y: 520px; --w: 100px; --h: 164px; }
+.ov[data-layout="lv"] .hud-react { --x: 778px; --y: 520px; --w: 56px; --h: 184px; }
+.ov[data-layout="lv"] .hud-opp-head { --x: 886px; --y: 72px; --w: 370px; --h: 56px; }
+.ov[data-layout="lv"] .hud-opp-hold { --x: 890px; --y: 140px; --w: 50px; --h: 50px; }
+.ov[data-layout="lv"] .hud-opp-stats { --x: 890px; --y: 200px; --w: 50px; --h: 100px; }
+.ov[data-layout="lv"] .hud-opp-pending { --x: 1172px; --y: 140px; --w: 8px; --h: 440px; }
+.ov[data-layout="lv"] .hud-opp-chips { --x: 946px; --y: 592px; --w: 220px; --h: 56px; }
+.ov[data-layout="lv"] .gesture-board { --x: 296px; --y: 84px; --w: 300px; --h: 600px; }
+/* §5.2 터치 가로형: 천사·갑주 버튼 높이 56(천사 +8, 갑주 +12), 칩·준비 표시 20px 아래 */
+.ov[data-layout="lv"][data-touch] .hud-angels { --h: 136px; }
+.ov[data-layout="lv"][data-touch] .hud-armor { --y: 428px; --h: 136px; }
+.ov[data-layout="lv"][data-touch] .hud-chips { --y: 576px; }
+.ov[data-layout="lv"][data-touch] .hud-ready { --y: 648px; }
+
+/* ── 가로형 연습 (§3.5.4) ── */
+.ov[data-layout="lp"] .hud-top { --x: 0px; --y: 0px; --w: 1280px; --h: 56px; }
+.ov[data-layout="lp"] .hud-hold { --x: 370px; --y: 84px; --w: 96px; --h: 80px; }
+.ov[data-layout="lp"] .hud-skill { --x: 250px; --y: 180px; --w: 216px; --h: 88px; }
+.ov[data-layout="lp"] .hud-gauge { --x: 466px; --y: 84px; --w: 16px; --h: 600px; }
+.ov[data-layout="lp"] .hud-next { --x: 800px; --y: 84px; --w: 100px; --h: 412px; }
+.ov[data-layout="lp"] .hud-record { --x: 920px; --y: 84px; --w: 300px; --h: 260px; }
+.ov[data-layout="lp"] .hud-chips { --x: 250px; --y: 556px; --w: 216px; --h: 64px; }
+.ov[data-layout="lp"] .hud-ready { --x: 250px; --y: 628px; --w: 216px; --h: 40px; }
+.ov[data-layout="lp"] .gesture-board { --x: 490px; --y: 84px; --w: 300px; --h: 600px; }
+
+/* ── 세로형 720×1280 대전 (§3.5.2 좌표표) ── */
+.ov[data-layout="pv"] .hud-top { --x: 0px; --y: 0px; --w: 720px; --h: 88px; }
+.ov[data-layout="pv"] .hud-hold { --x: 16px; --y: 96px; --w: 96px; --h: 80px; }
+.ov[data-layout="pv"] .hud-gauge { --x: 116px; --y: 96px; --w: 12px; --h: 640px; }
+.ov[data-layout="pv"] .hud-pending { --x: 460px; --y: 96px; --w: 10px; --h: 640px; }
+.ov[data-layout="pv"] .hud-next { --x: 480px; --y: 96px; --w: 80px; --h: 336px; }
+.ov[data-layout="pv"] .hud-opp-pending { --x: 706px; --y: 96px; --w: 6px; --h: 240px; }
+.ov[data-layout="pv"] .hud-opp-head { --x: 576px; --y: 344px; --w: 136px; --h: 56px; }
+.ov[data-layout="pv"] .hud-opp-chips { --x: 576px; --y: 408px; --w: 136px; --h: 48px; }
+.ov[data-layout="pv"] .hud-stats { --x: 480px; --y: 470px; --w: 232px; --h: 120px; }
+.ov[data-layout="pv"] .hud-chips { --x: 16px; --y: 744px; --w: 440px; --h: 48px; }
+.ov[data-layout="pv"] .hud-ready { --x: 464px; --y: 744px; --w: 248px; --h: 48px; }
+.ov[data-layout="pv"] .hud-skill { --x: 16px; --y: 800px; --w: 152px; --h: 176px; }
+.ov[data-layout="pv"] .hud-angels { --x: 176px; --y: 800px; --w: 532px; --h: 84px; }
+.ov[data-layout="pv"] .hud-armor { --x: 176px; --y: 892px; --w: 528px; --h: 84px; }
+.ov[data-layout="pv"] .gesture-pad { --x: 16px; --y: 992px; --w: 584px; --h: 272px; }
+.ov[data-layout="pv"] .hud-react { --x: 616px; --y: 992px; --w: 84px; --h: 268px; }
+.ov[data-layout="pv"] .gesture-board { --x: 136px; --y: 96px; --w: 320px; --h: 640px; }
+
+/* ── 세로형 연습 (§3.5.4 세로형) ── */
+.ov[data-layout="pp"] .hud-top { --x: 0px; --y: 0px; --w: 720px; --h: 88px; }
+.ov[data-layout="pp"] .hud-hold { --x: 16px; --y: 96px; --w: 96px; --h: 80px; }
+.ov[data-layout="pp"] .hud-gauge { --x: 116px; --y: 96px; --w: 12px; --h: 640px; }
+.ov[data-layout="pp"] .hud-next { --x: 480px; --y: 96px; --w: 80px; --h: 336px; }
+.ov[data-layout="pp"] .hud-record { --x: 480px; --y: 440px; --w: 232px; --h: 240px; }
+.ov[data-layout="pp"] .hud-chips { --x: 16px; --y: 744px; --w: 440px; --h: 48px; }
+.ov[data-layout="pp"] .hud-ready { --x: 464px; --y: 744px; --w: 248px; --h: 48px; }
+.ov[data-layout="pp"] .hud-skill { --x: 16px; --y: 800px; --w: 688px; --h: 120px; }
+.ov[data-layout="pp"] .gesture-pad { --x: 16px; --y: 936px; --w: 688px; --h: 328px; }
+.ov[data-layout="pp"] .gesture-board { --x: 136px; --y: 96px; --w: 320px; --h: 640px; }
+/* 연습: 받을 공격·천사·갑주·리액션·상대 영역 없음 (§3.5.4) */
+.ov[data-layout="lp"] .versus-only, .ov[data-layout="pp"] .versus-only { display: none; }
+.ov[data-layout="lv"] .practice-only, .ov[data-layout="pv"] .practice-only { display: none; }
+.ov[data-layout^="l"] .portrait-only { display: none; }
+.ov[data-layout^="p"] .portrait-hide { display: none; }
+
+/* 상단 바 */
+.hud-top { display: flex; align-items: center; gap: 16px; padding: 0 24px; background: linear-gradient(180deg,
+  rgba(7, 6, 13, 0.85), rgba(7, 6, 13, 0)); }
+.hud-top .mb-mode { font: 700 18px/1.2 var(--font-ko); color: var(--c-text-2); flex: 1; white-space: nowrap; }
+.hud-top .mb-time { font: 700 22px/1 var(--font-en); font-variant-numeric: tabular-nums; flex: none; }
+.hud-top .mb-opp { flex: 1; text-align: right; color: var(--c-text-2); }
+.wins i { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-left: 4px;
+  border: 1px solid var(--c-gold-500); vertical-align: middle; }
+.wins i.on { background: var(--c-gold-500); box-shadow: var(--glow-gold-sm); }
+.hud-top .mb-menu { pointer-events: auto; width: 40px; height: 40px; border-radius: 50%;
+border: 1px solid var(--c-line);
+  background: rgba(22, 18, 38, 0.8); color: var(--c-gold-300); display: grid; place-items: center; cursor: pointer; }
+.ov[data-touch] .hud-top .mb-menu, .ov[data-layout^="p"] .hud-top .mb-menu { width: 56px; height: 56px; }
+.ov[data-layout^="p"] .hud-top .mb-menu { width: 84px; height: 84px; }
+.ov[data-layout^="p"] .hud-top { padding: 0 4px 0 16px; }
+
+/* 상자 테두리 (홀드·다음·기록) — 블록 그림은 Pixi */
+.box { border: 1px solid var(--c-line); border-radius: var(--r-lg); background: rgba(22, 18, 38, 0.55); }
+.box > .lbl { position: absolute; left: 8px; top: 4px; font: 700 12px/1.2 var(--font-en); letter-spacing: 0.08em; }
+.hud-hold.is-locked { opacity: 0.4; }
+
+/* HUD 행동 버튼 (§4.4 상태 그림) */
+.act {
+  position: relative; pointer-events: auto; display: flex; align-items: center; justify-content: center; gap: 6px;
+  border: 1px solid var(--c-line); border-radius: var(--r-md); background: rgba(22, 18, 38, 0.85); color: var(--c-text);
+  cursor: pointer; padding: 2px 4px; font: 400 12px/1.2 var(--font-ko); touch-action: none; user-select: none;
+  transition: transform var(--dur-instant);
+}
+.act:active { transform: scale(0.94); }
+.act .key { position: absolute; right: 2px; bottom: 2px; }
+.act .cost { color: var(--c-gold-300); font: 700 12px/1 var(--font-en); }
+.act.is-ready { border: 2px solid var(--c-gold-500); animation: ready-pulse 1.6s ease-in-out infinite; }
+@keyframes ready-pulse { 50% { box-shadow: var(--glow-gold-md); } }
+.act.is-low .icon { opacity: 0.55; }
+.act.is-low .cost { color: var(--c-text-3); }
+.act .wipe { position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: conic-gradient(rgba(7, 6, 13, 0.65) var(--cd, 0%), transparent 0); }
+.act .cd { position: absolute; inset: 0; display: grid; place-items: center; font: 700 18px/1 var(--font-en);
+  color: var(--c-text); text-shadow: 0 0 4px #000; pointer-events: none; }
+.act.is-sealed { filter: saturate(0); }
+.act.is-sealed .seal { display: grid; }
+.act .seal { display: none; position: absolute; inset: 0; place-items: center; background: rgba(7, 6, 13, 0.55);
+  border-radius: inherit; color: var(--c-text); }
+.act.is-missing { opacity: 0.25; }
+.act .count { position: absolute; right: 2px; top: 2px; font: 700 12px/1 var(--font-en); color: var(--c-gold-300); }
+.hud-skill .act {
+  width: 100%;
+  height: 100%;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 8px 12px;
+  text-align: left;
+}
+.hud-skill .act .txt { display: grid; gap: 4px; }
+.hud-skill .act .nm { font: 700 16px/1.2 var(--font-ko); }
+.ov[data-layout^="p"] .hud-skill .act { flex-direction: column; justify-content: center; text-align: center; }
+.ov[data-layout="pp"] .hud-skill .act { flex-direction: row; }
+.grp { display: flex; flex-wrap: wrap; gap: 6px; align-content: flex-start; }
+.grp > .lbl { width: 100%; height: 16px; font-size: 12px; }
+.ov[data-layout="lv"] .hud-angels .act, .ov[data-layout="lv"] .hud-armor .act { width: 76px; height: 50px; }
+.ov[data-layout="lv"] .hud-angels .act { height: 52px; }
+.ov[data-layout="lv"][data-touch] .hud-angels .act, .ov[data-layout="lv"][data-touch] .hud-armor .act { height: 56px; }
+.ov[data-layout="pv"] .grp > .lbl { display: none; }
+.ov[data-layout="pv"] .hud-angels { gap: 8px; }
+.ov[data-layout="pv"] .hud-angels .act { width: 100px; height: 84px; flex-direction: column; }
+.ov[data-layout="pv"] .hud-armor .act { width: 82px; height: 84px; flex-direction: column; }
+.act .nm-s { font-size: 11px; line-height: 1.1; text-align: center; white-space: nowrap; }
+.ov[data-layout="lv"] .grp .act { flex-direction: column; gap: 1px; padding-top: 4px; }
+.ov[data-layout="lv"] .grp .act .icon svg { width: 22px; height: 22px; }
+.ov[data-layout="lv"] .grp .act .cost { position: absolute; left: 4px; top: 3px; font-size: 11px; }
+.ov[data-layout="lv"] .act .nm-s { font-size: 10px; }
+
+/* 믿음 게이지 · 받을 공격 막대 (아래→위) */
+.bar-v { background: rgba(10, 8, 20, 0.9); border: 1px solid var(--c-line); border-radius: 3px; overflow: hidden; }
+.bar-v .fill { position: absolute; left: 0; right: 0; bottom: 0; height: 0; transform-origin: 50% 100%; }
+.hud-gauge .fill { background: var(--g-gold); transition: height 300ms var(--ease-out); }
+.hud-gauge .tick { position: absolute; left: -3px; right: -3px; height: 2px; background: var(--c-gold-300); }
+.hud-gauge.is-low { animation: gauge-low 200ms linear 1; border-color: var(--c-danger-text); }
+@keyframes gauge-low { 25% { translate: -3px 0; } 75% { translate: 3px 0; } }
+.hud-pending .fill, .hud-opp-pending .fill {
+  background: repeating-linear-gradient(0deg, #e5484d 0 calc(var(--cell) - 2px), #2a0a14 0 var(--cell));
+  transition: height 200ms var(--ease-out);
+}
+.hud-pending .sweep { position: absolute; left: 0; right: 0; height: 2px; background: #fff; opacity: 0; }
+
+/* 점수·줄·콤보 · 개인 기록 */
+.hud-stats, .hud-record { display: grid; align-content: start; gap: 6px; padding: 8px; }
+.hud-stats .row, .hud-record .row { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
+.ov[data-layout="lv"] .hud-stats { display: flex; flex-direction: column; }
+.ov[data-layout="lv"] .hud-stats .row { flex-direction: column; align-items: flex-start; gap: 2px; }
+.hud-record h3 { font: 700 16px/1.3 var(--font-ko); color: var(--c-gold-300); }
+.hud-opp-stats { font: 400 14px/1.3 var(--font-ko); display: grid; gap: 4px; color: var(--c-text-2); }
+.hud-opp-stats b { font: 700 14px/1 var(--font-en); color: var(--c-text); }
+
+/* 걸린 효과 칩 (§4.4, 최대 2) */
+.chips { display: grid; gap: 6px; align-content: start; }
+.ov[data-layout^="p"] .hud-chips { grid-auto-flow: column; grid-auto-columns: 1fr; }
+.chip { position: relative; height: 28px; border-radius: var(--r-sm); background: var(--c-evil); color: var(--c-text);
+  display: flex; align-items: center; justify-content: space-between; padding: 0 8px; font: 700 13px/1 var(--font-ko);
+  overflow: hidden; }
+.chip .t { font: 700 12px/1 var(--font-en); font-variant-numeric: tabular-nums; }
+.chip .left { position: absolute; left: 0; bottom: 0; height: 3px; background: var(--c-holy); opacity: 0.8; }
+.hud-ready { display: flex; align-items: center; gap: 8px; color: var(--c-gold-300); }
+
+/* 상대 머리글 */
+.hud-opp-head { display: flex; align-items: center; gap: 10px; padding: 4px 10px; }
+.hud-opp-head .nm { font: 700 18px/1.2 var(--font-ko); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hud-opp-head .rt { font: 400 14px/1 var(--font-en); color: var(--c-text-2); }
+.ov[data-layout="pv"] .hud-opp-head { padding: 2px 4px; gap: 6px; }
+.ov[data-layout="pv"] .hud-opp-head .nm { font-size: 14px; }
+
+/* 리액션 버튼 3 (금 원형 테두리) */
+.hud-react { display: flex; flex-direction: column; gap: 8px; }
+.hud-react .act { width: 56px; height: 56px; border-radius: 50%; border: 2px solid var(--c-gold-500); font-size: 26px; }
+.ov[data-layout="pv"] .hud-react .act { width: 84px; height: 84px; font-size: 38px; }
+
+/* 제스처 영역 (§4.3 touch-action: none) */
+.gesture { pointer-events: auto; touch-action: none; }
+.gesture-pad { border: 1px dashed rgba(58, 48, 88, 0.8); border-radius: var(--r-lg); display: grid; place-items: center;
+  text-align: center; padding: 12px; color: var(--c-text-3); font: 400 15px/1.7 var(--font-ko); }
+.gesture-pad .guide { opacity: 0.35; transition: opacity 600ms; }
+.gesture-pad.is-faded .guide { opacity: 0.15; }
+.ov[data-touch] .gesture-pad .keys, .ov:not([data-touch]) .gesture-pad .guide:not(.keys) { display: none; }
+.ov:not([data-touch]) .gesture-board { pointer-events: none; }
+.prep { position: absolute; left: 0; right: 0; top: 45%; text-align: center; font: 700 22px/1.4 var(--font-ko);
+  color: var(--c-text-2); z-index: var(--z-hud); }
+
+/* 덧씌움 (§3.5.5) — 모달은 가상 px 좌표 */
+.ov-modal { position: absolute; inset: 0; pointer-events: auto; background: rgba(7, 6, 13, 0.7);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.ov-box { position: absolute; background: var(--c-deep); border: 1px solid var(--c-line); border-radius: var(--r-xl);
+  box-shadow: var(--shadow-modal); padding: 24px; display: grid; gap: 16px; align-content: start; overflow: auto; }
+.ov-box h2 { font: 700 28px/1.3 var(--font-ko); text-align: center; }
+.ov-quiz { z-index: var(--z-quiz); }
+.ov-menu { z-index: var(--z-modal); }
+.ov[data-layout^="l"] .ov-quiz .ov-box { left: 300px; top: 140px; width: 680px; height: 440px; }
+.ov[data-layout^="p"] .ov-quiz .ov-box { left: 20px; top: 280px; width: 680px; height: 720px; }
+.ov[data-layout^="l"] .ov-menu .ov-box { left: 360px; top: 100px; width: 560px; max-height: 520px; }
+.ov[data-layout^="p"] .ov-menu .ov-box { left: 20px; top: 190px; width: 680px; max-height: 900px; }
+.quiz-head { display: flex; justify-content: space-between; align-items: center; color: var(--c-text-2); }
+.quiz-timer { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center;
+  font: 700 22px/1 var(--font-en); background: conic-gradient(var(--c-gold-500) var(--t, 100%), var(--c-line) 0); }
+.quiz-timer span {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--c-deep);
+  display: grid;
+  place-items: center;
+}
+.quiz-q { font: 400 18px/1.6 var(--font-ko); }
+.quiz-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.ov[data-layout^="p"] .quiz-choices { grid-template-columns: 1fr; }
+.quiz-choices .btn { min-height: 64px; justify-content: flex-start; text-align: left; }
+.ov[data-layout^="p"] .quiz-choices .btn { min-height: 72px; }
+.quiz-choices .btn.is-correct { border-color: var(--c-grace); color: var(--c-grace); }
+.quiz-choices .btn.is-wrong { border-color: var(--c-danger-text); color: var(--c-danger-text); }
+.lockbar, .resumebar { height: 8px; border-radius: 4px; background: var(--c-line); overflow: hidden; }
+.lockbar i, .resumebar i {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: var(--c-gold-500);
+  transform-origin: 0 50%;
+}
+.lockbar i { background: var(--c-danger-text); }
+.quiz-result { display: grid; gap: 10px; text-align: center; }
+.menu-list { display: grid; gap: 12px; }
+.rotate-prompt { position: fixed; inset: 0; z-index: var(--z-rotate); background: rgba(7, 6, 13, 0.92); display: grid;
+  place-items: center; text-align: center; gap: 16px; font: var(--t-h3); color: var(--c-text); align-content: center; }
+.fatal { z-index: var(--z-modal); }
+
+/* §6.3 감소 모드 — 맥동·떨림 정지 (가림 정도와 무관) */
+.ov[data-reduced] .act.is-ready { animation: none; box-shadow: var(--glow-gold-md); }
+.ov[data-reduced] .hud-gauge .fill, .ov[data-reduced] .bar-v .fill { transition-duration: 0ms; }

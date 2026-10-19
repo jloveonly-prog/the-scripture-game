@@ -1,0 +1,6 @@
+/* style.css — 스타일 진입점 — styles/*.css @import만
+   TASK-060-1 | REQ-013 FR-048 FR-050 | design-vision §2 | screen-vision 공통 셸 */
+@import "./styles/tokens.css";
+@import "./styles/components.css";
+@import "./styles/screens.css";
+@import "./styles/battle.css";

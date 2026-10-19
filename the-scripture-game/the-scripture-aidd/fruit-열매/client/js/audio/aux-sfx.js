@@ -16,7 +16,7 @@ const HEART_MS = { normal: 900, severe: 650 };
 export function createAuxSfx(mixer) {
   /** @type {any} */ let I = null;
   /** @type {Record<string, number>} */ const last = {};
-  const heart = { on: false, severe: false, clock: /** @type {any} */ (null) };
+  const heart = { on: false, severe: false, last: 0, clock: /** @type {any} */ (null) };
 
   function build() {
     if (I) return true;
@@ -172,7 +172,17 @@ export function createAuxSfx(mixer) {
       try {
         heart.on = !!on;
         heart.severe = !!severe;
-        if (!heart.clock) heart.clock = new Tone.Clock((time) => PLAY["AUX-01"](time, {}, 1), 1000 / HEART_MS.normal);
+        // [D-03C 2026-10-19] 시계를 멈췄다 다시 켜면(위기 진입·해제 반복) 직전 박(t+0.14)보다 이른 시각이 올 수 있다 —
+        // Tone 단음 악기는 시작 시각 역전을 assert하므로 직전 박 이후로 미룬다
+        if (!heart.clock) heart.clock = new Tone.Clock((time) => {
+          const t = Math.max(time, heart.last + 0.16);
+          heart.last = t;
+          try {
+            PLAY["AUX-01"](t, {}, 1);
+          } catch {
+            heart.last = Tone.now() + 0.2; // 시각 역전(assert) — 이 박만 건너뛰고 다음 박을 뒤로
+          }
+        }, 1000 / HEART_MS.normal);
         heart.clock.frequency.value = 1000 / (heart.severe ? HEART_MS.severe : HEART_MS.normal);
         if (heart.on && heart.clock.state !== "started") heart.clock.start();
         if (!heart.on && heart.clock.state === "started") heart.clock.stop();

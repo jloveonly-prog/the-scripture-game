@@ -1,0 +1,273 @@
+/* screens.css — SCR-001~004·006~009 레이아웃·브레이크포인트 스타일만
+   TASK-060-2 | REQ-013 FR-048 FR-057 FR-078 | design-vision §3.1~§3.4·§3.6~§3.9·§5.1·§5.3 | screen-vision §4 */
+
+/* 공통 셸: 메뉴 배경 (ParallaxBackdrop — CSS P0 하늘 + 빛 입자) */
+.backdrop { position: fixed; inset: 0; z-index: -1; background: var(--g-sky); overflow: hidden; }
+.backdrop::before, .backdrop::after {
+  content: ""; position: absolute; inset: -10%;
+  background-image: radial-gradient(1.5px 1.5px at 12% 22%, rgba(255, 248, 231, 0.6), transparent 60%),
+    radial-gradient(1px 1px at 68% 14%, rgba(255, 248, 231, 0.5), transparent 60%),
+    radial-gradient(2px 2px at 42% 72%, rgba(255, 248, 231, 0.35), transparent 60%),
+    radial-gradient(1px 1px at 86% 58%, rgba(255, 248, 231, 0.5), transparent 60%),
+    radial-gradient(1.5px 1.5px at 25% 88%, rgba(255, 248, 231, 0.4), transparent 60%);
+  animation: drift 40s linear infinite;
+}
+.backdrop::after {
+  inset: 0; animation: none;
+  background: radial-gradient(ellipse 120% 40% at 50% 0%, rgba(42, 32, 80, 0.55), transparent 70%),
+    radial-gradient(ellipse 80% 30% at 20% 60%, rgba(42, 32, 80, 0.35), transparent 70%);
+}
+@keyframes drift { to { transform: translateY(-8%); } }
+@media (prefers-reduced-motion: reduce) { .backdrop::before { animation: none; } }
+
+/* 메뉴 화면 그리드 §2.7 / §5.1 */
+.screen-root { min-height: 100vh; min-height: 100dvh; }
+.scr { width: 100%; max-width: 1120px; margin: 0 auto; padding: var(--s-7) var(--s-7) var(--s-8); }
+@media (max-width: 1023px) { .scr { padding: var(--s-6) var(--s-6) var(--s-8); } }
+@media (max-width: 767px) { .scr { padding: var(--s-4) var(--s-4) calc(96px + env(safe-area-inset-bottom)); } }
+.scr h1 { font: var(--t-h1); }
+.scr h1:focus { outline: none; }
+@media (max-width: 767px) {
+  .scr h1 { font-size: 2rem; }
+  .scr h2 { font-size: 1.5rem; }
+  .bar .bar-side { min-width: 0; }
+  .bar .mode-summary { display: none; }
+  .bar h1 { font-size: 1.375rem; }
+}
+.bar { display: flex; align-items: center; gap: var(--s-4); margin-bottom: var(--s-5); min-height: 48px; }
+.bar h1 { flex: 1; text-align: center; font: var(--t-h2); }
+.bar .bar-side { min-width: 120px; display: flex; gap: var(--s-2); justify-content: flex-end; }
+.bar .bar-side:first-child { justify-content: flex-start; }
+
+/* SCR-001 입장 (WF-001) */
+.scr-entry { display: grid; justify-items: center; gap: var(--s-5); padding-top: 8vh; text-align: center; }
+.title-en { font: 700 1.25rem/1.2 var(--font-en); letter-spacing: 0.08em; color: var(--c-gold-300); }
+.scr-entry h1 { font-size: 3rem; text-shadow: var(--glow-gold-sm); }
+.divider { color: var(--c-gold-500); display: flex; align-items: center; gap: var(--s-3); width: min(480px, 90%); }
+.divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--c-gold-700); }
+.entry-card { width: min(480px, 100%); text-align: left; display: grid; gap: var(--s-2); }
+.entry-card label { font: var(--t-h3); }
+.entry-card .btn { margin-top: var(--s-3); }
+.boot { display: grid; justify-items: center; gap: var(--s-4); padding: var(--s-6); color: var(--c-text-2); }
+@media (max-width: 767px) {
+  .scr-entry { padding-top: var(--s-5); gap: var(--s-4); }
+  .scr-entry h1 { font-size: 2rem; }
+  .scr-entry .verse .v-en, .scr-entry .verse .v-ko { font-size: 1rem; }
+}
+
+/* SCR-002 로비 (WF-002) */
+.topbar { display: flex; align-items: center; gap: var(--s-3); min-height: 64px; margin-bottom: var(--s-5); }
+.profile-chip { display: flex; align-items: center; gap: var(--s-2); font: var(--t-h3); flex: 1; min-width: 0; }
+.profile-chip .rating { font: var(--t-caption); color: var(--c-text-2); }
+.profile-chip .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.greeting p { color: var(--c-text-2); margin-top: var(--s-1); }
+.mode-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-5); margin: var(--s-5) 0; }
+.mode-card {
+  display: flex; flex-direction: column; gap: var(--s-3); min-height: 300px; padding: var(--s-5);
+  background: var(--c-panel); border: 1px solid var(--c-line); border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--dur-base) var(--ease-out), border-color var(--dur-base);
+}
+@media (hover: hover) { .mode-card:hover { border-color: var(--c-gold-700); transform: translateY(-2px); } }
+.mode-card:focus-within { border-color: var(--c-gold-500); }
+.mode-card h2 { font: var(--t-h3); color: var(--c-gold-300); }
+.mode-card p { color: var(--c-text-2); font: var(--t-caption); }
+.mode-card .grow { flex: 1; }
+.mode-card .btn { width: 100%; }
+.mode-card .segment { width: 100%; }
+.mode-card .segment button { flex: 1; min-width: 0; padding: 0 var(--s-2); }
+.verse-band { margin-top: var(--s-6); padding-top: var(--s-5); border-top: 1px solid var(--c-line); }
+.bottom-bar { display: none; }
+@media (max-width: 1023px) { .mode-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 767px) {
+  .mode-grid { grid-template-columns: 1fr; gap: var(--s-3); }
+  .mode-card { min-height: 0; }
+  .topbar .nav-wide { display: none; }
+  .verse-band { display: none; }
+  .bottom-bar {
+    display: flex; gap: var(--s-3); position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+    padding: var(--s-2) var(--s-4) calc(var(--s-2) + env(safe-area-inset-bottom)); min-height: 64px;
+    background: rgba(14, 11, 26, 0.95); border-top: 1px solid var(--c-line);
+  }
+  .bottom-bar .btn { flex: 1; }
+}
+
+/* SCR-003 위인 선택 (WF-003) */
+.mode-summary { font: var(--t-caption); color: var(--c-text-2); }
+.hero-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-4); }
+.hero-card {
+  display: flex; flex-direction: column; align-items: center; gap: var(--s-2); text-align: center; min-height: 440px;
+  padding: var(--s-4); background: var(--c-panel); border: 1px solid var(--c-line); border-radius: var(--r-lg);
+  cursor: pointer; opacity: 0.85;
+  transition: opacity var(--dur-base), border-color var(--dur-base), box-shadow var(--dur-base);
+}
+@media (hover: hover) { .hero-card:hover { opacity: 1; } }
+.hero-grid.has-choice .hero-card { opacity: 0.7; }
+.hero-card[aria-checked="true"] {
+  opacity: 1 !important; border: 2px solid var(--c-gold-500); box-shadow: var(--glow-gold-md);
+}
+.hero-card .emblem { transition: transform var(--dur-base) var(--ease-out); }
+.hero-card[aria-checked="true"] .emblem { transform: scale(1.08); }
+.hero-card .names { font: var(--t-h3); }
+.hero-card .names span { display: block; font: 700 0.875rem/1.2 var(--font-en); color: var(--c-text-2); }
+.hero-card .skill-label { font: var(--t-micro); color: var(--c-gold-500); letter-spacing: 0.08em; }
+.hero-card .skill-name { font: var(--t-h3); color: var(--c-gold-300); }
+.hero-card .effect, .hero-card .passive { font: var(--t-caption); color: var(--c-text-2); }
+.hero-card .cost { font: var(--t-caption); color: var(--c-text); }
+.hero-card .verse .v-en { font-size: 0.8125rem; }
+.hero-card .verse .v-ko { font-size: 0.8125rem; }
+.hero-detail { display: none; }
+.hero-card .mobile-only { display: none; }
+.hero-footer { display: flex; justify-content: flex-end; align-items: center; gap: var(--s-4); margin-top: var(--s-5); }
+.hero-footer .hint { color: var(--c-text-3); font: var(--t-caption); }
+@media (max-width: 1023px) { .hero-grid { grid-template-columns: repeat(2, 1fr); } .hero-card { min-height: 0; } }
+@media (max-width: 767px) {
+  .hero-card { min-height: 0; aspect-ratio: 1 / 1; justify-content: center; padding: var(--s-2); }
+  .hero-card .detail-only { display: none; }
+  .hero-card .mobile-only { display: block; font-size: 0.9375rem; }
+  .hero-card .emblem { width: 72px; height: 72px; }
+  .hero-detail {
+    display: block; max-height: 60vh; overflow: auto; margin-top: var(--s-4); padding: var(--s-4);
+    background: var(--c-elevated); border-radius: var(--r-lg);
+  }
+  .hero-footer {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; margin: 0; background: rgba(14, 11, 26, 0.95);
+    padding: var(--s-2) var(--s-4) calc(var(--s-2) + env(safe-area-inset-bottom));
+  }
+  .hero-footer .btn { flex: 1; }
+  .hero-footer .hint { display: none; }
+}
+
+/* SCR-004 대기 (WF-004 a~e) — 가운데 정렬, 최대 폭 560 */
+.scr-waiting { display: grid; place-items: center; min-height: 80vh; }
+.wait-box { width: min(560px, 100%); display: grid; justify-items: center; gap: var(--s-4); text-align: center; }
+.wait-box .status { font: var(--t-h3); }
+.wait-box .elapsed { font: var(--t-number-hud); color: var(--c-gold-300); font-variant-numeric: tabular-nums; }
+.my-badge { display: flex; align-items: center; gap: var(--s-2); color: var(--c-text-2); }
+.code-cells { display: flex; gap: var(--s-2); justify-content: center; }
+.code-cell {
+  width: 64px; height: 80px; display: grid; place-items: center; border-radius: var(--r-md); text-align: center;
+  background: var(--c-deep); border: 1px solid var(--c-gold-700); font: 700 3rem/1 var(--font-en);
+  color: var(--c-gold-300);
+}
+.code-display { user-select: all; -webkit-user-select: all; }
+input.code-cell { padding: 0; text-transform: uppercase; caret-color: var(--c-gold-300); }
+input.code-cell:focus-visible { border-color: var(--c-gold-500); }
+.wait-actions { display: flex; gap: var(--s-3); flex-wrap: wrap; justify-content: center; }
+.splash { display: flex; align-items: center; justify-content: center; gap: var(--s-6); text-align: center; }
+.splash .side { display: grid; justify-items: center; gap: var(--s-2); }
+.splash .vs { font: 900 3.5rem/1 var(--font-en); color: var(--c-gold-300); text-shadow: var(--glow-gold-lg); }
+@media (max-width: 767px) {
+  .code-cell { width: 44px; height: 56px; font-size: 2rem; }
+  .splash { flex-direction: column-reverse; gap: var(--s-4); }
+}
+
+/* SCR-006 결과 (WF-006) */
+.result-head { text-align: center; display: grid; gap: var(--s-3); margin-bottom: var(--s-5); }
+.result-title { font: 900 6rem/1 var(--font-en); }
+.result-title.win {
+  background: var(--g-gold); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.result-title.lose { color: var(--c-text-2); }
+.result-title.practice { font: var(--t-callout-ko); }
+.scoreline { color: var(--c-text-2); font: var(--t-body-lg); }
+.result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-6); align-items: start; }
+.card-preview {
+  width: 100%; aspect-ratio: 4 / 5; border-radius: var(--r-lg); box-shadow: var(--shadow-card); display: block;
+}
+.card-actions { display: flex; gap: var(--s-3); margin-top: var(--s-4); flex-wrap: wrap; }
+.record-table { width: 100%; border-collapse: collapse; }
+.record-table th, .record-table td {
+  padding: var(--s-2) var(--s-3); text-align: left; border-bottom: 1px solid var(--c-line);
+}
+.record-table th { font: var(--t-caption); color: var(--c-text-2); font-weight: 400; }
+.record-table td { font: 700 1.125rem/1.4 var(--font-en); font-variant-numeric: tabular-nums; }
+.growth.up { color: var(--c-grace); }
+.growth.down { color: var(--c-text-3); }
+.rating-line { margin-top: var(--s-4); font: var(--t-h3); }
+.rating-line .num { font-family: var(--font-en); font-variant-numeric: tabular-nums; }
+.achv { display: flex; align-items: center; gap: var(--s-3); margin-top: var(--s-4); }
+.save-fail {
+  margin-top: var(--s-4); padding: var(--s-3) var(--s-4); border: 1px solid var(--c-danger-text);
+  border-radius: var(--r-md); color: var(--c-danger-text);
+}
+.result-foot { display: flex; justify-content: center; margin-top: var(--s-6); }
+@media (max-width: 767px) {
+  .result-title { font-size: 3.5rem; }
+  .result-grid { grid-template-columns: 1fr; gap: var(--s-5); }
+  .result-foot {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; margin: 0; background: rgba(14, 11, 26, 0.95);
+    padding: var(--s-2) var(--s-4) calc(var(--s-2) + env(safe-area-inset-bottom));
+  }
+  .result-foot .btn { flex: 1; }
+}
+
+/* SCR-007 전적 · SCR-008 랭킹 표 */
+.data-table {
+  width: 100%; border-collapse: collapse; background: var(--c-panel); border-radius: var(--r-lg); overflow: hidden;
+}
+.data-table caption { text-align: left; padding-bottom: var(--s-2); color: var(--c-text-3); font: var(--t-caption); }
+.data-table th {
+  text-align: left; font: var(--t-caption); color: var(--c-text-2); padding: var(--s-3);
+  border-bottom: 1px solid var(--c-line);
+}
+.data-table td { padding: var(--s-3); border-bottom: 1px solid var(--c-line); vertical-align: middle; }
+.data-table .num { font-family: var(--font-en); font-variant-numeric: tabular-nums; }
+.badge-result {
+  display: inline-block; min-width: 32px; text-align: center; border-radius: var(--r-sm); padding: 2px 8px;
+  font-weight: 700;
+}
+.badge-result.win { background: var(--c-gold-500); color: var(--c-abyss); }
+.badge-result.loss { background: var(--c-line); color: var(--c-text); }
+.tag { font: var(--t-micro); color: var(--c-text-3); margin-left: var(--s-1); }
+.heroes-vs { display: inline-flex; align-items: center; gap: var(--s-1); color: var(--c-text-3); }
+.history-cards { display: none; }
+.more-row { display: flex; justify-content: center; margin-top: var(--s-5); }
+.empty-state {
+  text-align: center; padding: var(--s-7) var(--s-4); display: grid; gap: var(--s-4); justify-items: center;
+  color: var(--c-text-2);
+}
+@media (max-width: 1023px) { .data-table .col-heroes, .data-table .col-date { display: none; } }
+@media (max-width: 767px) {
+  .history-table { display: none; }
+  .history-cards { display: grid; gap: var(--s-2); }
+  .history-card {
+    background: var(--c-panel);
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-lg);
+    padding: var(--s-3) var(--s-4);
+  }
+  .history-card .row { display: flex; justify-content: space-between; align-items: center; gap: var(--s-2); }
+  .history-card .sub { color: var(--c-text-3); font: var(--t-caption); }
+}
+.scr-ranking { max-width: 720px; }
+.medal {
+  display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%;
+  font: 700 0.875rem/1 var(--font-en); color: var(--c-abyss);
+}
+.medal.m1 { background: var(--c-medal-gold); }
+.medal.m2 { background: var(--c-silver); }
+.medal.m3 { background: var(--c-brass); }
+.data-table tr.is-me td {
+  background: var(--c-elevated);
+  box-shadow: inset 0 2px 0 var(--c-gold-500), inset 0 -2px 0 var(--c-gold-500);
+}
+.data-table .nick { max-width: 0; width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.my-rank-bar {
+  position: sticky; bottom: 0; min-height: 56px; display: flex; align-items: center; justify-content: center;
+  background: var(--c-elevated); border-top: 2px solid var(--c-gold-500); margin-top: var(--s-4); padding: 0 var(--s-4);
+}
+
+/* SCR-009 옵션 (WF-009) — 폭 560 가운데 / 모바일 전체 폭 */
+.scr-options { max-width: 560px; }
+.options-panel fieldset {
+  border: 1px solid var(--c-line); border-radius: var(--r-lg); padding: var(--s-4); margin: 0 0 var(--s-4);
+}
+.options-panel legend { font: var(--t-h3); padding: 0 var(--s-2); }
+.opt-row {
+  display: grid; grid-template-columns: 6rem 1fr 3rem; align-items: center; gap: var(--s-3); min-height: 48px;
+}
+.opt-row.seg { grid-template-columns: 6rem 1fr; }
+.opt-row .val { font-family: var(--font-en); text-align: right; font-variant-numeric: tabular-nums; }
+.match-warning { color: var(--c-danger-text); font: var(--t-caption); margin-bottom: var(--s-3); }
+@media (max-width: 767px) { .opt-row { grid-template-columns: 5rem 1fr 2.5rem; } }

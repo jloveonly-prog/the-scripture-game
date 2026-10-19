@@ -91,18 +91,31 @@ export function createBgm(mixer) {
     events = [];
   }
 
+  /**
+   * [D-03C 2026-10-19 — fruit-열매/history 기록] Transport 콜백 보호: 메인 스레드가 밀리거나(저사양·위기 BPM 램프)
+   * Transport를 다시 시작하면 같은 단음 악기에 시작 시각 역전이 와서 Tone assert가 콜백 밖으로 던져진다 → 그 음만 건너뛴다
+   * @template {any[]} A @param {(...a: A) => void} fn
+   */
+  const safe = (fn) => (/** @type {A} */ ...a) => {
+    try {
+      fn(...a);
+    } catch (err) {
+      if (!/strictly greater/.test(String(/** @type {any} */ (err)?.message))) console.error("BGM 음 재생 실패", err);
+    }
+  };
+
   /** BGM-1: 패드(2마디 화음)·아르페지오(Pattern upDown 8분, 확률 0.8, 2옥타브)·종(2마디마다 9음) */
   function scheduleLobby() {
     const notes = (i) => [...LOBBY.chords[i], ...LOBBY.chords[i].map((n) => Tone.Frequency(n).transpose(12).toNote())];
-    const pattern = new Tone.Pattern((time, note) => L.arp.triggerAttack(note, time), notes(0), "upDown");
+    const pattern = new Tone.Pattern(safe((time, note) => L.arp.triggerAttack(note, time)), notes(0), "upDown");
     pattern.interval = "8n";
     pattern.probability = 0.8;
-    const loop = new Tone.Loop((time) => {
+    const loop = new Tone.Loop(safe((time) => {
       chordIdx = (chordIdx + 1) % 4;
       L.lobbyPad.triggerAttackRelease(LOBBY.chords[chordIdx], "2m", time);
       L.bell.triggerAttackRelease(LOBBY.ninths[chordIdx], "2n", time);
       pattern.values = notes(chordIdx);
-    }, "2m");
+    }), "2m");
     chordIdx = -1;
     events.push(loop.start(0), pattern.start(0));
   }
@@ -110,7 +123,7 @@ export function createBgm(mixer) {
   /** BGM-2: 패드·베이스(8분 근음)·북(16분 격자)·리드 동기·위기 층(톰 채움·현 오스티나토) */
   function scheduleBattle() {
     let bar = 0;
-    const harmony = new Tone.Loop((time) => {
+    const harmony = new Tone.Loop(safe((time) => {
       const i = Math.floor((bar % 8) / 2);
       if (bar % 2 === 0) L.pad.triggerAttackRelease(BATTLE.chords[i], "2m", time);
       // 층 4 리드: 8마디 중 1~2·5~6마디 (combo ≥ 5 옥타브 겹침)
@@ -122,9 +135,9 @@ export function createBgm(mixer) {
         }
       }
       bar += 1;
-    }, "1m");
+    }), "1m");
     let step = 0;
-    const grid = new Tone.Loop((time) => {
+    const grid = new Tone.Loop(safe((time) => {
       const s = step % 16;
       const barNo = Math.floor(step / 16);
       const root = BATTLE.roots[Math.floor((barNo % 8) / 2)];
@@ -140,7 +153,7 @@ export function createBgm(mixer) {
         if (s >= 12) L.tom.triggerAttackRelease(s % 2 ? "D2" : "G1", "16n", time);
       }
       step += 1;
-    }, "16n");
+    }), "16n");
     events.push(harmony.start(0), grid.start(0));
   }
 

@@ -60,6 +60,8 @@
 | 루트 `package.json` | `check:content` | `node content/check-content.mjs` | FR-076 |
 | 루트 `package.json` | `test:e2e` | `playwright test` | FR-077 (spec은 Phase 5) |
 | `client/package.json` | `dev` | `vite --port 5173 --strictPort` | architecture §4 |
+| 루트 `package.json` | `build` **[추가 2026-10-19 — RTM §5 DCL-010 ①]** | `npm run build -w client` | NFR-004 측정 방법("빌드 산출물 문자열 검사" — 03-D TASK-071), FR-073 |
+| `client/package.json` | `build` **[추가 2026-10-19 — DCL-010 ①]** | `vite build` → `client/dist/` (`.gitignore`의 `dist/`) | NFR-004, D-03 (정적 번들) |
 | `worker/package.json` | `dev` | `wrangler dev --port 8787 --ip 127.0.0.1` | architecture §4 |
 
 **`worker/wrangler.toml` 고정 항목:** `name = "spiritual-warfare-tetris"` · `main = "src/index.ts"` · `compatibility_date = "2026-10-01"`(workerd 1.20261001.1이 지원하는 최신 날짜 이하) · `[[durable_objects.bindings]]` `MATCHMAKER`→`Matchmaker`, `GAME_ROOM`→`GameRoom` · `[[migrations]] tag = "v1"`, `new_sqlite_classes = ["Matchmaker", "GameRoom"]` (data-ark §7) · `[vars] ALLOWED_ORIGINS = "http://localhost:5173,http://127.0.0.1:5173"` (architecture §10 제7계명). Supabase 키는 `[vars]`에 절대 쓰지 않는다(`.dev.vars`만).
@@ -410,11 +412,11 @@ export async function postGuests(request: Request, env: Env): Promise<Response> 
 | 렌더 `client/js/render/`, `client/js/art/` | REQ-013 | ARCH-004 | TASK-040~TASK-045 | 03-A | ✅ | ✅ |
 | 오디오 `client/js/audio/` | REQ-013 | ARCH-006 | TASK-050-1, TASK-050-2 | 03-B | ✅ | ✅ |
 | 연출 `client/js/fx/` | REQ-011, REQ-013 | ARCH-005 | TASK-051-1~TASK-053 | 03-B | ✅ | ✅ |
-| 셸·스타일·라우터 (`index.html`, `style.css`, `styles/`, `main.js`, `screens/shell.js`, `store/session.js`) | REQ-013, FR-078 | ARCH-001 | TASK-060-1, TASK-060-2, TASK-061 | 03-C | ⬜ | ⬜ |
-| 저장·네트워크 `client/js/store/guest·settings.js`, `client/js/net/` | REQ-002, REQ-004 | ARCH-008 | TASK-062-1, TASK-062-2 | 03-C | ⬜ | ⬜ |
-| 입력 `client/js/input/` | REQ-001 | ARCH-007 | TASK-063 | 03-C | ⬜ | ⬜ |
-| 화면 9개 `client/js/screens/` | REQ-001~REQ-006, REQ-013~REQ-015 | ARCH-001 | TASK-064-1, TASK-064-2, TASK-066, TASK-067-1, TASK-067-2 | 03-C | ⬜ | ⬜ |
-| 컨트롤러 `client/js/game/local-player.js`, `server-events.js` | REQ-001, REQ-007~REQ-012 | ARCH-003 | TASK-065 | 03-C | ⬜ | ⬜ |
+| 셸·스타일·라우터 (`index.html`, `style.css`, `styles/`, `main.js`, `screens/shell.js`, `store/session.js`) | REQ-013, FR-078 | ARCH-001 | TASK-060-1, TASK-060-2, TASK-061 | 03-C | 🔄 | ⬜ |
+| 저장·네트워크 `client/js/store/guest·settings.js`, `client/js/net/` | REQ-002, REQ-004 | ARCH-008 | TASK-062-1, TASK-062-2 | 03-C | 🔄 | ⬜ |
+| 입력 `client/js/input/` | REQ-001 | ARCH-007 | TASK-063 | 03-C | 🔄 | ⬜ |
+| 화면 9개 `client/js/screens/` | REQ-001~REQ-006, REQ-013~REQ-015 | ARCH-001 | TASK-064-1, TASK-064-2, TASK-066, TASK-067-1, TASK-067-2 | 03-C | 🔄 | ⬜ |
+| 컨트롤러 `client/js/game/local-player.js`, `server-events.js` | REQ-001, REQ-007~REQ-012 | ARCH-003 | TASK-065 | 03-C | 🔄 | ⬜ |
 | 실행 안내 `README.md` | REQ-016, REQ-017 | ARCH-017 | TASK-070 | 03-D | ⬜ | ⬜ |
 | 봉인 점검·마감 검증 (`bible-성경/04/security-seal-봉인.md`, `sync-fruit-열매검증.md`) | NFR-003, NFR-004, NFR-008, C-008 | — | TASK-071, TASK-072 | 03-D | ⬜ | ⬜ |
 

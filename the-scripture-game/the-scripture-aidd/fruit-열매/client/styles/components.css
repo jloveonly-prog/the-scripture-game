@@ -1,0 +1,181 @@
+/* components.css — 공통 컴포넌트(버튼·입력·카드·모달·토스트·장막) 스타일만
+   TASK-060-1 | REQ-013 FR-048 FR-050 FR-078 | design-vision §2.6·§2.7·§4.1·§4.2·§6.1·§6.4 | screen-vision 공통 셸 */
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--c-abyss);
+  color: var(--c-text);
+  font: var(--t-body);
+  overflow-x: hidden;
+}
+button, input { font: inherit; color: inherit; }
+h1, h2, h3, p { margin: 0; }
+[hidden] { display: none !important; }
+
+/* §6.1 2.4.7 포커스 고리 2px #F6D98B + 2px 간격 */
+:focus-visible { outline: 2px solid var(--c-gold-300); outline-offset: 2px; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* §4.2 주 버튼 */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2);
+  min-height: 48px; padding: 0 var(--s-5); border-radius: var(--r-md);
+  font-weight: 700; cursor: pointer; border: 1px solid transparent;
+  transition: transform var(--dur-instant) var(--ease-out), filter var(--dur-base), box-shadow var(--dur-base);
+  touch-action: manipulation; user-select: none;
+}
+.btn-primary { background: var(--g-gold); color: var(--c-abyss); }
+.btn-secondary { background: transparent; border-color: var(--c-gold-500); color: var(--c-gold-300); }
+.btn-ghost { background: transparent; color: var(--c-text-2); border-color: var(--c-line); }
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover:not([aria-disabled="true"]) { filter: brightness(1.08); box-shadow: var(--glow-gold-md); }
+  .btn-secondary:hover:not([aria-disabled="true"]) { background: rgba(232, 184, 74, 0.1); }
+  .btn-ghost:hover { border-color: var(--c-gold-700); }
+}
+.btn:active:not([aria-disabled="true"]) { transform: scale(0.97); }
+.btn[aria-disabled="true"], .btn:disabled {
+  background: var(--c-line); color: var(--c-text-3); border-color: var(--c-line); cursor: default;
+}
+.btn-secondary[aria-disabled="true"] { background: transparent; }
+.btn-block { width: 100%; }
+.btn-icon { min-width: var(--touch-min); min-height: var(--touch-min); padding: 0 var(--s-3); }
+.btn svg { flex: none; }
+.btn.is-loading { color: transparent; position: relative; }
+.btn.is-loading .spinner { position: absolute; }
+@media (max-width: 767px) { .btn { min-height: 52px; } }
+
+/* §4.2 입력칸 */
+.input {
+  width: 100%; height: 52px; padding: 0 var(--s-4); border-radius: var(--r-md);
+  background: var(--c-deep); border: 1px solid var(--c-line); font-size: 1.25rem; color: var(--c-text);
+}
+@media (hover: hover) { .input:hover { border-color: #6b5a2a; } }
+.input:focus-visible { border-color: var(--c-gold-500); }
+.input[aria-invalid="true"] { border-color: var(--c-danger-text); }
+.field-help { font: var(--t-caption); color: var(--c-text-3); margin-top: var(--s-2); }
+.field-error { font: var(--t-caption); color: var(--c-danger-text); margin-top: var(--s-2); min-height: 1.3em; }
+.notice { font: var(--t-caption); color: var(--c-text-2); }
+
+/* 카드·패널 */
+.card {
+  background: var(--c-panel); border: 1px solid var(--c-line); border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card); padding: var(--s-5);
+}
+
+/* §4.2 세그먼트 (난이도·흔들림·섬광) */
+.segment { display: inline-flex; border: 1px solid var(--c-line); border-radius: var(--r-md); overflow: hidden; }
+.segment button {
+  min-height: 44px; min-width: 64px; padding: 0 var(--s-4); border: 0; background: transparent;
+  color: var(--c-text-2); cursor: pointer; touch-action: manipulation; white-space: nowrap;
+}
+.segment button + button { border-left: 1px solid var(--c-line); }
+.segment button[aria-checked="true"] { background: var(--g-gold); color: var(--c-abyss); font-weight: 700; }
+
+/* §4.2 슬라이더 — 트랙 4px, 손잡이 20px(터치 44) */
+.slider { -webkit-appearance: none; appearance: none; width: 100%; height: 44px; background: transparent; }
+.slider::-webkit-slider-runnable-track {
+  height: 4px; border-radius: 2px;
+  background: linear-gradient(90deg, var(--c-gold-500) var(--fill, 0%), var(--c-line) var(--fill, 0%));
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 20px; height: 20px; margin-top: -8px; border-radius: 50%;
+  background: var(--c-gold-300); box-shadow: var(--glow-gold-sm);
+}
+.slider::-moz-range-track { height: 4px; background: var(--c-line); }
+.slider::-moz-range-progress { height: 4px; background: var(--c-gold-500); }
+.slider::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--c-gold-300); border: 0; }
+
+/* §3.4 7점 원형 회전 표시 (블록 7색, 1.6초/회전 — 감소 모드: 순차 밝아짐) */
+.spinner { position: relative; width: 120px; height: 120px; animation: spin 1.6s linear infinite; }
+.spinner i {
+  position: absolute; left: 50%; top: 50%; width: 14%; height: 14%; margin: -7% 0 0 -7%; border-radius: 50%;
+  transform: rotate(calc(var(--k) * 51.43deg)) translateY(-280%); box-shadow: 0 0 8px currentColor;
+  background: currentColor;
+}
+.spinner.small { width: 20px; height: 20px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes twinkle { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .spinner { animation: none; }
+  .spinner i { animation: twinkle 1.6s ease-in-out infinite; animation-delay: calc(var(--k) * 0.23s); }
+}
+
+/* 구절 3줄 (§2.6 C-003) */
+.verse { text-align: center; }
+.verse .v-en { font: var(--t-verse-en); letter-spacing: 0.02em; color: var(--c-holy); }
+.verse .v-ko { font: var(--t-verse-ko); color: var(--c-text); }
+.verse .v-ref { font: var(--t-verse-ref); letter-spacing: 0.06em; color: var(--c-gold-500); margin-top: var(--s-1); }
+
+/* §4.1 모달 — 배경막 rgba(7,6,13,0.7) + blur 6px, 상자 r-xl */
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: var(--z-modal); display: grid; place-items: center; padding: var(--s-4);
+  background: rgba(7, 6, 13, 0.7); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.modal {
+  width: min(560px, 100%); max-height: calc(100vh - 32px); overflow: auto; background: var(--c-deep);
+  border: 1px solid var(--c-line); border-radius: var(--r-xl); box-shadow: var(--shadow-modal); padding: var(--s-5);
+}
+.modal h2 { font: var(--t-h2); margin-bottom: var(--s-4); }
+.modal .actions { display: flex; gap: var(--s-3); justify-content: flex-end; flex-wrap: wrap; margin-top: var(--s-5); }
+
+/* §4.1 토스트 — 데스크톱 아래 가운데·모바일 위 가운데, 최대 2개 */
+.toast-host {
+  position: fixed; left: 50%; bottom: calc(var(--s-6) + env(safe-area-inset-bottom)); transform: translateX(-50%);
+  z-index: var(--z-toast); display: flex; flex-direction: column; gap: var(--s-2); align-items: center;
+  pointer-events: none; width: min(92vw, 520px);
+}
+@media (max-width: 767px) {
+  .toast-host { top: calc(var(--s-4) + env(safe-area-inset-top)); bottom: auto; flex-direction: column-reverse; }
+}
+.toast {
+  background: var(--c-elevated); color: var(--c-text); border: 1px solid var(--c-line); border-radius: var(--r-md);
+  padding: var(--s-3) var(--s-4); box-shadow: var(--shadow-card); font: var(--t-body); text-align: center;
+}
+.toast.is-error { border-color: var(--c-danger-text); }
+
+/* 오디오 시작 안내 (z 600) */
+.audio-toast {
+  position: fixed; left: 50%; bottom: calc(var(--s-4) + env(safe-area-inset-bottom)); transform: translateX(-50%);
+  z-index: var(--z-audio); background: rgba(31, 25, 54, 0.92); border: 1px solid var(--c-gold-700);
+  color: var(--c-gold-300); border-radius: var(--r-full); padding: var(--s-2) var(--s-4); font: var(--t-caption);
+  pointer-events: none; white-space: nowrap;
+}
+
+/* §4.1 화면 전환 장막 (z 800) — --g-holy 가로 띠 */
+.veil {
+  position: fixed; inset: 0; z-index: var(--z-veil); pointer-events: none; opacity: 0;
+  background: linear-gradient(180deg, rgba(255, 248, 231, 0) 0%, rgba(246, 217, 139, 0.85) 45%,
+    rgba(255, 248, 231, 0.95) 50%, rgba(246, 217, 139, 0.85) 55%, rgba(255, 248, 231, 0) 100%);
+}
+
+/* 뼈대(스켈레톤) — #161226↔#1F1936 1.2초 맥동, 감소 모드 정지 */
+.skeleton {
+  height: 48px;
+  border-radius: var(--r-md);
+  background: var(--c-panel);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+@keyframes pulse { 50% { background: var(--c-elevated); } }
+@media (prefers-reduced-motion: reduce) { .skeleton { animation: none; } }
+
+/* 재시도·오류 패널 */
+.retry-panel {
+  display: grid;
+  gap: var(--s-4);
+  justify-items: center;
+  text-align: center;
+  padding: var(--s-6) var(--s-4);
+}
+.retry-panel p { color: var(--c-text-2); }
+
+/* 키 힌트 배지 ⟨A⟩ — fine pointer에서만 (§4.3) */
+.key {
+  font: var(--t-micro); letter-spacing: 0.02em; color: var(--c-text-3); border: 1px solid var(--c-line);
+  border-radius: var(--r-sm); padding: 0 4px; background: rgba(7, 6, 13, 0.6);
+}
+@media (pointer: coarse) { .key { display: none; } }
